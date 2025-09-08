@@ -1,9 +1,6 @@
-#include "../../include/parsing.hpp"
-
-// couleurs :
-#define COLOR_RED "\033[31m"
-#define COLOR_GREEN "\033[32m"
-#define COLOR_DEFAULT "\033[0m"
+#include "parsing.hpp"
+#include <sstream>
+#include <iostream>
 
 // KICK - Eject a client from the channel
 // INVITE - Invite a client to a channel
@@ -73,14 +70,19 @@ int msg(const char *argv)
 bool parseCommandes()
 {
 	std::string line;
-	if (!std::getline( std::cin, line )) {
-		std::cout << COLOR_RED << "Error : eof detected." << COLOR_DEFAULT << std::endl;
-		return ( false );
+	if (!std::getline( std::cin, line ))
+		throw std::runtime_error("eof detected");
+
+	std::istringstream iss(line); //le nom iss est generique mais on peut l'appeler line_iss si c'est plus clair
+	std::string token;
+
+	//cette syntaxe split automatiquement sur les espaces et stop quand line est vide
+	while (iss >> token) {
+		//parse_token
 	}
-	
 
 	// changer de solution pour split, strtok n'existe pas
-	
+
 	// const char *del = " "; // delemiteur entre chaque argument de la commande
 	// std::vector<char *> argv; // les arguments de la commande
 	// // Splitting the string based on the delimiter
@@ -93,6 +95,5 @@ bool parseCommandes()
 	// 	arg = strtok(nullptr, del);
     // }
 	// return ( true );
-
 
 }

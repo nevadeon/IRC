@@ -1,10 +1,5 @@
-#include "../../include/parsing.hpp"
-
-// mettre des couleurs dans les messages d'erreurs pour + de lisibilite ?
-// color
-#define COLOR_RED "\033[31m"
-#define COLOR_GREEN "\033[32m"
-#define COLOR_DEFAULT "\033[0m"
+#include "parsing.hpp"
+#include <iostream>
 
 static bool isAlNum( const std::string& str )
 {
@@ -40,14 +35,13 @@ std::string getData( std::string type )
 	while (true) {
 		std::cout << "Enter your " << type << " :" << std::endl;
 		if (!std::getline( std::cin, data )) {
-			// quand on ctrl+d
-			std::cout << COLOR_RED << "Error : eof detected." << COLOR_DEFAULT << std::endl;
-			return ( "" );
+			std::cout << RED << "Error : eof detected." << RESET << std::endl;
+			throw std::runtime_error("");
 		}
 
 		if (dataValide( data ))
 			return ( data );
 		else
-			std::cout << COLOR_RED << "Error : Invalide Username. Try again." << COLOR_DEFAULT << std::endl;
+			std::cout << RED << "Error : Invalide Username. Try again." << RESET << std::endl;
 	}
 }

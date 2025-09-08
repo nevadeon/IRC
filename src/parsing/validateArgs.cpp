@@ -15,10 +15,10 @@ static bool isNumber( const char *str )
 	return ( true );
 }
 
-static bool isInTab( std::vector<int>& tabInt, int number )
-{
-	return ( std::find( tabInt.begin(), tabInt.end(), number ) != tabInt.end() );
-}
+// static bool isInTab( std::vector<int>& tabInt, int number )
+// {
+// 	return ( std::find( tabInt.begin(), tabInt.end(), number ) != tabInt.end() );
+// }
 
 // voir les ports deja utilises :
 // ss -tuln
@@ -38,7 +38,11 @@ int validateArgs(char const *argv[])
 	int port = atoi( argv[1] );
 	if (port < 1024 || port > 49151)
 		throw std::runtime_error("port out of range (1024-49151)");
-
+	// try {
+	// //     acceptor.bind(endpoint);
+	// } catch (const boost::system::system_error& e) {
+	// //     std::cerr << "Error: " << e.what() << '\n';
+	// }
 	// faire des verrifications au niveau du mdp ?
 	// -> pas dans le sujet mais si ca t'amuse
 	return ( port );

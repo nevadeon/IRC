@@ -78,7 +78,7 @@ bool parseCommandes()
 
 	//cette syntaxe split automatiquement sur les espaces et stop quand line est vide
 	while (iss >> token) {
-		//parse_token
+		std::cout << token << std::endl;
 	}
 
 	// changer de solution pour split, strtok n'existe pas
@@ -94,6 +94,7 @@ bool parseCommandes()
     //     // argv.insert(arg);
 	// 	arg = strtok(nullptr, del);
     // }
-	// return ( true );
+	(void)commandes;
+	return ( true );
 
 }

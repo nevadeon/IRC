@@ -19,13 +19,14 @@ static bool dataValide( const std::string& pseudo )
 {
 	if (pseudo.empty())
 		return ( false );
-	for (char c : pseudo) {
-		if (!isAlNum(pseudo) && c != '_' && c != '-') {
-			return ( false );
-		}
+	if (!isAlNum(pseudo)) {
+		return ( false );
 	}
 	return ( true );
 }
+
+// nickname :
+// taille max : 9 cara
 
 //pseudo ou username
 std::string getData( std::string type )

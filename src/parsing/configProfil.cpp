@@ -25,7 +25,7 @@ static bool dataValide( const std::string& pseudo )
 	if (pseudo.empty())
 		return ( false );
 	for (char c : pseudo) {
-		if (!isAlNum(pseudo)) {
+		if (!isAlNum(pseudo) && c != '_' && c != '-') {
 			return ( false );
 		}
 	}

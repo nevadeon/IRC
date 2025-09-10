@@ -1,24 +1,33 @@
+#include <sys/epoll.h>
+#include <errno.h>
 #include <unistd.h>
+#include <string.h>
+#include <iostream>
 #include <vector>
 #include "server.hpp"
+#include "client.hpp"
 #include "colors.hpp"
-
-void Server::ClearClient(int fd) {
-    //TODO clear fds from epoll
-}
 
 void Server::CloseFds() {
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
         int fd = it->GetFD();
         if (fd != -1) {
-            std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
-            close(fd);
+            DisconnectClient(fd);
+            it->SetFD(-1);
         }
     }
     clients_.clear();
+
     if (socket_fd_ != -1) {
         std::cout << "Server <" << socket_fd_ << "> " << RED << "Disconnected" << RESET << std::endl;
+        if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, socket_fd_, NULL) == -1)
+            std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
         close(socket_fd_);
         socket_fd_ = -1;
+    }
+
+    if (epoll_fd_ != -1) {
+        close(epoll_fd_);
+        epoll_fd_ = -1;
     }
 }

@@ -8,27 +8,28 @@
 class Server
 {
 private:
+    uint16_t port_;
     int socket_fd_;
     int epoll_fd_;
-    uint16_t port_;
     std::vector<Client> clients_;
 
     static bool running;
 
     void InitListeningSocket();
+    void InitEpollInstance();
     static void HandleSignals();
     static void SignalHandler(int signum);
 
+    void AcceptNewClients();
+    void ReceiveNewData(int fd);
+    void DisconnectClient(int fd);
+
 public:
-    Server(uint16_t port = 0) : port_(port) {}
+    Server(uint16_t port = 0) : port_(port), socket_fd_(-1), epoll_fd_(-1) {}
 
     void Init();
     void Run();
-    void AcceptNewClient();
-    void ReceiveNewData(int fd);
-
     void CloseFds();
-    void ClearClient(int fd);
 };
 
 #endif

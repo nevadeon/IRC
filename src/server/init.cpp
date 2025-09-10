@@ -4,16 +4,17 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <fcntl.h>
-#include <cstring>
-#include <csignal>
+#include <string.h>
+#include <signal.h>
+#include <iostream>
 #include "server.hpp"
 #include "colors.hpp"
 
-bool Server::running = true;
-void Server::SignalHandler(int signum) {
-    (void)signum;
-    std::cout << "Server was stoped by signal" << std::endl;
-    Server::running = false;
+void Server::Init() {
+    HandleSignals();
+    InitListeningSocket();
+    InitEpollInstance();
+    std::cout << "Server <" << socket_fd_ << "> " << GREEN << "Connected" << RESET << std::endl;
 }
 
 void Server::HandleSignals() {
@@ -27,6 +28,12 @@ void Server::HandleSignals() {
         throw std::runtime_error("failed to set sigaction for SIGTERM");
     if (sigaction(SIGQUIT, &sa, NULL) == -1)
         throw std::runtime_error("failed to set sigaction for SIGQUIT");
+}
+
+void Server::SignalHandler(int signum) {
+    (void)signum;
+    std::cout << "Server was stoped by signal" << std::endl;
+    Server::running = false;
 }
 
 void Server::InitListeningSocket() {
@@ -84,9 +91,21 @@ void Server::InitListeningSocket() {
         throw std::runtime_error("failed to set socket on listening mode");
 }
 
-void Server::Init() {
-    HandleSignals();
-    InitListeningSocket();
-    //TODO : add socket fd to epoll
-    std::cout << "Server <" << socket_fd_ << "> " << GREEN << "Connected" << RESET << std::endl;
+void Server::InitEpollInstance() {
+    // Epoll is a way to tell linux kernel to survey a list of file descriptors.
+    // We create an epoll instance and add our socket fd so everytime a client
+    // tries to connect the epoll event loop will wake our server up
+    epoll_fd_ = epoll_create1(0);
+    if (epoll_fd_ == -1)
+        throw std::runtime_error("failed to create epoll instance");
+
+    // --- int epoll_ctl(int __epfd, int __op, int __fd, epoll_event *) ---
+    // EPOLLIN       = detects incomming connexions (clients)
+    // EPOLL_CTL_ADD = add the fd to the epoll instance
+    struct epoll_event ev;
+    memset(&ev, 0, sizeof(ev));
+    ev.events = EPOLLIN;
+    ev.data.fd = socket_fd_;
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, socket_fd_, &ev) == -1)
+        throw std::runtime_error("failed to add socket fd to epoll");
 }

@@ -1,23 +1,23 @@
-#include "parsing.hpp"
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <algorithm> // autorise dans le sujet ? -> yes
+#include <algorithm>
+#include "parsing.hpp"
 
 static bool isNumber( const char *str )
 {
-	while (*str)
-	{
-		if (*str > '9' || *str < '0')
-			return ( false );
-		str++;
-	}
-	return ( true );
+    while (*str)
+    {
+        if (*str > '9' || *str < '0')
+            return ( false );
+        str++;
+    }
+    return ( true );
 }
 
 static bool isInTab( std::vector<int>& tabInt, int number )
 {
-	return ( std::find( tabInt.begin(), tabInt.end(), number ) != tabInt.end() );
+    return ( std::find( tabInt.begin(), tabInt.end(), number ) != tabInt.end() );
 }
 
 // voir les ports deja utilises :
@@ -30,16 +30,16 @@ static bool isInTab( std::vector<int>& tabInt, int number )
 // } catch (const boost::system::system_error& e) {
 //     std::cerr << "Error: " << e.what() << '\n';
 // }
-int validateArgs(char const *argv[])
+uint16_t validateArgs(char const *argv[])
 {
-	if (!isNumber( argv[1] ))
-		throw std::runtime_error("invalid port (not a number)");
+    if (!isNumber( argv[1] ))
+        throw std::runtime_error("invalid port (not a number)");
 
-	int port = atoi( argv[1] );
-	if (port < 1024 || port > 49151)
-		throw std::runtime_error("port out of range (1024-49151)");
+    int port = atoi( argv[1] );
+    if (port < 1024 || port > 49151)
+        throw std::runtime_error("port out of range (1024-49151)");
 
-	// faire des verrifications au niveau du mdp ?
-	// -> pas dans le sujet mais si ca t'amuse
-	return ( port );
+    // faire des verrifications au niveau du mdp ?
+    // -> pas dans le sujet mais si ca t'amuse
+    return static_cast<uint16_t>(port);
 }

@@ -16,21 +16,18 @@ static const int TIMEOUT = 1000;
 static const int MAX_EVENTS = 64;
 struct epoll_event epoll_events[MAX_EVENTS];
 
-bool Server::running = true;
 void Server::Run() {
     while (Server::running) {
         int n = epoll_wait(epoll_fd_, epoll_events, MAX_EVENTS, TIMEOUT);
         if (n == -1) {
-            if (errno == EINTR) {
-                std::cout << "Signal received start again" << std::endl;
-                continue;
-            }
+            if (errno == EINTR) { break; }
             throw std::runtime_error("Epoll wait failed");
         }
         for (int i = 0; i < n; i++) {
             uint32_t event_flags = epoll_events[i].events;
             int fd = epoll_events[i].data.fd;
 
+            if (event_flags & EPOLLRDHUP) { break; }
             if (event_flags & (EPOLLERR | EPOLLHUP)) {
                 DisconnectClient(fd);
                 continue;
@@ -52,13 +49,12 @@ void Server::AcceptNewClients() {
         socklen_t len = sizeof(client_addr);
         int client_fd = accept(socket_fd_, (sockaddr *)&client_addr, &len);
         if (client_fd == -1) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
-            if (errno == EINTR) { continue; }
+            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) { break; }
             std::cerr << "Error accept: " << strerror(errno) << std::endl;
             break;
         }
 
-        // we set client socket on non blocking
+        // set client socket on non blocking
         int flags = fcntl(client_fd, F_GETFL, 0);
         if (flags == -1) {
             std::cerr << "Error fcntl get flags: " << strerror(errno) << std::endl;
@@ -71,7 +67,7 @@ void Server::AcceptNewClients() {
             continue;
         }
 
-        // we add client socket in the epoll instance
+        // add client socket in the epoll instance
         struct epoll_event client_ev;
         memset(&client_ev, 0, sizeof(client_ev));
         client_ev.events = EPOLLIN | EPOLLRDHUP;
@@ -98,17 +94,20 @@ void Server::ReceiveNewData(int fd) {
     // we use a loop in case data is bigger than buffer size
     while (true) {
         ssize_t nread = recv(fd, buffer, sizeof(buffer) - 1, 0);
-        if (nread <= 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
-            if (errno == EINTR) { continue; }
-            if (nread < 0) {
-                std::cerr << "Error recv: " << strerror(errno) << std::endl;
-            }
+        if (nread < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) { break; }
+            std::cerr << "Error recv: " << strerror(errno) << std::endl;
+            DisconnectClient(fd);
+            break;
+        } else if (nread == 0) {
+            // normal deconnexion from client
             DisconnectClient(fd);
             break;
         } else {
             buffer[nread] = '\0';
-            std::cout << "Client <" << fd << "> sent: " << buffer;
+            if (buffer[nread - 1] == '\n')
+                buffer[nread - 1] = '\0';
+            std::cout << "Client <" << fd << "> " << YELLOW << "sent " << RESET << buffer << std::endl;
             // TODO :
             // append data to per client buffer and extract complete lines (\n)
             // handle case when data is not complete (wait)
@@ -118,7 +117,6 @@ void Server::ReceiveNewData(int fd) {
 }
 
 void Server::DisconnectClient(int fd) {
-    std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }
@@ -129,4 +127,5 @@ void Server::DisconnectClient(int fd) {
         }
     }
     close(fd);
+    std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
 }

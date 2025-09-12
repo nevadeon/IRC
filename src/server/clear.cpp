@@ -12,8 +12,11 @@ void Server::CloseFds() {
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
         int fd = it->GetFD();
         if (fd != -1) {
-            DisconnectClient(fd);
+            if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1)
+                std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
+            close(fd);
             it->SetFD(-1);
+            std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
         }
     }
     clients_.clear();

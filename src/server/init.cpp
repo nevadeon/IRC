@@ -28,11 +28,13 @@ void Server::HandleSignals() {
         throw std::runtime_error("failed to set sigaction for SIGTERM");
     if (sigaction(SIGQUIT, &sa, NULL) == -1)
         throw std::runtime_error("failed to set sigaction for SIGQUIT");
+    if (sigaction(SIGINT, &sa, NULL) == -1)
+        throw std::runtime_error("failed to set sigaction for SIGINT");
 }
 
+bool Server::running = true;
 void Server::SignalHandler(int signum) {
-    (void)signum;
-    std::cout << "Server was stoped by signal" << std::endl;
+    std::cout << " Signal <" << signum << "> was caught" << std::endl;
     Server::running = false;
 }
 
@@ -104,7 +106,7 @@ void Server::InitEpollInstance() {
     // EPOLL_CTL_ADD = add the fd to the epoll instance
     struct epoll_event ev;
     memset(&ev, 0, sizeof(ev));
-    ev.events = EPOLLIN;
+    ev.events = EPOLLIN | EPOLLRDHUP;
     ev.data.fd = socket_fd_;
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, socket_fd_, &ev) == -1)
         throw std::runtime_error("failed to add socket fd to epoll");

@@ -3,6 +3,7 @@
 
 #include <sys/epoll.h>
 #include <vector>
+#include <csignal>
 #include "client.hpp"
 
 class Server
@@ -13,7 +14,7 @@ private:
     int epoll_fd_;
     std::vector<Client> clients_;
 
-    static bool running;
+    volatile static std::sig_atomic_t running;
 
     void InitListeningSocket();
     void InitEpollInstance();

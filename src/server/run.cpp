@@ -16,19 +16,19 @@ static const int TIMEOUT = 1000;
 static const int MAX_EVENTS = 64;
 struct epoll_event epoll_events[MAX_EVENTS];
 
+volatile std::sig_atomic_t Server::running = true;
 void Server::Run() {
     while (Server::running) {
         int n = epoll_wait(epoll_fd_, epoll_events, MAX_EVENTS, TIMEOUT);
         if (n == -1) {
-            if (errno == EINTR) { break; }
+            if (errno == EINTR) { continue; }
             throw std::runtime_error("Epoll wait failed");
         }
         for (int i = 0; i < n; i++) {
             uint32_t event_flags = epoll_events[i].events;
             int fd = epoll_events[i].data.fd;
 
-            if (event_flags & EPOLLRDHUP) { break; }
-            if (event_flags & (EPOLLERR | EPOLLHUP)) {
+            if (event_flags & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
                 DisconnectClient(fd);
                 continue;
             }

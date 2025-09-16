@@ -32,9 +32,7 @@ void Server::HandleSignals() {
         throw std::runtime_error("failed to set sigaction for SIGINT");
 }
 
-bool Server::running = true;
 void Server::SignalHandler(int signum) {
-    std::cout << " Signal <" << signum << "> was caught" << std::endl;
     Server::running = false;
 }
 

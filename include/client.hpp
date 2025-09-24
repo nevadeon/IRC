@@ -6,14 +6,14 @@
 class Client
 {
 private:
-    int _fd;
-    std::string _ip;
+    int fd_;
+    std::string ip_;
 public:
     Client() {}
 
-    int GetFD() const { return _fd; }
-    void SetFD(int fd) { _fd = fd; }
-    void SetIpAddress(const std::string& ip) { _ip = ip; }
+    int GetFD() const { return fd_; }
+    void SetFD(int fd) { fd_ = fd; }
+    void SetIpAddress(const std::string& ip) { ip_ = ip; }
 };
 
 #endif

@@ -1,16 +1,4 @@
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <string.h> //memset
-#include <vector>
-#include <iostream>
 #include "server.hpp"
-#include "client.hpp"
-#include "colors.hpp"
 
 static const int TIMEOUT = 1000;
 static const int MAX_EVENTS = 64;

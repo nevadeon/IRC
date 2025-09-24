@@ -1,14 +1,4 @@
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <fcntl.h>
-#include <string.h>
-#include <signal.h>
-#include <iostream>
 #include "server.hpp"
-#include "colors.hpp"
 
 void Server::Init() {
     HandleSignals();
@@ -33,6 +23,7 @@ void Server::HandleSignals() {
 }
 
 void Server::SignalHandler(int signum) {
+    (void)signum;
     Server::running = false;
 }
 

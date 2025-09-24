@@ -2,9 +2,19 @@
 #define SERVER_HPP
 
 #include <sys/epoll.h>
-#include <vector>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <cstring>
 #include <csignal>
+#include <vector>
+#include <iostream>
 #include "client.hpp"
+#include "colors.hpp"
 
 class Server
 {

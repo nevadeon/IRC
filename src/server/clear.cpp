@@ -1,12 +1,4 @@
-#include <sys/epoll.h>
-#include <errno.h>
-#include <unistd.h>
-#include <string.h>
-#include <iostream>
-#include <vector>
 #include "server.hpp"
-#include "client.hpp"
-#include "colors.hpp"
 
 void Server::CloseFds() {
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {

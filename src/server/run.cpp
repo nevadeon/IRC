@@ -70,7 +70,7 @@ void Server::AcceptNewClients() {
         Client new_client;
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
-        clients_.push_back(new_client);
+        clients_[client_fd] = new_client;
 
         std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
@@ -108,12 +108,8 @@ void Server::DisconnectClient(int fd) {
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }
-    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
-        if (it->GetFD() == fd) {
-            clients_.erase(it);
-            break;
-        }
-    }
+    if (clients_.count(fd))
+        clients_.erase(fd);
     close(fd);
     std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
 }

@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <csignal>
-#include <vector>
+#include <map>
 #include <iostream>
 #include "client.hpp"
 #include "colors.hpp"
@@ -22,7 +22,7 @@ private:
     uint16_t port_;
     int socket_fd_;
     int epoll_fd_;
-    std::vector<Client> clients_;
+    std::map<int, Client> clients_;
 
     volatile static std::sig_atomic_t running;
 

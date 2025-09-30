@@ -100,6 +100,7 @@ void Server::ReceiveNewData(int fd) {
             // append data to per client buffer and extract complete lines (\n)
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
+            parseCommands();
         }
     }
 }

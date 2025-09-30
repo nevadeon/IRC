@@ -1,8 +1,12 @@
 #include <string>
 #include <sstream>
 #include <iostream>
-#include "parsing.hpp"
+#include "commands.hpp"
 
+// CAP LS - list server capabilities (can be ignored)
+// NICK - set/change nickname
+// PASS - authenticate with password
+// USER - set user info
 // KICK - Eject a client from the channel
 // INVITE - Invite a client to a channel
 // TOPIC - Change or view the channel topic
@@ -68,33 +72,33 @@
 //     return ( 0 );
 // }
 
-// bool parseCommandes()
-// {
-//     std::string line;
-//     if (!std::getline( std::cin, line ))
-//         throw std::runtime_error("eof detected");
+bool parseCommands(const char *buffer)
+{
+    std::string line(buffer);
+    if (!std::getline( std::cin, line ))
+        throw std::runtime_error("eof detected");
 
-//     std::istringstream iss(line); //le nom iss est generique mais on peut l'appeler line_iss si c'est plus clair
-//     std::string token;
+    std::istringstream iss(line); //le nom iss est generique mais on peut l'appeler line_iss si c'est plus clair
+    std::string token;
 
-//     //cette syntaxe split automatiquement sur les espaces et stop quand line est vide
-//     while (iss >> token) {
-//         //parse_token
-//     }
+    //cette syntaxe split automatiquement sur les espaces et stop quand line est vide
+    while (iss >> token) {
+        //parse_token
+    }
 
-//     // changer de solution pour split, strtok n'existe pas
+    // changer de solution pour split, strtok n'existe pas
 
-//     // const char *del = " "; // delemiteur entre chaque argument de la commande
-//     // std::vector<char *> argv; // les arguments de la commande
-//     // // Splitting the string based on the delimiter
-//     // char *arg = strtok(line.data(), del);
-//     // while (arg != nullptr) {
-//     //     std::cout << "\"" << arg << "\"" << " " << std::endl;
+    // const char *del = " "; // delemiteur entre chaque argument de la commande
+    // std::vector<char *> argv; // les arguments de la commande
+    // // Splitting the string based on the delimiter
+    // char *arg = strtok(line.data(), del);
+    // while (arg != nullptr) {
+    //     std::cout << "\"" << arg << "\"" << " " << std::endl;
 
-//     //     // Get the next substring
-//     //     // argv.insert(arg);
-//     // 	arg = strtok(nullptr, del);
-//     // }
-//     // return ( true );
+    //     // Get the next substring
+    //     // argv.insert(arg);
+    // 	arg = strtok(nullptr, del);
+    // }
+    // return ( true );
 
-// }
+}

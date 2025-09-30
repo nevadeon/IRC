@@ -8,6 +8,7 @@ class Client
 private:
     int fd_;
     std::string ip_;
+    std::string nick_;
 public:
     Client() {}
 

@@ -17,7 +17,7 @@ void Server::Run() {
             int fd = epoll_events[i].data.fd;
 
             if (event_flags & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
-                DisconnectClient(fd);
+                Disconnect(fd);
                 continue;
             }
             if (fd == socket_fd_) {
@@ -66,11 +66,8 @@ void Server::AcceptNewConnections() {
             continue;
         }
 
-        // add the new client to clients vector
-        Client new_client;
-        new_client.SetFD(client_fd);
-        new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
-        clients_[client_fd] = new_client;
+        Client new_client(client_fd, inet_ntoa(client_addr.sin_addr));
+        unauthenticated_clients[client_fd] = new_client;
 
         // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
@@ -85,11 +82,11 @@ void Server::ReceiveNewData(int fd) {
         if (nread < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) { break; }
             std::cerr << "Error recv: " << strerror(errno) << std::endl;
-            DisconnectClient(fd);
+            Disconnect(fd);
             break;
         } else if (nread == 0) {
             // normal deconnexion from client
-            DisconnectClient(fd);
+            Disconnect(fd);
             break;
         } else {
             buffer[nread] = '\0';
@@ -105,12 +102,43 @@ void Server::ReceiveNewData(int fd) {
     }
 }
 
-void Server::DisconnectClient(int fd) {
-    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
+void Server::Disconnect(int fd)
+{
+    if (unauthenticated_clients.count(fd))
+        DisconnectUnauthenticated(fd);
+    else
+        DisconnectAuthenticated(FindClientByFD(fd));
+}
+
+void Server::DisconnectUnauthenticated(int fd)
+{
+    unauthenticated_clients.erase(fd);
+}
+
+void Server::DisconnectAuthenticated(Client& c)
+{
+    std::string c_nick = c.GetNick();
+    int c_fd = c.GetFD();
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, c_fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }
-    if (clients_.count(fd))
-        clients_.erase(fd);
-    close(fd);
-    std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
+    if (connected_clients_.count(c_nick))
+        connected_clients_.erase(c_nick);
+    close(c_fd);
+    std::cout << "Client <" << c_nick << "> " << RED << "Disconnected" << RESET << std::endl;
+}
+
+/*
+    This function is needed because
+    clients are uniquely identified by nickname
+    but we receive events through their socket fd.
+*/
+Client& Server::FindClientByFD(int fd)
+{
+    for (std::map<std::string, Client>::iterator it = connected_clients_.begin(); it != connected_clients_.end(); it++)
+    {
+        if (it->second.GetFD() == fd)
+            return it->second;
+    }
+    // Not possible to not be found
 }

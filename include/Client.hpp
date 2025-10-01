@@ -6,6 +6,7 @@
 /*
     Information regarding the client
     specified by the associated file descriptor.
+    Each client is uniquely identify by its
 
 */
 class Client
@@ -14,13 +15,13 @@ class Client
         int fd_;
         std::string ip_;
         std::string nick_;
-        bool is_authenticated_;
     public:
-        Client() : is_authenticated_(false) {}
+        Client(int fd, char* ip) : fd_(fd), ip_(ip) {}
 
+        std::string& GetNick() { return nick_; }
+        void SetNick(std::string& nick) { nick_ = nick; }
         int GetFD() const { return fd_; }
         void SetFD(int fd) { fd_ = fd; }
-        void SetAuthenticated() { is_authenticated_ = true; }
         void SetIpAddress(const std::string& ip) { ip_ = ip; }
 
         bool operator==(Client& c2) {return (this->nick_ == c2.nick_);}

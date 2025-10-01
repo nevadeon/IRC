@@ -1,21 +1,33 @@
 #include "Server.hpp"
 #include "ParseUtil.hpp"
 #include <Message.hpp>
+<<<<<<< HEAD
 #include <Commands.hpp>
+=======
+>>>>>>> 64321f4 (split commandes message)
 
 // a supprimer
 // fonction de debug
 void debugPrint(const std::string& s) {
+<<<<<<< HEAD
     for (size_t i = 0; s[i]; i++)
     {
         switch (s[i]) {
             case '\r': std::cout << "\\r"; break;
             case '\n': std::cout << "\\n"; break;
             default: std::cout << s[i]; break;
+=======
+    for (unsigned char c : s) {
+        switch (c) {
+            case '\r': std::cout << "\\r"; break;
+            case '\n': std::cout << "\\n"; break;
+            default: std::cout << c; break;
+>>>>>>> 64321f4 (split commandes message)
         }
     }
     std::cout << std::endl;
 }
+<<<<<<< HEAD
 
 std::vector<std::string> parsCommand (std::string str)
 {
@@ -39,6 +51,8 @@ std::vector<std::string> parsCommand (std::string str)
     return listArg;
 }
 
+=======
+>>>>>>> 64321f4 (split commandes message)
 
 /*
     - Split buffer into Message instances, separated by CLRF (\r\n)
@@ -48,12 +62,23 @@ std::vector<std::string> parsCommand (std::string str)
 void Server::ParseInput(int fd, char *buffer)
 {
     (void)fd;
+<<<<<<< HEAD
+=======
+    // for (int i = 0; buffer[i]; i++)
+    // {
+    //     if (buffer[i] && buffer[i + 1] && buffer[i] == '\r' && buffer[i + 1] == '\n')
+    //     std::cout << "sheesh\n";
+    // }
+
+    // std::cout << "commandes : " << buffer << "|Fin|" << std::endl;
+>>>>>>> 64321f4 (split commandes message)
 
     
     const std::string& delimiter = "\r\n";
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
+<<<<<<< HEAD
 
     // Message message(fd, listCommands);
     try
@@ -83,6 +108,15 @@ void Server::ParseInput(int fd, char *buffer)
         throw e;
     }
     
+=======
+    // list :
+    for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
+        std::cout << "|debut test|" << *it << "|fin test|" << std::endl;
+	}
+
+    Message message(fd, listCommands);
+
+>>>>>>> 64321f4 (split commandes message)
 
     debugPrint(buffer);
 }

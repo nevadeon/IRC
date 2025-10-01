@@ -99,41 +99,12 @@ void Server::ReceiveNewData(int fd) {
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
-            
+            std::cout << "Client<" << fd << ">: " << buffer << std::endl;
+            ParseInput(fd, buffer);
         }
     }
 }
 
-void Server::Disconnect(int fd)
-{
-    if (unauthenticated_clients.count(fd))
-        DisconnectUnauthenticated(fd);
-    else
-        DisconnectAuthenticated(*FindClientByFD(fd));
-}
-
-void Server::DisconnectUnauthenticated(int fd)
-{
-    unauthenticated_clients.erase(fd);
-    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
-        std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
-    }
-    close(fd);
-    std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
-}
-
-void Server::DisconnectAuthenticated(Client& c)
-{
-    std::string c_nick = c.GetNick();
-    int c_fd = c.GetFD();
-    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, c_fd, NULL) == -1) {
-        std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
-    }
-    if (connected_clients_.count(c_nick))
-        connected_clients_.erase(c_nick);
-    close(c_fd);
-    std::cout << "Client <" << c_nick << "> " << RED << "Disconnected" << RESET << std::endl;
-}
 
 /*
     This function is needed because

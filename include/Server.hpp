@@ -52,14 +52,14 @@ class Server
 
         Client* FindClientByFD(int fd);
 
-        void parseInput(int fd, char *buffer);
-
+        
     public:
         Server(uint16_t port = 0) : port_(port), socket_fd_(-1), epoll_fd_(-1), servername("binbinland"), version("beta") {}
-
+        
         void Init();
         void Run();
         void CloseFds();
+        void ParseInput(int fd, char *buffer);
 };
 
 #endif

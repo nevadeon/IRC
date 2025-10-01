@@ -16,7 +16,7 @@ class Client
         std::string ip_;
         std::string nick_;
     public:
-        Client(int fd, char* ip) : fd_(fd), ip_(ip) {}
+        Client() {}
 
         std::string& GetNick() { return nick_; }
         void SetNick(std::string& nick) { nick_ = nick; }

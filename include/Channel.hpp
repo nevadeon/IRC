@@ -7,8 +7,8 @@
 class Channel
 {
     private:
-        std::vector<Client> operators_;
-        std::vector<Client> connected_clients_;
+        std::vector<Client *> operators_;
+        std::vector<Client *> connected_clients_;
         std::string channel_name_;
     public:
         Channel();

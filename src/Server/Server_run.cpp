@@ -66,7 +66,9 @@ void Server::AcceptNewConnections() {
             continue;
         }
 
-        Client new_client(client_fd, inet_ntoa(client_addr.sin_addr));
+        Client new_client;
+        new_client.SetFD(client_fd);
+        new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
         unauthenticated_clients[client_fd] = new_client;
 
         // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
@@ -107,12 +109,17 @@ void Server::Disconnect(int fd)
     if (unauthenticated_clients.count(fd))
         DisconnectUnauthenticated(fd);
     else
-        DisconnectAuthenticated(FindClientByFD(fd));
+        DisconnectAuthenticated(*FindClientByFD(fd));
 }
 
 void Server::DisconnectUnauthenticated(int fd)
 {
     unauthenticated_clients.erase(fd);
+    if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
+        std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
+    }
+    close(fd);
+    std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
 }
 
 void Server::DisconnectAuthenticated(Client& c)
@@ -133,12 +140,12 @@ void Server::DisconnectAuthenticated(Client& c)
     clients are uniquely identified by nickname
     but we receive events through their socket fd.
 */
-Client& Server::FindClientByFD(int fd)
+Client* Server::FindClientByFD(int fd)
 {
     for (std::map<std::string, Client>::iterator it = connected_clients_.begin(); it != connected_clients_.end(); it++)
     {
         if (it->second.GetFD() == fd)
-            return it->second;
+            return &it->second;
     }
-    // Not possible to not be found
+    return NULL;
 }

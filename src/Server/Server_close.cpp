@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 void Server::CloseFds() {
     for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {

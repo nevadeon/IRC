@@ -1,6 +1,6 @@
 #include <iostream>
-#include "parsing.hpp"
-#include "server.hpp"
+#include "commands.hpp"
+#include "Server.hpp"
 
 // 0 pour admin et 4 pour user
 int typeUser = 5;

@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 static const int TIMEOUT = 1000;
 static const int MAX_EVENTS = 64;
@@ -21,7 +21,7 @@ void Server::Run() {
                 continue;
             }
             if (fd == socket_fd_) {
-                AcceptNewClients();
+                AcceptNewConnections();
             } else {
                 ReceiveNewData(fd);
             }
@@ -30,7 +30,7 @@ void Server::Run() {
     CloseFds();
 }
 
-void Server::AcceptNewClients() {
+void Server::AcceptNewConnections() {
     // we use a loop in case multiple clients try to connect at the same time
     while (true) {
         sockaddr_in client_addr;
@@ -72,7 +72,7 @@ void Server::AcceptNewClients() {
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
         clients_[client_fd] = new_client;
 
-        std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
+        // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
 }
 
@@ -95,12 +95,12 @@ void Server::ReceiveNewData(int fd) {
             buffer[nread] = '\0';
             if (buffer[nread - 1] == '\n')
                 buffer[nread - 1] = '\0';
-            std::cout << "Client <" << fd << "> " << YELLOW << "sent " << RESET << buffer << std::endl;
             // TODO :
-            // append data to per client buffer and extract complete lines (\n)
+            // append data to per client buffer and extract complete lines (CRLF\r\n)
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
-            parseCommands();
+            // parseInput(fd, buffer);
+            
         }
     }
 }

@@ -75,6 +75,7 @@ void Server::AcceptNewConnections() {
     }
 }
 
+
 void Server::ReceiveNewData(int fd) {
     char buffer[4096];
 
@@ -92,14 +93,12 @@ void Server::ReceiveNewData(int fd) {
             break;
         } else {
             buffer[nread] = '\0';
-            if (buffer[nread - 1] == '\n')
-                buffer[nread - 1] = '\0';
             // TODO :
             // append data to per client buffer and extract complete lines (CRLF\r\n)
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
-            std::cout << "Client<" << fd << ">: " << buffer << std::endl;
+            // std::cout << "Client<" << fd << ">: " << buffer << std::endl;
             ParseInput(fd, buffer);
         }
     }

@@ -14,8 +14,7 @@ class Message
 
     public:
         Message(int fd);
+        Message(int fd, std::vector<std::string> content);
 };
-
-Message::Message(int fd) : sender_(fd) {}
 
 #endif

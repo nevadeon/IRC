@@ -18,13 +18,20 @@
 #include "Client.hpp"
 #include "colors.hpp"
 
+/*
+    2 types of connections:
+     - the ones who are simply connected to the server
+     - the ones who are authenticated
+    A client is either in unauthenticated or connected, but not both;
+*/
 class Server
 {
     private:
         uint16_t port_;
         int socket_fd_;
         int epoll_fd_;
-        std::map<int, Client> clients_;
+        std::map<int, Client> unauthenticated_clients;
+        std::map<std::string, Client> connected_clients_;
         std::map<std::string, Channel> channels_;
         std::string servername;
         std::string version;
@@ -38,7 +45,12 @@ class Server
 
         void AcceptNewConnections();
         void ReceiveNewData(int fd);
-        void DisconnectClient(int fd);
+
+        void Disconnect(int fd);
+        void DisconnectUnauthenticated(int fd);
+        void DisconnectAuthenticated(Client& c);
+
+        Client& FindClientByFD(int fd);
 
     public:
         Server(uint16_t port = 0) : port_(port), socket_fd_(-1), epoll_fd_(-1), servername("binbinland"), version("beta") {}

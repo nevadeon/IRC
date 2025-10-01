@@ -1,13 +1,31 @@
 #ifndef COMMANDS_HPP
 #define COMMANDS_HPP
 
+#include <vector>
+#include <string>
+#include <map>
+
+// Probably will need to change this eventually
 class Commands
 {
     private:
         Commands();
     public:
+        static int cap(std::vector<std::string>& args);
+        static int pass(std::vector<std::string>& args);
+        static int user(std::vector<std::string>& args);
+        static int ping(std::vector<std::string>& args);
+        static int privmsg(std::vector<std::string>& args);
+        static int kick(std::vector<std::string>& args);
+        static int invite(std::vector<std::string>& args);
+        static int join(std::vector<std::string>& args);
+        static int part(std::vector<std::string>& args);
+        static int quit(std::vector<std::string>& args);
+        static int topic(std::vector<std::string>& args);
 
-}
+};
+
+extern std::map<std::string, int(*)(std::vector<std::string>&)> commands;
 
 // CAP LS - list server capabilities (can be ignored?)
 // NICK - set/change nickname

@@ -1,14 +1,15 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include <string>
 #include <stdint.h>
 #include <stdlib.h>
 #include <iostream>
-#include <algorithm>
-#include <vector>
 #include "colors.hpp"
 
+/*
+    Useful for organizing utility functions
+    without having to instantiate anything.
+*/
 class Util
 {
     private:

@@ -22,10 +22,11 @@ class Commands
         static int part(std::vector<std::string>& args);
         static int quit(std::vector<std::string>& args);
         static int topic(std::vector<std::string>& args);
+        static int mode(std::vector<std::string>& args);
 
+        static std::map<std::string, int(*)(std::vector<std::string>&)> commands;
+        static void InitCommands();
 };
-
-extern std::map<std::string, int(*)(std::vector<std::string>&)> commands;
 
 // CAP LS - list server capabilities (can be ignored?)
 // NICK - set/change nickname
@@ -56,51 +57,5 @@ extern std::map<std::string, int(*)(std::vector<std::string>&)> commands;
 // int mode(const char *argv);
 // int join(const char *argv);
 // int msg(const char *argv);
-
-//
-// static int (*commandes[])(const char *argv) = {
-//     &kike,
-//     &invite,
-//     &topic,
-//     &mode,
-//     &join, // join chanel
-//     &msg, // send message
-// };
-
-// int kike(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-// }
-
-// int invite(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-// }
-
-// int topic(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-
-// }
-// int mode(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-// }
-
-// int join(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-// }
-
-// int msg(const char *argv)
-// {
-//     (void)argv;
-//     return ( 0 );
-// }
 
 #endif

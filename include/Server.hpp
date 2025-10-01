@@ -15,6 +15,7 @@
 #include <map>
 #include <iostream>
 #include "Channel.hpp"
+#include "Commands.hpp"
 #include "Client.hpp"
 #include "colors.hpp"
 
@@ -51,8 +52,6 @@ class Server
         void DisconnectAuthenticated(Client& c);
 
         Client* FindClientByFD(int fd);
-
-        
     public:
         Server(uint16_t port = 0) : port_(port), socket_fd_(-1), epoll_fd_(-1), servername("binbinland"), version("beta") {}
         

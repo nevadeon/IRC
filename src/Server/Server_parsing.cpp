@@ -24,8 +24,10 @@ std::vector<std::string> parsCommand (std::string str)
     std::string token;
     std::string delimiter = " ";
     while ((pos = str.find(delimiter)) != std::string::npos) {
-        if (str[0] == ':')
+        if (str[0] == ':') {
+            str.erase(0, 1);
             break;
+        }
         token = str.substr(0, pos);
         if (token.length() != 0)
             listArg.push_back(token);

@@ -4,28 +4,33 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "Client.hpp"
+#include "Server.hpp"
 
 // Probably will need to change this eventually
 class Commands
 {
     private:
         Commands();
+        
     public:
-        static int cap(std::vector<std::string>& args);
-        static int pass(std::vector<std::string>& args);
-        static int user(std::vector<std::string>& args);
-        static int ping(std::vector<std::string>& args);
-        static int privmsg(std::vector<std::string>& args);
-        static int kick(std::vector<std::string>& args);
-        static int invite(std::vector<std::string>& args);
-        static int join(std::vector<std::string>& args);
-        static int part(std::vector<std::string>& args);
-        static int quit(std::vector<std::string>& args);
-        static int topic(std::vector<std::string>& args);
-        static int mode(std::vector<std::string>& args);
-
-        static std::map<std::string, int(*)(std::vector<std::string>&)> commands;
         static void InitCommands();
+        static int cap(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int pass(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int user(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int ping(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int privmsg(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int nick(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int kick(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int invite(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int join(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int part(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int quit(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int topic(Server& serv, Client& sender, std::vector<std::string>& args);
+        static int mode(Server& server, Client& sender, std::vector<std::string>& args);
+
+        static std::map<std::string, int(*)(Server&, Client&, std::vector<std::string>&)> commands;
+        
 };
 
 // CAP LS - list server capabilities (can be ignored?)

@@ -1,6 +1,10 @@
 #include "Commands.hpp"
 
-int Commands::cap(std::vector<std::string>& args)
+/*
+    CAP command can be ignored
+*/
+int Commands::cap(Server& server, Client& sender, std::vector<std::string>& args)
 {
-    (void)args; return 0;
+    (void)args;
+    return 0;
 }

@@ -1,6 +1,6 @@
 #include "Commands.hpp"
 
-int Commands::quit(std::vector<std::string>& args)
+int Commands::quit(Server& server, Client& sender, std::vector<std::string>& args)
 {
     (void)args; return 0;
 }

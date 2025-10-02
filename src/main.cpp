@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
         std::cerr << "Error: " << e.what() << std::endl; return 0;
     }
 
-    Server server(port);
+    Server server(port, argv[2]);
     try {
         server.Init();
         server.Run();

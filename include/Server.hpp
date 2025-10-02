@@ -28,12 +28,12 @@ class Server
 {
     private:
         uint16_t port_;
+        std::string password_;
         int socket_fd_;
         int epoll_fd_;
         std::map<int, Client> unauthenticated_clients_;
         std::map<int, Client> connected_clients_;
         std::map<std::string, Channel> channels_;
-        std::string password_;
         std::string servername_;
         std::string version_;
 
@@ -50,7 +50,7 @@ class Server
         void Disconnect(int fd);
 
     public:
-        Server(uint16_t port = 0, const char *pass) : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
+        Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
         
         void Init();
         void Run();

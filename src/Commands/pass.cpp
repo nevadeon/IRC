@@ -1,6 +1,6 @@
 #include "Commands.hpp"
 
-int Commands::pass(std::vector<std::string>& args)
+int Commands::pass(Server& server, Client& sender, std::vector<std::string>& args)
 {
     (void)args; return 0;
 }

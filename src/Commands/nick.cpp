@@ -3,7 +3,7 @@
 /*
     Check if nickname already used by another user
 */
-int Commands::nick(Server& server, Client& sender, std::vector<std::string>& args)
+int Commands::nick(Server& server, int fd, std::vector<std::string>& args)
 {
     
 }

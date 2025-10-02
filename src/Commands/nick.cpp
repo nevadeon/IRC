@@ -9,6 +9,5 @@ int Commands::nick(Server& server, int fd, std::vector<std::string>& args)
 
     (void)server;
     (void)fd;
-    return 0;
     return (1);
 }

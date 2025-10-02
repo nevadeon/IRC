@@ -6,11 +6,12 @@
 // a supprimer
 // fonction de debug
 void debugPrint(const std::string& s) {
-    for (unsigned char c : s) {
-        switch (c) {
+    for (size_t i = 0; s[i]; i++)
+    {
+        switch (s[i]) {
             case '\r': std::cout << "\\r"; break;
             case '\n': std::cout << "\\n"; break;
-            default: std::cout << c; break;
+            default: std::cout << s[i]; break;
         }
     }
     std::cout << std::endl;
@@ -59,6 +60,13 @@ void Server::ParseInput(int fd, char *buffer)
         for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
             listCommandsToken.push_back(parsCommand(*it));
             std::string cmd = listCommandsToken.back()[0];
+            std::cout << listCommandsToken.back()[0] << std::endl;
+            std::cout << (Commands::commands.find(cmd) != Commands::commands.end()) << std::endl;
+
+            
+            // for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
+            //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
+
             if (Commands::commands.find(cmd) != Commands::commands.end()) {
                 Commands::commands[cmd](*this, fd, listCommandsToken.back()); 
             } else {
@@ -69,8 +77,8 @@ void Server::ParseInput(int fd, char *buffer)
     }
     catch(const std::exception& e)
     {
-        // std::cerr << e.what() << '\n';
-        // throw
+        std::cerr << e.what() << '\n';
+        throw e;
     }
     
 

@@ -4,6 +4,7 @@ void Commands::InitCommands()
 {
     Commands::commands["CAP"] = &Commands::cap;
     Commands::commands["PASS"] = &Commands::pass;
+    Commands::commands["NICK"] = &Commands::nick;
     Commands::commands["USER"] = &Commands::user;
     Commands::commands["PING"] = &Commands::ping;
     Commands::commands["PRIVMSG"] = &Commands::privmsg;

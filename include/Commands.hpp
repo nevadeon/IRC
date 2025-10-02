@@ -7,6 +7,9 @@
 #include "Server.hpp"
 
 // Probably will need to change this eventually
+/*
+    Only the PASS, NICK and USER commands require the user to not be authenticated.
+*/
 class Commands
 {
     private:

@@ -47,8 +47,8 @@ class Server
         void AcceptNewConnections();
         void ReceiveNewData(int fd);
 
-        void Disconnect(int fd);
-
+        
+        
     public:
         Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
         
@@ -56,9 +56,12 @@ class Server
         void Run();
         void CloseFds();
         void ParseInput(int fd, char *buffer);
-
+        void Disconnect(int fd);
+        
         std::string& GetPassword();
-        void AuthenticateClient(Client& client);
+        void AuthenticateClient(int fd);
+        std::map<int, Client>& GetUnauthenticatedClients() { return unauthenticated_clients_; }
+        std::map<int, Client>& GetAuthenticatedClients() { return connected_clients_; }
 
 };
 

@@ -5,5 +5,5 @@
 */
 int Commands::nick(Server& server, int fd, std::vector<std::string>& args)
 {
-    
+    std::string nick = args[1];
 }

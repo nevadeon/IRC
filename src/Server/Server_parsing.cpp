@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "ParseUtil.hpp"
 #include <Message.hpp>
+#include <Commands.hpp>
 
 // a supprimer
 // fonction de debug
@@ -15,6 +16,27 @@ void debugPrint(const std::string& s) {
     std::cout << std::endl;
 }
 
+std::vector<std::string> parsCommand (std::string str)
+{
+    std::vector<std::string> listArg;
+    size_t pos = 0;
+    std::string token;
+    std::string delimiter = " ";
+    while ((pos = str.find(delimiter)) != std::string::npos) {
+        if (str[0] == ':')
+            break;
+        token = str.substr(0, pos);
+        if (token.length() != 0)
+            listArg.push_back(token);
+        str.erase(0, pos + delimiter.length());
+    }
+    if (str.length() != 0)
+        listArg.push_back(str);
+
+    return listArg;
+}
+
+
 /*
     - Split buffer into Message instances, separated by CLRF (\r\n)
     - Tokenize each submessage and store in Message instance
@@ -23,26 +45,34 @@ void debugPrint(const std::string& s) {
 void Server::ParseInput(int fd, char *buffer)
 {
     (void)fd;
-    // for (int i = 0; buffer[i]; i++)
-    // {
-    //     if (buffer[i] && buffer[i + 1] && buffer[i] == '\r' && buffer[i + 1] == '\n')
-    //     std::cout << "sheesh\n";
-    // }
-
-    // std::cout << "commandes : " << buffer << "|Fin|" << std::endl;
 
     
     const std::string& delimiter = "\r\n";
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
-    // list :
-    for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
-        std::cout << "|debut test|" << *it << "|fin test|" << std::endl;
-	}
 
-    Message message(fd, listCommands);
+    // Message message(fd, listCommands);
+    try
+    {
+        std::vector< std::vector<std::string> >listCommandsToken;
+        for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
+            listCommandsToken.push_back(parsCommand(*it));
+            std::string cmd = listCommandsToken.back()[0];
+            if (Commands::commands.find(cmd) != Commands::commands.end()) {
+                Commands::commands[cmd](*this, fd, listCommandsToken.back()); 
+            } else {
+                // throw 
+            }
+        }
 
+    }
+    catch(const std::exception& e)
+    {
+        // std::cerr << e.what() << '\n';
+        // throw
+    }
+    
 
     debugPrint(buffer);
 }

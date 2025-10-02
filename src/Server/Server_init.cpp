@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include "Commands.hpp"
 
-std::map<std::string, int(*)(Server&, Client&, std::vector<std::string>&)> Commands::commands;
+std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> Commands::commands;
 
 void Server::Init() {
     Commands::InitCommands();

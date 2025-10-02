@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "Client.hpp"
 #include "Server.hpp"
 
 // Probably will need to change this eventually
@@ -15,21 +14,21 @@ class Commands
         
     public:
         static void InitCommands();
-        static int cap(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int pass(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int user(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int ping(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int privmsg(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int nick(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int kick(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int invite(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int join(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int part(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int quit(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int topic(Server& serv, Client& sender, std::vector<std::string>& args);
-        static int mode(Server& server, Client& sender, std::vector<std::string>& args);
+        static int cap(Server& serv, int fd, std::vector<std::string>& args);
+        static int pass(Server& serv, int fd, std::vector<std::string>& args);
+        static int user(Server& serv, int fd, std::vector<std::string>& args);
+        static int ping(Server& serv, int fd, std::vector<std::string>& args);
+        static int privmsg(Server& serv, int fd, std::vector<std::string>& args);
+        static int nick(Server& serv, int fd, std::vector<std::string>& args);
+        static int kick(Server& serv, int fd, std::vector<std::string>& args);
+        static int invite(Server& serv, int fd, std::vector<std::string>& args);
+        static int join(Server& serv, int fd, std::vector<std::string>& args);
+        static int part(Server& serv, int fd, std::vector<std::string>& args);
+        static int quit(Server& serv, int fd, std::vector<std::string>& args);
+        static int topic(Server& serv, int fd, std::vector<std::string>& args);
+        static int mode(Server& server, int fd, std::vector<std::string>& args);
 
-        static std::map<std::string, int(*)(Server&, Client&, std::vector<std::string>&)> commands;
+        static std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;
         
 };
 

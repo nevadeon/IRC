@@ -69,7 +69,7 @@ void Server::AcceptNewConnections() {
         Client new_client;
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
-        unauthenticated_clients[client_fd] = new_client;
+        unauthenticated_clients_[client_fd] = new_client;
 
         // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
@@ -102,20 +102,4 @@ void Server::ReceiveNewData(int fd) {
             ParseInput(fd, buffer);
         }
     }
-}
-
-
-/*
-    This function is needed because
-    clients are uniquely identified by nickname
-    but we receive events through their socket fd.
-*/
-Client* Server::FindClientByFD(int fd)
-{
-    for (std::map<std::string, Client>::iterator it = connected_clients_.begin(); it != connected_clients_.end(); it++)
-    {
-        if (it->second.GetFD() == fd)
-            return &it->second;
-    }
-    return NULL;
 }

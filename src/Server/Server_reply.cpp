@@ -7,7 +7,24 @@
 
     -> Up to command to construct the correct code and params
 */
-void Server::Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing)
+void Server::Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>params, const char *trailing)
 {
-    send(receiver, )
+    // chercher la personne entre les 2 maps
+    // std::map<int, Client> unauthenticated_clients_;
+    // std::map<int, Client> connected_clients_;
+    // quel map ?
+
+    // gerer les cas d'erreur
+    // si sender_fd n'existe pas, mettre servername a la place
+
+    // ":" + receiver + " " + code + " " + [params] + " :" +  trailing;
+    std::string str = ":" + std::to_string(receiver_fd) + " " + code + " "; //+ params + ":" +  trailing
+    for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+        str += *it + " ";
+    str += ":" + std::string(trailing) + "\r\n";
+    // 0 : Aucun flag, comportement standard.
+    // MSG_NOSIGNAL : Empêche l’envoi du signal SIGPIPE si le socket est fermé côté client (évite que ton programme crash).
+    // MSG_DONTWAIT : Rend l’appel non bloquant (si le socket n’est pas prêt, la fonction retourne immédiatement).
+    // MSG_MORE : Indique qu’il y aura d’autres données à envoyer (optimisation TCP).
+    send(receiver_fd, str.data(), str.length(), 0);
 }

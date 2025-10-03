@@ -55,7 +55,8 @@ class Server
         void CloseFds();
         void ParseInput(int fd, char *buffer);
         void Disconnect(int fd);
-        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+        // void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+        void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>params, const char *trailing);
         
         std::string& GetPassword();
         void AuthenticateClient(int fd);

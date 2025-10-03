@@ -1,6 +1,5 @@
 #include "Server.hpp"
 #include "ParseUtil.hpp"
-#include <Message.hpp>
 #include <Commands.hpp>
 
 // a supprimer
@@ -54,7 +53,6 @@ void Server::ParseInput(int fd, char *buffer)
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
 
-    // Message message(fd, listCommands);
     try
     {
         std::vector< std::vector<std::string> >listCommandsToken;
@@ -65,8 +63,8 @@ void Server::ParseInput(int fd, char *buffer)
             std::cout << (Commands::commands.find(cmd) != Commands::commands.end()) << std::endl;
 
             
-            // for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
-            //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
+            for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
+                std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
             if (Commands::commands.find(cmd) != Commands::commands.end()) {
                 Commands::commands[cmd](*this, fd, listCommandsToken.back()); 

@@ -69,11 +69,12 @@ void Server::AcceptNewConnections() {
         Client new_client;
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
-        unauthenticated_clients[client_fd] = new_client;
+        unauthenticated_clients_[client_fd] = new_client;
 
         // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
 }
+
 
 void Server::ReceiveNewData(int fd) {
     char buffer[4096];
@@ -92,31 +93,13 @@ void Server::ReceiveNewData(int fd) {
             break;
         } else {
             buffer[nread] = '\0';
-            if (buffer[nread - 1] == '\n')
-                buffer[nread - 1] = '\0';
             // TODO :
             // append data to per client buffer and extract complete lines (CRLF\r\n)
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
-            std::cout << "Client<" << fd << ">: " << buffer << std::endl;
+            // std::cout << "Client<" << fd << ">: " << buffer << std::endl;
             ParseInput(fd, buffer);
         }
     }
-}
-
-
-/*
-    This function is needed because
-    clients are uniquely identified by nickname
-    but we receive events through their socket fd.
-*/
-Client* Server::FindClientByFD(int fd)
-{
-    for (std::map<std::string, Client>::iterator it = connected_clients_.begin(); it != connected_clients_.end(); it++)
-    {
-        if (it->second.GetFD() == fd)
-            return &it->second;
-    }
-    return NULL;
 }

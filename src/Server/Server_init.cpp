@@ -1,6 +1,10 @@
 #include "Server.hpp"
+#include "Commands.hpp"
+
+std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> Commands::commands;
 
 void Server::Init() {
+    Commands::InitCommands();
     HandleSignals();
     InitListeningSocket();
     InitEpollInstance();
@@ -95,7 +99,7 @@ void Server::InitEpollInstance() {
     // EPOLL_CTL_ADD = add the fd to the epoll instance
     struct epoll_event ev;
     memset(&ev, 0, sizeof(ev));
-    ev.events = EPOLLIN | EPOLLRDHUP;
+    ev.events = EPOLLIN | EPOLLRDHUP | EPOLLOUT;
     ev.data.fd = socket_fd_;
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, socket_fd_, &ev) == -1)
         throw std::runtime_error("failed to add socket fd to epoll");

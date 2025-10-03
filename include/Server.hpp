@@ -28,13 +28,14 @@ class Server
 {
     private:
         uint16_t port_;
+        std::string password_;
         int socket_fd_;
         int epoll_fd_;
-        std::map<int, Client> unauthenticated_clients;
-        std::map<std::string, Client> connected_clients_;
+        std::map<int, Client> unauthenticated_clients_;
+        std::map<int, Client> connected_clients_;
         std::map<std::string, Channel> channels_;
-        std::string servername;
-        std::string version;
+        std::string servername_;
+        std::string version_;
 
         volatile static std::sig_atomic_t running;
 
@@ -45,21 +46,23 @@ class Server
 
         void AcceptNewConnections();
         void ReceiveNewData(int fd);
-
-        void Disconnect(int fd);
-        void DisconnectUnauthenticated(int fd);
-        void DisconnectAuthenticated(Client& c);
-
-        Client* FindClientByFD(int fd);
-
         
     public:
-        Server(uint16_t port = 0) : port_(port), socket_fd_(-1), epoll_fd_(-1), servername("binbinland"), version("beta") {}
+        Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
         
         void Init();
         void Run();
         void CloseFds();
         void ParseInput(int fd, char *buffer);
+        void Disconnect(int fd);
+        // void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+        void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>params, const char *trailing);
+        
+        std::string& GetPassword();
+        void AuthenticateClient(int fd);
+        std::map<int, Client>& GetUnauthenticatedClients() { return unauthenticated_clients_; }
+        std::map<int, Client>& GetAuthenticatedClients() { return connected_clients_; }
+
 };
 
 #endif

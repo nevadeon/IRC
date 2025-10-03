@@ -14,12 +14,12 @@ int main(int argc, char const *argv[])
 
     uint16_t port;
     try {
-        port = parsePort(argv);
+        port = Util::parsePort(argv);
     } catch (std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl; return 0;
     }
 
-    Server server(port);
+    Server server(port, argv[2]);
     try {
         server.Init();
         server.Run();

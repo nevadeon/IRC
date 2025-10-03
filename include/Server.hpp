@@ -46,8 +46,6 @@ class Server
 
         void AcceptNewConnections();
         void ReceiveNewData(int fd);
-
-        
         
     public:
         Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
@@ -57,6 +55,7 @@ class Server
         void CloseFds();
         void ParseInput(int fd, char *buffer);
         void Disconnect(int fd);
+        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
         
         std::string& GetPassword();
         void AuthenticateClient(int fd);

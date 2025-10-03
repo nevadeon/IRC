@@ -18,7 +18,8 @@ void Server::Reply(int sender_fd, int receiver_fd, const char *code, std::vector
     // si sender_fd n'existe pas, mettre servername a la place
 
     // ":" + receiver + " " + code + " " + [params] + " :" +  trailing;
-    std::string str = ":" + std::to_string(receiver_fd) + " " + code + " "; //+ params + ":" +  trailing
+    (void)sender_fd;
+    std::string str = ":" + this->servername_ + " " + code + " "; //+ params + ":" +  trailing
     for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
         str += *it + " ";
     str += ":" + std::string(trailing) + "\r\n";

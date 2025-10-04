@@ -18,6 +18,14 @@
 #include "Client.hpp"
 #include "colors.hpp"
 
+#define RED "\001\033[31m\002"
+#define GREEN "\001\033[1;32m\002"
+#define PURPLE "\001\033[1;35m\002"
+#define BROWN "\001\033[1;33m\002"
+#define WHITE "\001\033[0;37m\002"
+#define YELLOW "\001\033[1;33m\002"
+#define RESET "\001\033[0m\002"
+
 /*
     2 types of connections:
      - the ones who are simply connected to the server
@@ -26,7 +34,7 @@
 */
 class Server
 {
-    private:
+    protected:
         uint16_t port_;
         std::string password_;
         int socket_fd_;
@@ -46,6 +54,33 @@ class Server
 
         void AcceptNewConnections();
         void ReceiveNewData(int fd);
+        void AuthenticateClient(int fd);
+        void ParseInput(int fd, char *buffer);
+        void Disconnect(int fd);
+        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+
+        class Commands
+        {
+            private:
+                Commands();
+            public:
+                static void InitCommands();
+                static int cap(Server& serv, int fd, std::vector<std::string>& args);
+                static int pass(Server& serv, int fd, std::vector<std::string>& args);
+                static int user(Server& serv, int fd, std::vector<std::string>& args);
+                static int ping(Server& serv, int fd, std::vector<std::string>& args);
+                static int privmsg(Server& serv, int fd, std::vector<std::string>& args);
+                static int nick(Server& serv, int fd, std::vector<std::string>& args);
+                static int kick(Server& serv, int fd, std::vector<std::string>& args);
+                static int invite(Server& serv, int fd, std::vector<std::string>& args);
+                static int join(Server& serv, int fd, std::vector<std::string>& args);
+                static int part(Server& serv, int fd, std::vector<std::string>& args);
+                static int quit(Server& serv, int fd, std::vector<std::string>& args);
+                static int topic(Server& serv, int fd, std::vector<std::string>& args);
+                static int mode(Server& server, int fd, std::vector<std::string>& args);
+
+                static std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;     
+        };
         
     public:
         Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
@@ -53,12 +88,8 @@ class Server
         void Init();
         void Run();
         void CloseFds();
-        void ParseInput(int fd, char *buffer);
-        void Disconnect(int fd);
-        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
         
         std::string& GetPassword();
-        void AuthenticateClient(int fd);
         std::map<int, Client>& GetUnauthenticatedClients() { return unauthenticated_clients_; }
         std::map<int, Client>& GetAuthenticatedClients() { return connected_clients_; }
 

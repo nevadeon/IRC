@@ -1,17 +1,17 @@
-#include "Commands.hpp"
+#include "Server.hpp"
 
-void Commands::InitCommands()
+void Server::Commands::InitCommands()
 {
-    Commands::commands["CAP"] = &Commands::cap;
-    Commands::commands["PASS"] = &Commands::pass;
-    Commands::commands["USER"] = &Commands::user;
-    Commands::commands["PING"] = &Commands::ping;
-    Commands::commands["PRIVMSG"] = &Commands::privmsg;
-    Commands::commands["KICK"] = &Commands::kick;
-    Commands::commands["INVITE"] = &Commands::invite;
-    Commands::commands["JOIN"] = &Commands::join;
-    Commands::commands["PART"] = &Commands::part;
-    Commands::commands["QUIT"] = &Commands::quit;
-    Commands::commands["TOPIC"] = &Commands::topic;
-    Commands::commands["MODE"] = &Commands::mode;
+    Server::Commands::commands["CAP"] = &Server::Commands::cap;
+    Server::Commands::commands["PASS"] = &Server::Commands::pass;
+    Server::Commands::commands["USER"] = &Server::Commands::user;
+    Server::Commands::commands["PING"] = &Server::Commands::ping;
+    Server::Commands::commands["PRIVMSG"] = &Server::Commands::privmsg;
+    Server::Commands::commands["KICK"] = &Server::Commands::kick;
+    Server::Commands::commands["INVITE"] = &Server::Commands::invite;
+    Server::Commands::commands["JOIN"] = &Server::Commands::join;
+    Server::Commands::commands["PART"] = &Server::Commands::part;
+    Server::Commands::commands["QUIT"] = &Server::Commands::quit;
+    Server::Commands::commands["TOPIC"] = &Server::Commands::topic;
+    Server::Commands::commands["MODE"] = &Server::Commands::mode;
 }

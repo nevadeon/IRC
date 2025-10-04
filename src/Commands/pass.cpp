@@ -1,6 +1,6 @@
-#include "Commands.hpp"
+#include "Server.hpp"
 
-int Commands::pass(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::pass(Server& server, int fd, std::vector<std::string>& args)
 {
     std::string password = args[1];
     std::string serv_password = server.GetPassword();

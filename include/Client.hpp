@@ -16,6 +16,8 @@ struct user_info
     specified by the associated file descriptor.
     Each client is uniquely identify by its
 
+    ! NICKNAME MUST BE EQUAL TO OR LESS THAN 9 CHARACTERS
+
 */
 class Client
 {

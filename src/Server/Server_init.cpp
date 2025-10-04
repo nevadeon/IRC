@@ -1,9 +1,6 @@
 #include "Server.hpp"
 
-std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> Server::Commands::commands;
-
 void Server::Init() {
-    Server::Commands::InitCommands();
     HandleSignals();
     InitListeningSocket();
     InitEpollInstance();

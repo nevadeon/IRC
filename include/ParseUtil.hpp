@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <iostream>
-#include "colors.hpp"
 
 /*
     Useful for organizing utility functions

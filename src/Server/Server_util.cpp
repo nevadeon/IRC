@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-std::string& Server::GetPassword() { return password_; }
+std::string& Server::GetPassword() { return info_.password; }
 
 /*
     Move Client from unauthenticated map to authenticated one

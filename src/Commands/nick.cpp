@@ -7,6 +7,5 @@ int Server::Server::Commands::nick(Server& server, int fd, std::vector<std::stri
 {
     std::string nick = args[1];
 
-    
     return (0);
 }

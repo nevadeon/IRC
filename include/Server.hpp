@@ -16,7 +16,6 @@
 #include <iostream>
 #include "Channel.hpp"
 #include "Client.hpp"
-#include "colors.hpp"
 
 #define RED "\001\033[31m\002"
 #define GREEN "\001\033[1;32m\002"
@@ -26,6 +25,23 @@
 #define YELLOW "\001\033[1;33m\002"
 #define RESET "\001\033[0m\002"
 
+#define SERVERNAME "Blackhole Boys"
+#define VERSION "beta"
+
+struct s_sv_info
+{
+    std::string name;
+    std::string version;
+    std::string password;
+
+    s_sv_info()
+    {
+        name = SERVERNAME;
+        version = VERSION;
+        password = "undefined";
+    }
+};
+
 /*
     2 types of connections:
      - the ones who are simply connected to the server
@@ -34,37 +50,13 @@
 */
 class Server
 {
-    protected:
-        uint16_t port_;
-        std::string password_;
-        int socket_fd_;
-        int epoll_fd_;
-        std::map<int, Client> unauthenticated_clients_;
-        std::map<int, Client> connected_clients_;
-        std::map<std::string, Channel> channels_;
-        std::string servername_;
-        std::string version_;
-
-        volatile static std::sig_atomic_t running;
-
-        void InitListeningSocket();
-        void InitEpollInstance();
-        static void HandleSignals();
-        static void SignalHandler(int signum);
-
-        void AcceptNewConnections();
-        void ReceiveNewData(int fd);
-        void AuthenticateClient(int fd);
-        void ParseInput(int fd, char *buffer);
-        void Disconnect(int fd);
-        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
-
+    private:
         class Commands
         {
             private:
-                Commands();
-            public:
-                static void InitCommands();
+                friend class Server;
+                Commands() { InitCommands(); };
+                void InitCommands();
                 static int cap(Server& serv, int fd, std::vector<std::string>& args);
                 static int pass(Server& serv, int fd, std::vector<std::string>& args);
                 static int user(Server& serv, int fd, std::vector<std::string>& args);
@@ -78,12 +70,38 @@ class Server
                 static int quit(Server& serv, int fd, std::vector<std::string>& args);
                 static int topic(Server& serv, int fd, std::vector<std::string>& args);
                 static int mode(Server& server, int fd, std::vector<std::string>& args);
-
-                static std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;     
+                
+            public:
+                std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;     
         };
+
+        Commands sv_commands_;
+        std::map<int, Client> unauthenticated_clients_;
+        std::map<int, Client> connected_clients_;
+        std::map<std::string, Channel> channels_;
+        uint16_t port_;
+        int socket_fd_;
+        int epoll_fd_;
+        struct s_sv_info info_;
+
+        volatile static std::sig_atomic_t running;
+
+        void InitListeningSocket();
+        void InitEpollInstance();
+        static void HandleSignals();
+        static void SignalHandler(int signum);
+
+        void AcceptNewConnections();
+        void ReceiveNewData(int fd);
+        void AuthenticateClient(int fd);
+        void Disconnect(int fd);
+        void ParseInput(int fd, char *buffer);
+        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+
+        
         
     public:
-        Server(uint16_t port = 0, const char *pass = "") : port_(port), password_(pass), socket_fd_(-1), epoll_fd_(-1), servername_("binbinland"), version_("beta") {}
+        Server(uint16_t port = 0, const char *pass = "") : port_(port), socket_fd_(-1), epoll_fd_(-1) { info_.password = std::string(pass); }
         
         void Init();
         void Run();

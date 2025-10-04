@@ -1,7 +1,7 @@
 NAME := ircserv
 
 CC := c++
-CFLAGS = -Wall -Wextra -I$(INC_PATH) -std=c++98 -g
+CFLAGS = -Wall -Wextra -Werror -I$(INC_PATH) -std=c++98 -g
 CFLAGS += $(foreach dir, $(shell find $(INC_PATH) -type d), -I$(PATH))
 GDB_FLAGS := --quiet --args
 

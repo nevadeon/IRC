@@ -8,6 +8,7 @@
 */
 int Server::Server::Commands::nick(Server& server, int fd, std::vector<std::string>& args)
 {
+    (void)fd;
     if (args.size() < 2) return (1); //431
 
     for (std::map<int, Client>::iterator it = server.unauthenticated_clients_.begin(); it != server.unauthenticated_clients_.end(); it++)
@@ -18,4 +19,5 @@ int Server::Server::Commands::nick(Server& server, int fd, std::vector<std::stri
     {
         
     }
+    return (0);
 }

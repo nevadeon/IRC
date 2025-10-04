@@ -1,11 +1,21 @@
 #include "Server.hpp"
 
 /*
+    ARGS: [COMMAND = NICK] <nick>
+    ERR: 431 432 433
+
     Check if nickname already used by another user
 */
 int Server::Server::Commands::nick(Server& server, int fd, std::vector<std::string>& args)
 {
-    std::string nick = args[1];
+    if (args.size() < 2) return (1); //431
 
-    return (0);
+    for (std::map<int, Client>::iterator it = server.unauthenticated_clients_.begin(); it != server.unauthenticated_clients_.end(); it++)
+    {
+
+    }
+    for (std::map<int, Client>::iterator it = server.connected_clients_.begin(); it != server.connected_clients_.end(); it++)
+    {
+        
+    }
 }

@@ -2,5 +2,8 @@
 
 int Server::Commands::ping(Server& server, int fd, std::vector<std::string>& args)
 {
-    (void)args; return 0;
+    (void)server;
+    (void)fd;
+    (void)args;
+    return 0;
 }

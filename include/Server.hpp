@@ -96,7 +96,7 @@ class Server
         void AuthenticateClient(int fd);
         void Disconnect(int fd);
         void ParseInput(int fd, char *buffer);
-        void Reply(int sender_fd, int receiver_fd, const char *code, const char *params, const char *trailing);
+        void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing);
         
     public:
         Server(uint16_t port = 0, const char *pass = "") : port_(port), socket_fd_(-1), epoll_fd_(-1) { info_.password = std::string(pass); }

@@ -17,14 +17,14 @@ int Server::Commands::pass(Server& server, int fd, std::vector<std::string>& arg
         if (server.connected_clients_.count(fd))
         {
             // 462 ERR_ALREADYREGISTERED
-            server.Reply(fd, fd, "462", server.connected_clients_[fd].GetNick().c_str(), "You may not reregister");
+            // server.Reply(fd, fd, "462", server.connected_clients_[fd].GetNick().c_str(), "You may not reregister"); //CHANGE TO VECTOR
         }
         server.unauthenticated_clients_[fd].ValidatePassword();
     }
     else
     {
         // 464 ERR_PASSWDMISMATCH
-        server.Reply(fd, fd, "464", server.unauthenticated_clients_[fd].GetNick().c_str(), "Password incorrect");
+        // server.Reply(fd, fd, "464", server.unauthenticated_clients_[fd].GetNick().c_str(), "Password incorrect");
         server.Disconnect(fd);
     }
     return (0);

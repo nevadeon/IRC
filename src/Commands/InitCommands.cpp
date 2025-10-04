@@ -14,4 +14,5 @@ void Server::Commands::InitCommands()
     Server::Commands::commands["QUIT"] = &Server::Commands::quit;
     Server::Commands::commands["TOPIC"] = &Server::Commands::topic;
     Server::Commands::commands["MODE"] = &Server::Commands::mode;
+    Server::Commands::commands["NICK"] = &Server::Commands::nick;
 }

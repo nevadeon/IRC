@@ -1,6 +1,5 @@
 #include "Server.hpp"
 
-
 /*
     ARGS: [COMMAND = PASS] <password>
 

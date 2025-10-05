@@ -43,7 +43,7 @@ std::vector<std::string> parsCommand (std::string str)
     - Tokenize each submessage and store in Message instance
     - Identify which command is being called and call it
 */
-void Server::ParseInput(int fd, char *buffer)
+void Server::ParseInput(int fd, const char *buffer)
 {
     (void)fd;
 
@@ -51,6 +51,7 @@ void Server::ParseInput(int fd, char *buffer)
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
+    // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
     try
     {

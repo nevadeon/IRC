@@ -95,7 +95,7 @@ class Server
         void ReceiveNewData(int fd);
         void AuthenticateClient(int fd);
         void Disconnect(int fd);
-        void ParseInput(int fd, char *buffer);
+        void ParseInput(int fd, const char *buffer);
         void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing);
         
     public:

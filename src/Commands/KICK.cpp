@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::quit(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

@@ -57,19 +57,19 @@ class Server
                 friend class Server;
                 Commands() { InitCommands(); };
                 void InitCommands();
-                static int cap(Server& serv, int fd, std::vector<std::string>& args);
-                static int pass(Server& serv, int fd, std::vector<std::string>& args);
-                static int user(Server& serv, int fd, std::vector<std::string>& args);
-                static int ping(Server& serv, int fd, std::vector<std::string>& args);
-                static int privmsg(Server& serv, int fd, std::vector<std::string>& args);
-                static int nick(Server& serv, int fd, std::vector<std::string>& args);
-                static int kick(Server& serv, int fd, std::vector<std::string>& args);
-                static int invite(Server& serv, int fd, std::vector<std::string>& args);
-                static int join(Server& serv, int fd, std::vector<std::string>& args);
-                static int part(Server& serv, int fd, std::vector<std::string>& args);
-                static int quit(Server& serv, int fd, std::vector<std::string>& args);
-                static int topic(Server& serv, int fd, std::vector<std::string>& args);
-                static int mode(Server& server, int fd, std::vector<std::string>& args);
+                static int CAP(Server& serv, int fd, std::vector<std::string>& args);
+                static int PASS(Server& serv, int fd, std::vector<std::string>& args);
+                static int USER(Server& serv, int fd, std::vector<std::string>& args);
+                static int PING(Server& serv, int fd, std::vector<std::string>& args);
+                static int PRIVMSG(Server& serv, int fd, std::vector<std::string>& args);
+                static int NICK(Server& serv, int fd, std::vector<std::string>& args);
+                static int KICK(Server& serv, int fd, std::vector<std::string>& args);
+                static int INVITE(Server& serv, int fd, std::vector<std::string>& args);
+                static int JOIN(Server& serv, int fd, std::vector<std::string>& args);
+                static int PART(Server& serv, int fd, std::vector<std::string>& args);
+                static int QUIT(Server& serv, int fd, std::vector<std::string>& args);
+                static int TOPIC(Server& serv, int fd, std::vector<std::string>& args);
+                static int MODE(Server& server, int fd, std::vector<std::string>& args);
                 
             public:
                 std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;     

@@ -6,7 +6,7 @@
     Error handling (e.g if user not in unauthenticated map) not done
     Testing required once ParseInput done
 */
-int Server::Commands::pass(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& args)
 {
     std::string password = args[1];
     std::string serv_password = server.GetPassword();

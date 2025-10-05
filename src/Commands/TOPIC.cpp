@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::mode(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::TOPIC(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

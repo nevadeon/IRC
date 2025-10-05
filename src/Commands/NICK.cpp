@@ -6,10 +6,15 @@
 
     Check if nickname already used by another user
 */
-int Server::Commands::nick(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& args)
 {
-    (void)fd;
-    if (args.size() < 2) return (1); //431
+    if (!server.clients_.count(fd)) return (1);
+    Client c = server.clients_[fd];
+    if (args.size() < 2)
+    {
+
+        return (0); //431
+    }
     std::string nickname = args[1];
     if (server.IsNicknameAlreadyUsed(nickname)) // Check if valid nickname (case-insensitive)
     {

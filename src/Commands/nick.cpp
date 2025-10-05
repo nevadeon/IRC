@@ -18,7 +18,7 @@ int Server::Commands::nick(Server& server, int fd, std::vector<std::string>& arg
     }
     //Also check length, if begins with letter, no special characters, no whitespace
 
-    if (server.unauthenticated_clients_.count(fd))
+    if (server.clients_.count(fd))
     {
 
     }

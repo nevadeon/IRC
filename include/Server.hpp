@@ -104,6 +104,7 @@ class Server
         void Init();
         void Run();
         void CloseFds();
+        bool ValidCommand(int fd, const std::string cmd);
         
         std::string& GetPassword();
         std::map<int, Client>& GetUnauthenticatedClients() { return unauthenticated_clients_; }

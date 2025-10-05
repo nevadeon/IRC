@@ -107,7 +107,7 @@ void Server::ReceiveNewData(int fd) {
             // parseInput(fd, buffer);
             str[fd] = str[fd].append(buffer[fd]);
             // std::cout << "Client<" << fd << ">: " << buffer[fd] << std::endl;
-            std::cout << "      buffer : <" << fd << ">: " << str[fd] << std::endl;
+            // std::cout << "      buffer : <" << fd << ">: " << str[fd] << std::endl;
             buffer_len[fd] = strlen(buffer[fd]);
             if (buffer_len[fd] > 1 && (buffer[fd][buffer_len[fd] - 1] == '\n')
                     && (buffer[fd][buffer_len[fd] - 2] == '\r')) {

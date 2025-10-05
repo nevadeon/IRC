@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::ping(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

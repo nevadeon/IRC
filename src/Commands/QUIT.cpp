@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::topic(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::QUIT(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

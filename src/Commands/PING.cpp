@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::join(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::PING(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

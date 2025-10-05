@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-int Server::Commands::part(Server& server, int fd, std::vector<std::string>& args)
+int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& args)
 {
     (void)server;
     (void)fd;

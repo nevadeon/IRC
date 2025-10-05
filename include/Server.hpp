@@ -76,8 +76,7 @@ class Server
         };
 
         Commands sv_commands_;
-        std::map<int, Client> unauthenticated_clients_;
-        std::map<int, Client> connected_clients_;
+        std::map<int, Client> clients_;
         std::map<std::string, Channel> channels_;
         uint16_t port_;
         int socket_fd_;
@@ -108,8 +107,7 @@ class Server
         void CloseFds();
         
         std::string& GetPassword();
-        std::map<int, Client>& GetUnauthenticatedClients() { return unauthenticated_clients_; }
-        std::map<int, Client>& GetAuthenticatedClients() { return connected_clients_; }
+        std::map<int, Client>& GetClients() { return clients_; }
 
 };
 

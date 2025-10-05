@@ -69,7 +69,7 @@ void Server::AcceptNewConnections() {
         Client new_client;
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
-        unauthenticated_clients_[client_fd] = new_client;
+        clients_[client_fd] = new_client;
 
         // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }

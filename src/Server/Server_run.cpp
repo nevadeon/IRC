@@ -76,31 +76,48 @@ void Server::AcceptNewConnections() {
 }
 
 void Server::ReceiveNewData(int fd) {
-    char buffer[4096];
+    static char buffer[1024][4096];
+    static int buffer_len[1024];
+    static std::string str[1024];
 
     // we use a loop in case data is bigger than buffer size
     while (true) {
-        ssize_t nread = recv(fd, buffer, sizeof(buffer) - 1, 0);
+        ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
+
         if (nread < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) { break; }
+            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
+                break;
             std::cerr << "Error recv: " << strerror(errno) << std::endl;
             Disconnect(fd);
+            buffer[fd][0] = '\0';
+            buffer_len[fd] = 0;
             break;
         } else if (nread == 0) {
             // normal deconnexion from client
             Disconnect(fd);
+            buffer[fd][0] = '\0';
+            buffer_len[fd] = 0;
             break;
         } else {
-            buffer[nread] = '\0';
-            if (buffer[nread - 1] == '\n')
-                buffer[nread - 1] = '\0';
+            buffer[fd][nread] = '\0';
             // TODO :
             // append data to per client buffer and extract complete lines (CRLF\r\n)
             // handle case when data is not complete (wait)
             // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
-            std::cout << "Client<" << fd << ">: " << buffer << std::endl;
-            ParseInput(fd, buffer);
+            str[fd] = str[fd].append(buffer[fd]);
+            // std::cout << "Client<" << fd << ">: " << buffer[fd] << std::endl;
+            // std::cout << "      buffer : <" << fd << ">: " << str[fd] << std::endl;
+            buffer_len[fd] = strlen(buffer[fd]);
+            if (buffer_len[fd] > 1 && (buffer[fd][buffer_len[fd] - 1] == '\n')
+                    && (buffer[fd][buffer_len[fd] - 2] == '\r')) {
+                ParseInput(fd, str[fd].data());
+                buffer[fd][0] = '\0';
+                buffer_len[fd] = 0;
+                str[fd].clear();
+            } else {
+                str[fd].erase(str[fd].size() - 1);
+            }
         }
     }
 }

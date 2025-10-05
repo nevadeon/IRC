@@ -15,7 +15,7 @@ void debugPrint(const std::string& s) {
     std::cout << std::endl;
 }
 
-std::vector<std::string> parsCommand (std::string str)
+static std::vector<std::string> parsCommand (std::string str)
 {
     std::vector<std::string> listArg;
     size_t pos = 0;
@@ -37,13 +37,39 @@ std::vector<std::string> parsCommand (std::string str)
     return listArg;
 }
 
+bool Server::ValidCommand(int fd, const std::string cmd)
+{
+    std::cout << "test0" << std::endl;
+    std::map<int, Client>::iterator itClient = this->connected_clients_.find(fd);
+    // a changer pour une map unique de clients
+    if (itClient == this->unauthenticated_clients_.end())
+        return ( false );
+    std::cout << "test1" << std::endl;
+    
+    Client& client = itClient->second;
+    if (client.GetPasswordState() == false && cmd != "PASS" && cmd != "PING" && cmd != "CAP")
+        return ( false );
+    std::cout << "test2" << std::endl;
+
+    // a chqnger pour getvalidnick
+    if (client.ValidNick() == false && cmd != "NICK")
+        return ( false );
+    std::cout << "test3" << std::endl;
+
+    if (sv_commands_.commands.find(cmd) != sv_commands_.commands.end())
+        return ( true );
+    std::cout << "test4" << std::endl;
+    
+    return ( false );
+}
+
 
 /*
     - Split buffer into Message instances, separated by CLRF (\r\n)
     - Tokenize each submessage and store in Message instance
     - Identify which command is being called and call it
 */
-void Server::ParseInput(int fd, char *buffer)
+void Server::ParseInput(int fd, const char *buffer)
 {
     (void)fd;
 
@@ -51,6 +77,7 @@ void Server::ParseInput(int fd, char *buffer)
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
+    // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
     try
     {
@@ -61,14 +88,14 @@ void Server::ParseInput(int fd, char *buffer)
             std::cout << listCommandsToken.back()[0] << std::endl;
             std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
-            
             for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
                 std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
-            if (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) {
+            if (ValidCommand(fd, cmd)) {
                 sv_commands_.commands[cmd](*this, fd, listCommandsToken.back()); 
             } else {
                 // throw 
+                std::cout << "Invalid command" << std::endl;
             }
         }
 

@@ -40,9 +40,9 @@ static std::vector<std::string> parsCommand (std::string str)
 bool Server::ValidCommand(int fd, const std::string cmd)
 {
     std::cout << "test0" << std::endl;
-    std::map<int, Client>::iterator itClient = this->connected_clients_.find(fd);
+    std::map<int, Client>::iterator itClient = this->clients_.find(fd);
     // a changer pour une map unique de clients
-    if (itClient == this->unauthenticated_clients_.end())
+    if (itClient == this->clients_.end())
         return ( false );
     std::cout << "test1" << std::endl;
     
@@ -52,7 +52,7 @@ bool Server::ValidCommand(int fd, const std::string cmd)
     std::cout << "test2" << std::endl;
 
     // a chqnger pour getvalidnick
-    if (client.ValidNick() == false && cmd != "NICK")
+    if (client.GetIfNicknameValidated() == false && cmd != "NICK")
         return ( false );
     std::cout << "test3" << std::endl;
 

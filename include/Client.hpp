@@ -36,13 +36,18 @@ class Client
         void SetFD(int fd) { fd_ = fd; }
         void SetIpAddress(const std::string& ip) { ip_ = ip; }
         
-        bool GetIfNicknameValidated() const { return nick_.first; }
+        void SetNick(std::string& nick);
         std::string& GetNick() { return nick_.second; }
-        void SetNick(std::string& nick) { nick_.first = true; nick_.second = nick; }
+        bool GetIfNicknameValidated() const { return nick_.first; }
+        
+        void ValidatePassword();
         bool GetPasswordState() const { return valid_password_; }
-        void ValidatePassword() { valid_password_ = true; }
+        
+        void SetUserInfo(struct user_info& user_info);
+        bool GetUserInfoGiven() const { return user_info_.first; }
+        
+        void Authenticate();
         bool IsAuthenticated() const { return is_authenticated_; }
-        void Authenticate() { is_authenticated_ = true; }
 };
 
 #endif

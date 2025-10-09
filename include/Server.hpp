@@ -33,6 +33,7 @@
 #define ERR_NEEDMOREPARAMS "Not enough parameters"
 #define ERR_ALREADYREGISTRED "You may not reregister"
 #define ERR_PASSWDMISMATCH "Password incorrect"
+#define ERR_NONICKNAMEGIVEN "No nickname given"
 
 
 #define SERVERNAME "Blackhole Boys"

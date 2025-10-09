@@ -36,7 +36,11 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     Client c = server.clients_[fd];
     if (args.size() < 2)
     {
-        //431
+        //431     ERR_NONICKNAMEGIVEN
+        // ":No nickname given"
+        params.push_back("ERR_NONICKNAMEGIVEN");
+        params.push_back(ERR_NONICKNAMEGIVEN);
+        server.Reply(fd, server.info_.name, std::string("431"), params);
         return (0); 
     }
     std::string nickname = args[1];
@@ -61,11 +65,16 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    // if client.GetUserInfoGiven()
     // 001 Alice :Welcome to the Internet Relay Network Alice!alice@host
     // 002 Alice :Your host is irc.example.com, running version 2.10
     // 003 Alice :This server was created Thu Oct 09 2025
     // 004 Alice irc.example.com 2.10 ao mtov 
+    if (c.GetUserInfoGiven()) {
+        // first message
+        params.push_back("Alice");
+        params.push_back(ERR_ERRONEUSNICKNAME);
+        server.Reply(fd, server.info_.name, std::string("001"), params);
+    }
     
    return (0);
 }

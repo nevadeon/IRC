@@ -10,6 +10,7 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
 {
     std::string password = args[1];
     std::string serv_password = server.GetPassword();
+    // (void)fd;
 
     if (password == serv_password)
     {

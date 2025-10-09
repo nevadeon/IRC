@@ -80,9 +80,17 @@ void Server::ReceiveNewData(int fd) {
     static int buffer_len[1024];
     static std::string str[1024];
 
+    // test reply
+    // std::vector<std::string> test;
+    // test.push_back("gfsd");
+    // test.push_back("gbvxcz");
+    // this->Reply(fd, this->info_.name, std::string("987"), test);
+
+
     // we use a loop in case data is bigger than buffer size
     while (true) {
         ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
+        std::cout << buffer[fd] << std::endl;
 
         if (nread < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)

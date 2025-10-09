@@ -25,6 +25,16 @@
 #define YELLOW "\001\033[1;33m\002"
 #define RESET "\001\033[0m\002"
 
+// Error messages
+#define ERR_UNKNOWNCOMMAND "Unknown command"
+#define ERR_NOTREGISTERED "You have not registered"
+#define ERR_NICKNAMEINUSE "Nickname is already in use"
+#define ERR_ERRONEUSNICKNAME "Erroneus nickname"
+#define ERR_NEEDMOREPARAMS "Not enough parameters"
+#define ERR_ALREADYREGISTRED "You may not reregister"
+#define ERR_PASSWDMISMATCH "Password incorrect"
+
+
 #define SERVERNAME "Blackhole Boys"
 #define VERSION "beta"
 
@@ -95,7 +105,8 @@ class Server
         void AuthenticateClient(int fd);
         void Disconnect(int fd);
         void ParseInput(int fd, const char *buffer);
-        void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing);
+        // void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing);
+        void Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params);
 
         bool IsNicknameAlreadyUsed(std::string& nickname);
         

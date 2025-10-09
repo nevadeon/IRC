@@ -39,16 +39,18 @@ static std::vector<std::string> parsCommand (std::string str)
 
 bool Server::ValidCommand(int fd, const std::string cmd)
 {
+    std::vector<std::string> errorParams;
 
-
-    // erreur interne du serveur
-    if (cmd.empty())
+    if (cmd.empty()) {
+        std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
         return ( false );
+    }
 
-    // erreur interne du serveur
     std::map<int, Client>::iterator itClient = this->clients_.find(fd);
-    if (itClient == this->clients_.end())
+    if (itClient == this->clients_.end()) {
+        std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
         return ( false );
+    }
     
     Client& client = itClient->second;
 
@@ -64,6 +66,10 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         // "<command> :Unknown command"
         // ex : :irc.example.com 421 Alice FLY :Unknown command
         // -> FLY n'existe pas
+        errorParams.push_back("ERR_UNKNOWNCOMMAND");
+        errorParams.push_back(cmd);
+        errorParams.push_back(ERR_UNKNOWNCOMMAND);
+        this->Reply(fd, this->info_.name, std::string("421"), errorParams);
         return ( false );
     }
 
@@ -76,6 +82,9 @@ bool Server::ValidCommand(int fd, const std::string cmd)
             // ":You have not registered"
             // ex : :irc.example.com 451 JOIN :You have not registered
             // -> pas encore connecte, tu ne peux pas utiliser JOIN
+            errorParams.push_back("ERR_NOTREGISTERED");
+            errorParams.push_back(ERR_NOTREGISTERED);
+            this->Reply(fd, this->info_.name, std::string("451"), errorParams);
             return ( false );
         }
         
@@ -85,6 +94,9 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         // pas enregistre : 451 
         // 451 ERR_NOTREGISTERED 
         // ":You have not registered"
+        errorParams.push_back("ERR_NOTREGISTERED");
+        errorParams.push_back(ERR_NOTREGISTERED);
+        this->Reply(fd, this->info_.name, std::string("451"), errorParams);
         return ( false );
     }
 
@@ -119,11 +131,13 @@ void Server::ParseInput(int fd, const char *buffer)
             for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
                 std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
+
             if (ValidCommand(fd, cmd)) {
-                sv_commands_.commands[cmd](*this, fd, listCommandsToken.back()); 
+                if (sv_commands_.commands[cmd](*this, fd, listCommandsToken.back())) {
+                    std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
+                }
             } else {
-                // throw 
-                std::cout << "Invalid command";
+                std::cerr << "Invalid command" << std::endl;
             }
         }
 

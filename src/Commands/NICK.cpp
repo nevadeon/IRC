@@ -29,6 +29,8 @@ bool isValidNickname(const std::string& nickname) {
 */
 int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& args)
 {
+    std::vector<std::string> params;
+
     if (!server.clients_.count(fd))
         return (1); // Exception: no fd in clients
     Client c = server.clients_[fd];
@@ -40,14 +42,30 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     std::string nickname = args[1];
     if (server.IsNicknameAlreadyUsed(nickname)) // Check if valid nickname (case-insensitive)
     {
-        //433
+        // 433     ERR_NICKNAMEINUSE
+        // "<nick> :Nickname is already in use"
+        params.push_back("ERR_NICKNAMEINUSE");
+        params.push_back(nickname);
+        params.push_back(ERR_NICKNAMEINUSE);
+        server.Reply(fd, server.info_.name, std::string("433"), params);
         return (0);
     }
     if (!isValidNickname(nickname)) //Also check length, if begins with letter, no special characters, no whitespace
     {
-        //432
+        //432 ERR_ERRONEUSNICKNAME
+        // "<nick> :Erroneus nickname"
+        params.push_back("ERR_ERRONEUSNICKNAME");
+        params.push_back(nickname);
+        params.push_back(ERR_ERRONEUSNICKNAME);
+        server.Reply(fd, server.info_.name, std::string("432"), params);
         return (0);
     }
+
+    // if client.GetUserInfoGiven()
+    // 001 Alice :Welcome to the Internet Relay Network Alice!alice@host
+    // 002 Alice :Your host is irc.example.com, running version 2.10
+    // 003 Alice :This server was created Thu Oct 09 2025
+    // 004 Alice irc.example.com 2.10 ao mtov 
     
    return (0);
 }

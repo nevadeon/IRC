@@ -37,6 +37,10 @@
 #define ERR_NEEDMOREPARAMS "461"
 #define ERR_ALREADYREGISTRED "462"
 #define ERR_PASSWDMISMATCH "464"
+#define ERR_NORECIPIENT "411"
+#define ERR_NOTEXTTOSEND "412"
+#define ERR_NOSUCHNICK "401"
+
 
 // Error messages
 #define MSG_UNKNOWNCOMMAND "Unknown command"
@@ -47,6 +51,9 @@
 #define MSG_ALREADYREGISTRED "You may not reregister"
 #define MSG_PASSWDMISMATCH "Password incorrect"
 #define MSG_NONICKNAMEGIVEN "No nickname given"
+#define MSG_NORECIPIENT(command) "No recipient given ("command")"
+#define MSG_NOTEXTTOSEND "No text to send"
+#define MSG_NOSUCHNICK "No such nick/channel"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"
@@ -136,6 +143,7 @@ class Server
         
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
+        int FindClient(std::string nickname);
 
 };
 

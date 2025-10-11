@@ -18,6 +18,7 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        return (0);
     }
 
     if (server.clients_[fd].GetUserInfoGiven())

@@ -2,8 +2,16 @@
 #define CHANNEL_HPP
 
 #include <map>
+#include "Client.hpp"
+#include <string>
 
 const char symbols[] = {'i', 't', 'k', 'o', 'l'};
+
+typedef enum e_operator_status
+{
+    IS_NOT_OPERATOR = 0,
+    IS_OPERATOR = 1
+} operator_status ;
 
 /*
     - Boolean values if operator(s) has/have decided to set the option
@@ -37,9 +45,10 @@ class Channel
     private:
         struct s_ch_info info_;
         std::map<char, bool> modes_;
+        std::map<Client*, operator_status> ch_clients_;
 
     public:
-        Channel(std::string& name);
+        Channel(std::string& name, Client* founder);
 
         void SetMode(char c, bool mode);
         void SetTopic(std::string& str);

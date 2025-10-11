@@ -66,10 +66,10 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         // "<command> :Unknown command"
         // ex : :irc.example.com 421 Alice FLY :Unknown command
         // -> FLY n'existe pas
-        errorParams.push_back("ERR_UNKNOWNCOMMAND");
+        errorParams.push_back("MSG_UNKNOWNCOMMAND");
         errorParams.push_back(cmd);
-        errorParams.push_back(ERR_UNKNOWNCOMMAND);
-        this->Reply(fd, this->info_.name, std::string("421"), errorParams);
+        errorParams.push_back(MSG_UNKNOWNCOMMAND);
+        this->Reply(fd, this->info_.servername, std::string("421"), errorParams);
         return ( false );
     }
 
@@ -82,9 +82,9 @@ bool Server::ValidCommand(int fd, const std::string cmd)
             // ":You have not registered"
             // ex : :irc.example.com 451 JOIN :You have not registered
             // -> pas encore connecte, tu ne peux pas utiliser JOIN
-            errorParams.push_back("ERR_NOTREGISTERED");
-            errorParams.push_back(ERR_NOTREGISTERED);
-            this->Reply(fd, this->info_.name, std::string("451"), errorParams);
+            errorParams.push_back("MSG_NOTREGISTERED");
+            errorParams.push_back(MSG_NOTREGISTERED);
+            this->Reply(fd, this->info_.servername, std::string("451"), errorParams);
             return ( false );
         }
         
@@ -94,9 +94,9 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         // pas enregistre : 451 
         // 451 ERR_NOTREGISTERED 
         // ":You have not registered"
-        errorParams.push_back("ERR_NOTREGISTERED");
-        errorParams.push_back(ERR_NOTREGISTERED);
-        this->Reply(fd, this->info_.name, std::string("451"), errorParams);
+        errorParams.push_back("MSG_NOTREGISTERED");
+        errorParams.push_back(MSG_NOTREGISTERED);
+        this->Reply(fd, this->info_.servername, std::string("451"), errorParams);
         return ( false );
     }
 
@@ -132,7 +132,8 @@ void Server::ParseInput(int fd, const char *buffer)
                 std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
 
-            if (ValidCommand(fd, cmd)) {
+            if (ValidCommand(fd, cmd))
+            {
                 if (sv_commands_.commands[cmd](*this, fd, listCommandsToken.back())) {
                     std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
                 }

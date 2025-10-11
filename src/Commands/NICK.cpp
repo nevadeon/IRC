@@ -39,8 +39,8 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         //431     ERR_NONICKNAMEGIVEN
         // ":No nickname given"
         params.push_back("ERR_NONICKNAMEGIVEN");
-        params.push_back(ERR_NONICKNAMEGIVEN);
-        server.Reply(fd, server.info_.name, std::string("431"), params);
+        params.push_back(MSG_NONICKNAMEGIVEN);
+        server.Reply(fd, server.info_.servername, std::string("ERR_NONICKNAMEGIVEN"), params);
         return (0); 
     }
     std::string nickname = args[1];
@@ -50,8 +50,8 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         // "<nick> :Nickname is already in use"
         params.push_back("ERR_NICKNAMEINUSE");
         params.push_back(nickname);
-        params.push_back(ERR_NICKNAMEINUSE);
-        server.Reply(fd, server.info_.name, std::string("433"), params);
+        params.push_back(MSG_NICKNAMEINUSE);
+        server.Reply(fd, server.info_.servername, std::string(ERR_NICKNAMEINUSE), params);
         return (0);
     }
     if (!isValidNickname(nickname)) //Also check length, if begins with letter, no special characters, no whitespace
@@ -60,8 +60,8 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         // "<nick> :Erroneus nickname"
         params.push_back("ERR_ERRONEUSNICKNAME");
         params.push_back(nickname);
-        params.push_back(ERR_ERRONEUSNICKNAME);
-        server.Reply(fd, server.info_.name, std::string("432"), params);
+        params.push_back(MSG_ERRONEUSNICKNAME);
+        server.Reply(fd, server.info_.servername, std::string(ERR_ERRONEUSNICKNAME), params);
         return (0);
     }
 
@@ -72,9 +72,9 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     // 004 Alice irc.example.com 2.10 ao mtov 
     if (server.clients_[fd].GetUserInfoGiven()) {
         params.push_back(std::string("Welcome to the Internet Relay Network" + nickname + "!" + server.clients_[fd].GetUserInfo().hostname));
-        server.Reply(fd, server.info_.name, nickname, params);
-        params.push_back(std::string("Your host is" + server.info_.name + ", running version " + server.info_.version));
-        server.Reply(fd, server.info_.name, nickname, params);
+        server.Reply(fd, server.info_.servername, nickname, params);
+        params.push_back(std::string("Your host is" + server.info_.servername + ", running version " + server.info_.version));
+        server.Reply(fd, server.info_.servername, nickname, params);
     }
     
    return (0);

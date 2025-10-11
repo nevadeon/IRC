@@ -111,8 +111,6 @@ bool Server::ValidCommand(int fd, const std::string cmd)
 */
 void Server::ParseInput(int fd, const char *buffer)
 {
-    (void)fd;
-
     const std::string& delimiter = "\r\n";
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
@@ -125,11 +123,11 @@ void Server::ParseInput(int fd, const char *buffer)
         for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
             listCommandsToken.push_back(parsCommand(*it));
             std::string cmd = listCommandsToken.back()[0];
-            std::cout << listCommandsToken.back()[0] << std::endl;
-            std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
+            // std::cout << listCommandsToken.back()[0] << std::endl;
+            // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
-            for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
-                std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
+            // for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
+            //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
 
             if (ValidCommand(fd, cmd))
@@ -140,6 +138,7 @@ void Server::ParseInput(int fd, const char *buffer)
             } else {
                 std::cerr << "Invalid command" << std::endl;
             }
+
         }
 
     }

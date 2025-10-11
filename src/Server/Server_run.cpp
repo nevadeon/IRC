@@ -90,7 +90,6 @@ void Server::ReceiveNewData(int fd) {
 
     // we use a loop in case data is bigger than buffer size
     while (true) {
-        std::cout << fd << "caca\n";
         ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
         std::cout << buffer[fd] << std::endl;
 
@@ -102,7 +101,8 @@ void Server::ReceiveNewData(int fd) {
             buffer[fd][0] = '\0';
             buffer_len[fd] = 0;
             break;
-        } else if (nread == 0) {
+        } else if (nread == 0 || (str[fd].size() + nread > 512)) {
+            // messages shall not exceed 512 characters in length
             // normal deconnexion from client
             Disconnect(fd);
             buffer[fd][0] = '\0';
@@ -125,7 +125,7 @@ void Server::ReceiveNewData(int fd) {
                 buffer[fd][0] = '\0';
                 buffer_len[fd] = 0;
                 str[fd].clear();
-            } else {
+            } else if (str[fd][str[fd].size() - 1] == '\n') {
                 str[fd].erase(str[fd].size() - 1);
             }
         }

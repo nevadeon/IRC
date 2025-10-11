@@ -25,7 +25,8 @@ void Server::Disconnect(int fd)
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }
-    close(fd);
+    if (close(fd) < 0)
+        std::cerr << "Error close: " << strerror(errno) << std::endl;
     clients_.erase(fd);
     if (show_message)
         std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;

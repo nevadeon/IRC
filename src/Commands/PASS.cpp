@@ -22,7 +22,7 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
             // ":You may not reregister"
             params.push_back("ERR_ALREADYREGISTRED");
             params.push_back(ERR_ALREADYREGISTRED);
-            server.Reply(fd, server.info_.name, std::string("462"), params);
+            server.Reply(fd, server.info_.servername, std::string("462"), params);
             return (1);
         }
         server.clients_[fd].ValidatePassword();
@@ -34,7 +34,7 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
         // ":Password incorrect"
         params.push_back("ERR_PASSWDMISMATCH");
         params.push_back(ERR_PASSWDMISMATCH);
-        server.Reply(fd, server.info_.name, std::string("464"), params);
+        server.Reply(fd, server.info_.servername, std::string("464"), params);
         server.Disconnect(fd);
     }
     return (0);

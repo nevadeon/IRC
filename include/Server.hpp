@@ -26,29 +26,43 @@
 #define YELLOW "\001\033[1;33m\002"
 #define RESET "\001\033[0m\002"
 
+// Numeric replies
+#define RPL_WELCOME "001"
+#define RPL_YOURHOST "002"
+#define ERR_UNKNOWNCOMMAND "421"
+#define ERR_NONICKNAMEGIVEN "431"
+#define ERR_ERRONEUSNICKNAME "432"
+#define ERR_NICKNAMEINUSE "433"
+#define ERR_NOTREGISTERED "451"
+#define ERR_NEEDMOREPARAMS "461"
+#define ERR_ALREADYREGISTRED "462"
+#define ERR_PASSWDMISMATCH "464"
+
 // Error messages
-#define ERR_UNKNOWNCOMMAND "Unknown command"
-#define ERR_NOTREGISTERED "You have not registered"
-#define ERR_NICKNAMEINUSE "Nickname is already in use"
-#define ERR_ERRONEUSNICKNAME "Erroneus nickname"
-#define ERR_NEEDMOREPARAMS "Not enough parameters"
-#define ERR_ALREADYREGISTRED "You may not reregister"
-#define ERR_PASSWDMISMATCH "Password incorrect"
-#define ERR_NONICKNAMEGIVEN "No nickname given"
+#define MSG_UNKNOWNCOMMAND "Unknown command"
+#define MSG_NOTREGISTERED "You have not registered"
+#define MSG_NICKNAMEINUSE "Nickname is already in use"
+#define MSG_ERRONEUSNICKNAME "Erroneus nickname"
+#define MSG_NEEDMOREPARAMS "Not enough parameters"
+#define MSG_ALREADYREGISTRED "You may not reregister"
+#define MSG_PASSWDMISMATCH "Password incorrect"
+#define MSG_NONICKNAMEGIVEN "No nickname given"
 
-
-#define SERVERNAME "Blackhole Boys"
+#define SERVERNAME "blackhole.boys.com"
+#define REALNAME "Blackhole Boys"
 #define VERSION "beta"
 
 struct s_sv_info
 {
-    std::string name;
+    std::string servername;
+    std::string realname;
     std::string version;
     std::string password;
 
     s_sv_info()
     {
-        name = SERVERNAME;
+        servername = SERVERNAME;
+        realname = REALNAME;
         version = VERSION;
         password = "undefined";
     }
@@ -89,7 +103,7 @@ class Server
 
         Commands sv_commands_;
         std::map<int, Client> clients_;
-        std::map<std::string, Channel> channels_;
+        std::vector<Channel> channels_;
         uint16_t port_;
         int socket_fd_;
         int epoll_fd_;

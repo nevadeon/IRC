@@ -117,8 +117,10 @@ void Server::ReceiveNewData(int fd) {
             // std::cout << "Client<" << fd << ">: " << buffer[fd] << std::endl;
             // std::cout << "      buffer : <" << fd << ">: " << str[fd] << std::endl;
             buffer_len[fd] = strlen(buffer[fd]);
+            std::cout << "test1\n";
             if (buffer_len[fd] > 1 && (buffer[fd][buffer_len[fd] - 1] == '\n')
                     && (buffer[fd][buffer_len[fd] - 2] == '\r')) {
+                std::cout << "test2\n";
                 ParseInput(fd, str[fd].data());
                 buffer[fd][0] = '\0';
                 buffer_len[fd] = 0;

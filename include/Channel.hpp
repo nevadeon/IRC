@@ -1,8 +1,9 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
-#include "Client.hpp"
-#include <vector>
+#include <map>
+
+const char symbols[] = {'i', 't', 'k', 'o', 'l'};
 
 /*
     - Boolean values if operator(s) has/have decided to set the option
@@ -10,9 +11,9 @@
 */
 struct s_ch_info
 {
-    std::pair<bool, std::string> ch_name;
-    std::pair<bool, std::string> ch_topic;
-    bool ch_invite_only;
+    std::string ch_name;
+    std::string ch_topic;
+    std::string ch_key;
     int ch_user_limit;
 };
 
@@ -34,12 +35,17 @@ struct s_ch_info
 class Channel
 {
     private:
-        std::vector<Client *> operators_;
-        std::vector<Client *> connected_clients_;
         struct s_ch_info info_;
+        std::map<char, bool> modes_;
 
     public:
-        Channel();
+        Channel(std::string& name);
+
+        void SetMode(char c, bool mode);
+        void SetTopic(std::string& str);
+        void SetKey(std::string& str);
+        void SetOperator(std::string& nickname);
+        void SetLimit(int limit);
 };
 
 #endif

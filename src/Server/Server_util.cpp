@@ -21,3 +21,12 @@ bool Server::IsNicknameAlreadyUsed(std::string& nickname)
         if (it->second.GetNick() == nickname) return true;
     return false;
 }
+
+int Server::FindClient(std::string nickname) {
+    for(std::map<int, Client>::iterator it = this->clients_.begin(); it != this->clients_.end(); it++) {
+        if (it->second.GetNick() == nickname) {
+            return (it->first);
+        }
+    }
+    return (-1);
+}

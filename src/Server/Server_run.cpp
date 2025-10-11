@@ -4,6 +4,10 @@ static const int TIMEOUT = 1000;
 static const int MAX_EVENTS = 64;
 struct epoll_event epoll_events[MAX_EVENTS];
 
+static char buffer[1024][513];
+static int buffer_len[1024];
+static std::string str[1024];
+
 volatile std::sig_atomic_t Server::running = true;
 void Server::Run() {
     while (Server::running) {
@@ -19,6 +23,10 @@ void Server::Run() {
 
             if (event_flags & (EPOLLERR | EPOLLHUP | EPOLLRDHUP)) {
                 Disconnect(fd);
+                // pb de fd
+                buffer[fd][0] = '\0';
+                buffer_len[fd] = 0;
+                str[fd].clear();
                 continue;
             }
             if (fd == socket_fd_) {
@@ -71,15 +79,13 @@ void Server::AcceptNewConnections() {
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
         clients_[client_fd] = new_client;
+        
 
-        // std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
+        std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
 }
 
 void Server::ReceiveNewData(int fd) {
-    static char buffer[1024][4096];
-    static int buffer_len[1024];
-    static std::string str[1024];
 
     // test reply
     // std::vector<std::string> test;
@@ -89,25 +95,25 @@ void Server::ReceiveNewData(int fd) {
 
 
     // we use a loop in case data is bigger than buffer size
-    while (true) {
+    // while (true) {
         ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
         std::cout << buffer[fd] << std::endl;
 
         if (nread < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
-                break;
+                return ;
             std::cerr << "Error recv: " << strerror(errno) << std::endl;
             Disconnect(fd);
             buffer[fd][0] = '\0';
             buffer_len[fd] = 0;
-            break;
+            return ;
         } else if (nread == 0 || (str[fd].size() + nread > 512)) {
             // messages shall not exceed 512 characters in length
             // normal deconnexion from client
             Disconnect(fd);
             buffer[fd][0] = '\0';
             buffer_len[fd] = 0;
-            break;
+            return ;
         } else {
             buffer[fd][nread] = '\0';
             // TODO :
@@ -129,5 +135,5 @@ void Server::ReceiveNewData(int fd) {
                 str[fd].erase(str[fd].size() - 1);
             }
         }
-    }
+    // }
 }

@@ -54,13 +54,7 @@ bool Server::ValidCommand(int fd, const std::string cmd)
     
     Client& client = itClient->second;
 
-    // mettre en majuscule les attributs
-    std::string uc = cmd;
-    for (size_t i = 0; i < uc.size(); ++i)
-        uc[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(uc[i])));
-
-
-    if (sv_commands_.commands.find(uc) == sv_commands_.commands.end()) {
+    if (sv_commands_.commands.find(cmd) == sv_commands_.commands.end()) {
         // commande inconnue : 421
         // 421    ERR_UNKNOWNCOMMAND
         // "<command> :Unknown command"
@@ -74,7 +68,7 @@ bool Server::ValidCommand(int fd, const std::string cmd)
     }
 
     if (!client.GetPasswordState()) {
-        if (uc == "PASS" || uc == "PING" || uc == "CAP")
+        if (cmd == "PASS" || cmd == "PING" || cmd == "CAP")
             return ( true );
         else {
             // pas connecte : 451
@@ -90,7 +84,7 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         
     }
 
-    if ((!client.GetIfNicknameValidated() || !client.GetUserInfoGiven()) && (uc != "NICK" && uc != "USER")) {
+    if ((!client.GetIfNicknameValidated() || !client.GetUserInfoGiven()) && (cmd != "NICK" && cmd != "USER")) {
         // pas enregistre : 451 
         // 451 ERR_NOTREGISTERED 
         // ":You have not registered"
@@ -115,6 +109,8 @@ void Server::ParseInput(int fd, const char *buffer)
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
+    // commande en majuscule :
+    std::string uc;
     // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
     try
@@ -123,6 +119,9 @@ void Server::ParseInput(int fd, const char *buffer)
         for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
             listCommandsToken.push_back(parsCommand(*it));
             std::string cmd = listCommandsToken.back()[0];
+            uc = cmd;
+            for (size_t i = 0; i < uc.size(); ++i)
+                uc[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(uc[i])));
             // std::cout << listCommandsToken.back()[0] << std::endl;
             // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
@@ -130,9 +129,9 @@ void Server::ParseInput(int fd, const char *buffer)
             //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
 
-            if (ValidCommand(fd, cmd))
+            if (ValidCommand(fd, uc))
             {
-                if (sv_commands_.commands[cmd](*this, fd, listCommandsToken.back())) {
+                if (sv_commands_.commands[uc](*this, fd, listCommandsToken.back())) {
                     std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
                 }
             } else {

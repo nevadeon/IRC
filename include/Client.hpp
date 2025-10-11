@@ -44,6 +44,7 @@ class Client
         bool GetPasswordState() const { return valid_password_; }
         
         void SetUserInfo(struct user_info& user_info);
+        const user_info GetUserInfo() const { return user_info_.second; }
         bool GetUserInfoGiven() const { return user_info_.first; }
         
         void Authenticate();

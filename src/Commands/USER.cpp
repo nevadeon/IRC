@@ -8,6 +8,16 @@
 */
 int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& args)
 {
+    std::vector<std::string> params;
+
+    if (args.size() < 5)
+    {
+        // 461     ERR_NEEDMOREPARAMS
+        // "<command> :Not enough parameters"
+        params.push_back("ERR_NEEDMOREPARAMS");
+        params.push_back("USER");
+        params.push_back(ERR_NEEDMOREPARAMS);
+        server.Reply(fd, server.info_.name, std::string("461"), params);
     if (args.size() < 5)
     {
         // ERR_NEEDMOREPARAMS
@@ -16,6 +26,11 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
 
     if (server.clients_[fd].GetUserInfoGiven())
     {
+        // 462     ERR_ALREADYREGISTRED
+        // ":You may not reregister"
+        params.push_back("ERR_ALREADYREGISTRED");
+        params.push_back(ERR_ALREADYREGISTRED);
+        server.Reply(fd, server.info_.name, std::string("462"), params);
         // ERR_ALREADYREGISTERED
         return (0);
     }
@@ -24,6 +39,12 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     info.username = args[1];
     if (info.username.size() == 0)
     {
+        // 461     ERR_NEEDMOREPARAMS
+        // "<command> :Not enough parameters"
+        params.push_back("ERR_NEEDMOREPARAMS");
+        params.push_back("USER");
+        params.push_back(ERR_NEEDMOREPARAMS);
+        server.Reply(fd, server.info_.name, std::string("461"), params);
         // ERR_NEEDMOREPARAMS
         return (1);
     }
@@ -32,6 +53,19 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     info.servername = args[3];
     info.realname = args[4];
     server.clients_[fd].SetUserInfo(info);
+
+    // if client.GetIfNicknameValidated()
+    // 001 Alice :Welcome to the Internet Relay Network Alice!alice@host
+    // 002 Alice :Your host is irc.example.com, running version 2.10
+    // 003 Alice :This server was created Thu Oct 09 2025
+    // 004 Alice irc.example.com 2.10 ao mtov 
+    if (server.clients_[fd].GetIfNicknameValidated()) {
+        params.push_back(std::string("Welcome to the Internet Relay Network" + server.clients_[fd].GetNick() + "!" + server.clients_[fd].GetUserInfo().hostname));
+        server.Reply(fd, server.info_.name, server.clients_[fd].GetNick(), params);
+        params.clear();
+        params.push_back(std::string("Your host is" + server.info_.name + ", running version " + server.info_.version));
+        server.Reply(fd, server.info_.name, server.clients_[fd].GetNick(), params);
+    }
 
     return (0);
 }

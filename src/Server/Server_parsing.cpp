@@ -39,28 +39,68 @@ static std::vector<std::string> parsCommand (std::string str)
 
 bool Server::ValidCommand(int fd, const std::string cmd)
 {
-    std::cout << "test0" << std::endl;
-    std::map<int, Client>::iterator itClient = this->clients_.find(fd);
-    // a changer pour une map unique de clients
-    if (itClient == this->clients_.end())
+    std::vector<std::string> errorParams;
+
+    if (cmd.empty()) {
+        std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
         return ( false );
-    std::cout << "test1" << std::endl;
+    }
+
+    std::map<int, Client>::iterator itClient = this->clients_.find(fd);
+    if (itClient == this->clients_.end()) {
+        std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
+        return ( false );
+    }
     
     Client& client = itClient->second;
-    if (client.GetPasswordState() == false && cmd != "PASS" && cmd != "PING" && cmd != "CAP")
-        return ( false );
-    std::cout << "test2" << std::endl;
 
-    // a chqnger pour getvalidnick
-    if (client.GetIfNicknameValidated() == false && cmd != "NICK")
-        return ( false );
-    std::cout << "test3" << std::endl;
+    // mettre en majuscule les attributs
+    std::string uc = cmd;
+    for (size_t i = 0; i < uc.size(); ++i)
+        uc[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(uc[i])));
 
-    if (sv_commands_.commands.find(cmd) != sv_commands_.commands.end())
-        return ( true );
-    std::cout << "test4" << std::endl;
-    
-    return ( false );
+
+    if (sv_commands_.commands.find(uc) == sv_commands_.commands.end()) {
+        // commande inconnue : 421
+        // 421    ERR_UNKNOWNCOMMAND
+        // "<command> :Unknown command"
+        // ex : :irc.example.com 421 Alice FLY :Unknown command
+        // -> FLY n'existe pas
+        errorParams.push_back("ERR_UNKNOWNCOMMAND");
+        errorParams.push_back(cmd);
+        errorParams.push_back(ERR_UNKNOWNCOMMAND);
+        this->Reply(fd, this->info_.name, std::string("421"), errorParams);
+        return ( false );
+    }
+
+    if (!client.GetPasswordState()) {
+        if (uc == "PASS" || uc == "PING" || uc == "CAP")
+            return ( true );
+        else {
+            // pas connecte : 451
+            // 451    ERR_NOTREGISTERED
+            // ":You have not registered"
+            // ex : :irc.example.com 451 JOIN :You have not registered
+            // -> pas encore connecte, tu ne peux pas utiliser JOIN
+            errorParams.push_back("ERR_NOTREGISTERED");
+            errorParams.push_back(ERR_NOTREGISTERED);
+            this->Reply(fd, this->info_.name, std::string("451"), errorParams);
+            return ( false );
+        }
+        
+    }
+
+    if ((!client.GetIfNicknameValidated() || !client.GetUserInfoGiven()) && (uc != "NICK" && uc != "USER")) {
+        // pas enregistre : 451 
+        // 451 ERR_NOTREGISTERED 
+        // ":You have not registered"
+        errorParams.push_back("ERR_NOTREGISTERED");
+        errorParams.push_back(ERR_NOTREGISTERED);
+        this->Reply(fd, this->info_.name, std::string("451"), errorParams);
+        return ( false );
+    }
+
+    return ( true );
 }
 
 
@@ -91,18 +131,20 @@ void Server::ParseInput(int fd, const char *buffer)
             for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
                 std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
+
             if (ValidCommand(fd, cmd)) {
-                sv_commands_.commands[cmd](*this, fd, listCommandsToken.back()); 
+                if (sv_commands_.commands[cmd](*this, fd, listCommandsToken.back())) {
+                    std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
+                }
             } else {
-                // throw 
-                std::cout << "Invalid command" << std::endl;
+                std::cerr << "Invalid command" << std::endl;
             }
         }
 
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::cerr << e.what() << std::endl;
         throw e;
     }
     

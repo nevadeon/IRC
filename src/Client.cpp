@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include <iostream>
 
 /*
     User can be authenticated once all conditions are filled
@@ -22,6 +23,7 @@ void Client::SetUserInfo(struct user_info& user_info)
 
 void Client::SetNick(std::string& nick)
 {
+    std::cout << "validate" << std::endl;
     nick_.first = true;
     nick_.second = nick;
     if (GetPasswordState() && GetUserInfoGiven())

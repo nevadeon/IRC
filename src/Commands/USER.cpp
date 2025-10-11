@@ -54,6 +54,13 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     // 002 Alice :Your host is irc.example.com, running version 2.10
     // 003 Alice :This server was created Thu Oct 09 2025
     // 004 Alice irc.example.com 2.10 ao mtov 
+    if (server.clients_[fd].GetIfNicknameValidated()) {
+        params.push_back(std::string("Welcome to the Internet Relay Network" + server.clients_[fd].GetNick() + "!" + server.clients_[fd].GetUserInfo().hostname));
+        server.Reply(fd, server.info_.name, server.clients_[fd].GetNick(), params);
+        params.clear();
+        params.push_back(std::string("Your host is" + server.info_.name + ", running version " + server.info_.version));
+        server.Reply(fd, server.info_.name, server.clients_[fd].GetNick(), params);
+    }
 
     return (0);
 }

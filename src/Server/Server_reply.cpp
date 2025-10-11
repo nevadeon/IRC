@@ -14,7 +14,7 @@ void Server::Reply(int fd, std::string& prefix, const std::string& code, std::ve
     for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
     {
         str += " ";
-        if (*it == params.back())
+        if (*it == params.back() && (it->find(" ") != std::string::npos))
             str += ":";
         str += *it;
     }

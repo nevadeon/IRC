@@ -14,7 +14,8 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
 
     if (password == serv_password)
     {
-        if (server.clients_.count(fd))
+        // if (server.clients_.count(fd))
+        if (server.clients_[fd].GetPasswordState())
         {
             // server.Reply(fd, fd, "462", server.connected_clients_[fd].GetNick().c_str(), "You may not reregister"); //CHANGE TO VECTOR
             // 462     ERR_ALREADYREGISTRED
@@ -22,6 +23,7 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
             params.push_back("ERR_ALREADYREGISTRED");
             params.push_back(ERR_ALREADYREGISTRED);
             server.Reply(fd, server.info_.name, std::string("462"), params);
+            return (1);
         }
         server.clients_[fd].ValidatePassword();
     }

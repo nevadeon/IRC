@@ -40,9 +40,9 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
         // server.Reply(fd, fd, "464", server.unauthenticated_clients_[fd].GetNick().c_str(), "Password incorrect");
         // 464     ERR_PASSWDMISMATCH
         // ":Password incorrect"
-        params.push_back("ERR_PASSWDMISMATCH");
-        params.push_back(ERR_PASSWDMISMATCH);
-        server.Reply(fd, server.info_.servername, std::string(ERR_PASSWDMISMATCH), params);
+        params.push_back(server.clients_[fd].GetNick());
+        params.push_back(MSG_PASSWDMISMATCH);
+        server.Reply(fd, server.info_.servername, ERR_PASSWDMISMATCH, params);
     }
     return (0);
 }

@@ -8,9 +8,17 @@
 */
 int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& args)
 {
+    std::vector<std::string> params;
+    if (args.size() < 2)
+    {
+        params.push_back("ERR_NEEDMOREPARAMS");
+        params.push_back(MSG_NEEDMOREPARAMS);
+        server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        return (0);
+    }
+
     std::string password = args[1];
     std::string serv_password = server.GetPassword();
-    std::vector<std::string> params;
 
     if (password == serv_password)
     {
@@ -21,9 +29,9 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
             // 462     ERR_ALREADYREGISTRED
             // ":You may not reregister"
             params.push_back("ERR_ALREADYREGISTRED");
-            params.push_back(ERR_ALREADYREGISTRED);
-            server.Reply(fd, server.info_.servername, std::string("462"), params);
-            return (1);
+            params.push_back(MSG_ALREADYREGISTRED);
+            server.Reply(fd, server.info_.servername, std::string(ERR_ALREADYREGISTRED), params);
+            return (0);
         }
         server.clients_[fd].ValidatePassword();
     }
@@ -34,8 +42,7 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
         // ":Password incorrect"
         params.push_back("ERR_PASSWDMISMATCH");
         params.push_back(ERR_PASSWDMISMATCH);
-        server.Reply(fd, server.info_.servername, std::string("464"), params);
-        server.Disconnect(fd);
+        server.Reply(fd, server.info_.servername, std::string(ERR_PASSWDMISMATCH), params);
     }
     return (0);
 }

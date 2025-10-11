@@ -13,6 +13,7 @@
 #include <cstring>
 #include <csignal>
 #include <map>
+#include <vector>
 #include <iostream>
 #include "Channel.hpp"
 #include "Client.hpp"

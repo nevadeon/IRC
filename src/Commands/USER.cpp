@@ -18,6 +18,9 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
         params.push_back("USER");
         params.push_back(ERR_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.name, std::string("461"), params);
+    if (args.size() < 5)
+    {
+        // ERR_NEEDMOREPARAMS
         return (0);
     }
 
@@ -28,6 +31,7 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
         params.push_back("ERR_ALREADYREGISTRED");
         params.push_back(ERR_ALREADYREGISTRED);
         server.Reply(fd, server.info_.name, std::string("462"), params);
+        // ERR_ALREADYREGISTERED
         return (0);
     }
 
@@ -41,6 +45,7 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
         params.push_back("USER");
         params.push_back(ERR_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.name, std::string("461"), params);
+        // ERR_NEEDMOREPARAMS
         return (1);
     }
     

@@ -174,7 +174,11 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
         Channel newChan = Channel(*it, client);
         WelcomeChanel(server, fd, &newChan, client);
+<<<<<<< HEAD
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
+=======
+        server.channels_[newChan.GetName()] = newChan;
+>>>>>>> 27b1f69 (transform vercot chan to mp chan)
         
         
         

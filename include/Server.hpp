@@ -17,6 +17,7 @@
 #include <iostream>
 #include "Channel.hpp"
 #include "Client.hpp"
+#include <ctime>
 
 #define RED "\001\033[31m\002"
 #define GREEN "\001\033[1;32m\002"
@@ -29,6 +30,10 @@
 // Numeric replies
 #define RPL_WELCOME "001"
 #define RPL_YOURHOST "002"
+#define RPL_CREATED "003"
+#define RPL_MYINFO "004"
+#define RPL_ISUPPORT "005"
+#define RPL_MOTD "372"
 #define ERR_UNKNOWNCOMMAND "421"
 #define ERR_NONICKNAMEGIVEN "431"
 #define ERR_ERRONEUSNICKNAME "432"
@@ -41,9 +46,6 @@
 #define ERR_NOTEXTTOSEND "412"
 #define ERR_NOSUCHNICK "401"
 #define ERR_BADCHANMASK "476"
-
-
-
 
 // Error messages
 #define MSG_UNKNOWNCOMMAND "Unknown command"
@@ -61,7 +63,7 @@
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"
-#define VERSION "beta"
+#define VERSION "dev"
 
 struct s_sv_info
 {
@@ -69,6 +71,7 @@ struct s_sv_info
     std::string realname;
     std::string version;
     std::string password;
+    std::tm creation_time;
 
     s_sv_info()
     {
@@ -131,21 +134,22 @@ class Server
         void ReceiveNewData(int fd);
         void AuthenticateClient(int fd);
         void Disconnect(int fd);
+
         void ParseInput(int fd, const char *buffer);
+        bool CommandExists(int fd, const std::string& cmd);
+        bool RegistrationCheck(int fd, const std::string& cmd);
 
         void Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params);
         void Notify(std::string& prefix, const std::string& code, std::vector<std::string>& params);
         void Welcome(int fd);
 
         bool IsNicknameAlreadyUsed(std::string& nickname);
-        
     public:
         Server(uint16_t port, std::string& pass);
         
         void Init();
         void Run();
         void CloseFds();
-        bool ValidCommand(int fd, const std::string cmd);
         
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }

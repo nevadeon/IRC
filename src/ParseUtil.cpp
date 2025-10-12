@@ -51,3 +51,25 @@ std::string Util::parsePassword(const char *password)
     }
     return (str);
 }
+
+std::vector<std::string> Util::parseCommand(std::string str)
+{
+    std::vector<std::string> listArg;
+    size_t pos = 0;
+    std::string token;
+    std::string delimiter = " ";
+    while ((pos = str.find(delimiter)) != std::string::npos) {
+        if (str[0] == ':') {
+            str.erase(0, 1);
+            break;
+        }
+        token = str.substr(0, pos);
+        if (token.length() != 0)
+            listArg.push_back(token);
+        str.erase(0, pos + delimiter.length());
+    }
+    if (str.length() != 0)
+        listArg.push_back(str);
+
+    return listArg;
+}

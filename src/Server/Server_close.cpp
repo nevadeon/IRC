@@ -20,14 +20,11 @@ void Server::CloseFds() {
 
 void Server::Disconnect(int fd)
 {
-    // bool show_message = clients_[fd].IsAuthenticated(); //Only show message in server if User has been authenticated
-
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }
     if (close(fd) < 0)
         std::cerr << "Error close: " << strerror(errno) << std::endl;
     clients_.erase(fd);
-    // if (show_message)
     std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
 }

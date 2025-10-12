@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <cstdio>
 
 std::string& Server::GetPassword() { return info_.password; }
 
@@ -23,7 +24,7 @@ bool Server::IsNicknameAlreadyUsed(std::string& nickname)
 }
 
 int Server::FindClient(std::string nickname) {
-    for(std::map<int, Client>::iterator it = this->clients_.begin(); it != this->clients_.end(); it++) {
+    for(std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); it++) {
         if (it->second.GetNick() == nickname) {
             return (it->first);
         }

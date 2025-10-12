@@ -43,7 +43,8 @@ void Server::WelcomeChanel(Server server, int fd, Channel *channel, Client *clie
     
     for(std::map<Client *, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         // a change
-        server.Reply(it->first->GetFD(), server.info_.servername, channel->GetName(), params);
+        std::string info = client->GetNick() + "!" + client->GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+        server.Reply(it->first->GetFD(), info, channel->GetName(), params);
     }
     params.clear();
     
@@ -82,7 +83,7 @@ void Server::WelcomeChanel(Server server, int fd, Channel *channel, Client *clie
 static bool isValidChanelName(std::string chanName) {
     size_t lenChanName = chanName.size();
     if (chanName[0] != '#')
-        return (false);
+        chanName = std::string("#").append(chanName);
     if (lenChanName < 2)
         return (false);
     for (size_t i = 0; i < lenChanName; i++)

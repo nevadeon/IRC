@@ -32,7 +32,6 @@ std::string Channel::GetTopic() {
     return (":");
 }
 
-
 size_t Channel::GetUserLimit() { return (this->info_.ch_user_limit); }
 
 std::map<Client *, operator_status> Channel::GetClients() { return (this->ch_clients_); }
@@ -52,4 +51,7 @@ void Channel::AddClient(Client *client) {
     ch_clients_[client] = IS_NOT_OPERATOR;
 }
 
-
+bool Channel::IsOperator(Client *client) const
+{
+    return (ch_clients_[client] == IS_OPERATOR);
+}

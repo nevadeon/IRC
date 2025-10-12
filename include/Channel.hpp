@@ -66,6 +66,7 @@ class Channel
         bool GetModeState(char mode);
         bool IsInvitedClient(Client *client);
         void AddClient(Client *client);
+        bool IsOperator(Client *cl) const;
 };
 
 #endif

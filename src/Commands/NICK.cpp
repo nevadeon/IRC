@@ -38,7 +38,6 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     {
         //431     ERR_NONICKNAMEGIVEN
         // ":No nickname given"
-        params.push_back("ERR_NONICKNAMEGIVEN");
         params.push_back(MSG_NONICKNAMEGIVEN);
         server.Reply(fd, server.info_.servername, std::string("ERR_NONICKNAMEGIVEN"), params);
         return (0); 
@@ -48,7 +47,6 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     {
         // 433     ERR_NICKNAMEINUSE
         // "<nick> :Nickname is already in use"
-        params.push_back("ERR_NICKNAMEINUSE");
         params.push_back(nickname);
         params.push_back(MSG_NICKNAMEINUSE);
         server.Reply(fd, server.info_.servername, std::string(ERR_NICKNAMEINUSE), params);
@@ -58,7 +56,6 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     {
         //432 ERR_ERRONEUSNICKNAME
         // "<nick> :Erroneus nickname"
-        params.push_back("ERR_ERRONEUSNICKNAME");
         params.push_back(nickname);
         params.push_back(MSG_ERRONEUSNICKNAME);
         server.Reply(fd, server.info_.servername, std::string(ERR_ERRONEUSNICKNAME), params);

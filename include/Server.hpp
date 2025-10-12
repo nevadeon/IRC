@@ -138,7 +138,7 @@ class Server
         bool IsNicknameAlreadyUsed(std::string& nickname);
         
     public:
-        Server(uint16_t port = 0, const char *pass = "") : port_(port), socket_fd_(-1), epoll_fd_(-1) { info_.password = std::string(pass); }
+        Server(uint16_t port, std::string& pass);
         
         void Init();
         void Run();

@@ -18,6 +18,7 @@ class Util
         static bool isNumber(const char *str);
         static uint16_t parsePort(const char *argv[]);
         static std::vector<std::string> split(std::string& s, const std::string& delimiter);
+        static std::string parsePassword(const char *password);
 };
 
 #endif

@@ -1,5 +1,10 @@
 #include "Server.hpp"
 
+Server::Server(uint16_t port, std::string& pass) : port_(port), socket_fd_(-1), epoll_fd_(-1)
+{
+    info_.password = pass;
+}
+
 void Server::Init() {
     HandleSignals();
     InitListeningSocket();

@@ -40,10 +40,12 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         return (0); 
     }
     std::string nickname = args[1];
+    std::string old_nickname = server.clients_[fd].GetNick();
     if (server.IsNicknameAlreadyUsed(nickname)) // Check if valid nickname (case-insensitive)
     {
         // 433     ERR_NICKNAMEINUSE
         // "<nick> :Nickname is already in use"
+        params.push_back(old_nickname);
         params.push_back(nickname);
         params.push_back(MSG_NICKNAMEINUSE);
         server.Reply(fd, server.info_.servername, ERR_NICKNAMEINUSE, params);
@@ -59,7 +61,6 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
     
-    std::string old_nickname = server.clients_[fd].GetNick();
     if (server.clients_[fd].SetNick(nickname))
         server.Welcome(fd);
     else //Notify all registered users of the nickname change

@@ -11,7 +11,6 @@ void Server::Commands::InitCommands()
     Server::Commands::commands["INVITE"] = &Server::Commands::INVITE;
     Server::Commands::commands["JOIN"] = &Server::Commands::JOIN;
     Server::Commands::commands["PART"] = &Server::Commands::PART;
-    Server::Commands::commands["QUIT"] = &Server::Commands::QUIT;
     Server::Commands::commands["TOPIC"] = &Server::Commands::TOPIC;
     Server::Commands::commands["MODE"] = &Server::Commands::MODE;
     Server::Commands::commands["NICK"] = &Server::Commands::NICK;

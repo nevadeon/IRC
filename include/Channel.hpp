@@ -62,7 +62,7 @@ class Channel
         std::string GetKey();
         std::string GetTopic();
         size_t GetUserLimit();
-        std::map<Client *, operator_status> GetClients();
+        std::map<Client *, operator_status> &GetClients();
         bool GetModeState(char mode);
         bool IsInvitedClient(Client *client);
         void AddClient(Client *client);

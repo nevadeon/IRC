@@ -35,7 +35,7 @@ std::string Channel::GetTopic() {
 
 size_t Channel::GetUserLimit() { return (this->info_.ch_user_limit); }
 
-std::map<Client *, operator_status> Channel::GetClients() { return (this->ch_clients_); }
+std::map<Client *, operator_status> &Channel::GetClients() { return (this->ch_clients_); }
 
 bool Channel::GetModeState(char mode) { return (this->modes_.find(mode)->second); }
 

@@ -28,7 +28,7 @@ void Server::Disconnect(int fd)
     // std::map<Client*, operator_status> ch_clients_;
     Client *client = &(clients_[fd]);
     for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end(); it++)
-        it->second.GetClients().erase(client);
+        std::cout << it->second.GetClients().erase(client) << std::endl;
     // for(std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
         // std::map<Client *, operator_status> clients = it->GetClients();
         // for(std::map<Client *, operator_status>::iterator itcli = clients.begin(); itcli != clients.end(); itcli++) {

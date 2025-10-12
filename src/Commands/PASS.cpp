@@ -11,7 +11,6 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
     std::vector<std::string> params;
     if (args.size() < 2)
     {
-        params.push_back("ERR_NEEDMOREPARAMS");
         params.push_back(MSG_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
         return (0);
@@ -28,7 +27,6 @@ int Server::Commands::PASS(Server& server, int fd, std::vector<std::string>& arg
             // server.Reply(fd, fd, "462", server.connected_clients_[fd].GetNick().c_str(), "You may not reregister"); //CHANGE TO VECTOR
             // 462     ERR_ALREADYREGISTRED
             // ":You may not reregister"
-            params.push_back("ERR_ALREADYREGISTRED");
             params.push_back(MSG_ALREADYREGISTRED);
             server.Reply(fd, server.info_.servername, std::string(ERR_ALREADYREGISTRED), params);
             return (0);

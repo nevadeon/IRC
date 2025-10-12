@@ -18,8 +18,6 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
     if (argsSize < 2) {
         // 411     ERR_NORECIPIENT
         // ":No recipient given (<command>)"
-        std::cout << "gfdsgsfd" << std::endl;
-        params.push_back("ERR_NORECIPIENT");
         params.push_back(server.clients_[fd].GetNick());
         params.push_back(MSG_NORECIPIENT("PRIVMSG"));
         server.Reply(fd, server.info_.servername, std::string(ERR_NORECIPIENT), params);
@@ -28,7 +26,6 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
     if (argsSize < 3) {
         // 412     ERR_NOTEXTTOSEND
         // ":No text to send"
-        params.push_back("ERR_NOTEXTTOSEND");
         params.push_back(server.clients_[fd].GetNick());
         params.push_back(MSG_NOTEXTTOSEND);
         server.Reply(fd, server.info_.servername, std::string(ERR_NOTEXTTOSEND), params);
@@ -48,7 +45,6 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         } else {
             // 401     ERR_NOSUCHNICK
             // "<nickname> :No such nick/channel"
-            params.push_back("ERR_NOSUCHNICK");
             params.push_back(server.clients_[fd].GetNick());
             params.push_back(MSG_NOSUCHNICK);
             server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHNICK), params);

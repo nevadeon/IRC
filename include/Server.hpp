@@ -40,6 +40,9 @@
 #define ERR_NORECIPIENT "411"
 #define ERR_NOTEXTTOSEND "412"
 #define ERR_NOSUCHNICK "401"
+#define ERR_BADCHANMASK "476"
+
+
 
 
 // Error messages
@@ -54,6 +57,7 @@
 #define MSG_NORECIPIENT(command) "No recipient given ("command")"
 #define MSG_NOTEXTTOSEND "No text to send"
 #define MSG_NOSUCHNICK "No such nick/channel"
+#define MSG_BADCHANMASK "Bad Channel Mask"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"

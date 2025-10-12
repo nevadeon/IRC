@@ -14,7 +14,6 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     {
         // 461     ERR_NEEDMOREPARAMS
         // "<command> :Not enough parameters"
-        params.push_back("ERR_NEEDMOREPARAMS");
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
@@ -25,7 +24,6 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     {
         // 462     ERR_ALREADYREGISTRED
         // ":You may not reregister"
-        params.push_back("ERR_ALREADYREGISTRED");
         params.push_back(MSG_ALREADYREGISTRED);
         server.Reply(fd, server.info_.servername, std::string(ERR_ALREADYREGISTRED), params);
         // ERR_ALREADYREGISTERED
@@ -38,11 +36,9 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     {
         // 461     ERR_NEEDMOREPARAMS
         // "<command> :Not enough parameters"
-        params.push_back("ERR_NEEDMOREPARAMS");
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
-        // ERR_NEEDMOREPARAMS
         return (1);
     }
     

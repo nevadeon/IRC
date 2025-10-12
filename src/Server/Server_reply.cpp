@@ -17,11 +17,12 @@ void Server::Reply(int fd, std::string& prefix, const std::string& code, std::ve
     for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
     {
         str += " ";
-        if (*it == params.back() && (it->find(" ") != std::string::npos))
-            str += ":";
+        // if (*it == params.back() && (it->find(" ") != std::string::npos))
+        //     str += ":";
         str += *it;
     }
     str += "\r\n";
+    std::cout << str.data();
     send(fd, str.data(), str.length(), 0);
 }
 

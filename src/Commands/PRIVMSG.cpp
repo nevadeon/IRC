@@ -40,8 +40,11 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
 
     } else {
         if ((clientFd = server.FindClient(args[1])) != -1) {
+            Client sender = server.clients_[fd];
+            std::string info = sender.GetNick() + "!" + sender.GetUserInfo().username + "@" + sender.GetUserInfo().hostname;
+            params.push_back(server.clients_[clientFd].GetNick());
             params.push_back(args[2]);
-            server.Reply(clientFd, server.clients_[fd].GetNick(), server.clients_[clientFd].GetNick(), params);
+            server.Reply(clientFd, info, "PRIVMSG", params);
         } else {
             // 401     ERR_NOSUCHNICK
             // "<nickname> :No such nick/channel"

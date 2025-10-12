@@ -97,7 +97,6 @@ void Server::ReceiveNewData(int fd) {
     // we use a loop in case data is bigger than buffer size
     // while (true) {
         ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
-        std::cout << buffer[fd] << std::endl;
 
         if (nread < 0) {
             if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR)
@@ -122,8 +121,6 @@ void Server::ReceiveNewData(int fd) {
             // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
             str[fd] = str[fd].append(buffer[fd]);
-            // std::cout << "Client<" << fd << ">: " << buffer[fd] << std::endl;
-            // std::cout << "      buffer : <" << fd << ">: " << str[fd] << std::endl;
             buffer_len[fd] = strlen(buffer[fd]);
             if (buffer_len[fd] > 1 && (buffer[fd][buffer_len[fd] - 1] == '\n')
                     && (buffer[fd][buffer_len[fd] - 2] == '\r')) {

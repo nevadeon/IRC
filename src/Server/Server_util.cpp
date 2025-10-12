@@ -31,3 +31,12 @@ int Server::FindClient(std::string nickname) {
     }
     return (-1);
 }
+
+Channel *Server::FindChanel(std::string name) {
+    for(std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
+        if (it->GetName() == name) {
+            return (it.base());
+        }
+    }
+    return (NULL);
+}

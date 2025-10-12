@@ -46,6 +46,11 @@
 #define ERR_NOTEXTTOSEND "412"
 #define ERR_NOSUCHNICK "401"
 #define ERR_BADCHANMASK "476"
+#define ERR_INVITEONLYCHAN "473"
+#define ERR_BADCHANNELKEY "475"
+#define ERR_CHANNELISFULL "471"
+
+
 
 // Error messages
 #define MSG_UNKNOWNCOMMAND "Unknown command"
@@ -60,6 +65,9 @@
 #define MSG_NOTEXTTOSEND "No text to send"
 #define MSG_NOSUCHNICK "No such nick/channel"
 #define MSG_BADCHANMASK "Bad Channel Mask"
+#define MSG_INVITEONLYCHAN "Cannot join channel (+i)"
+#define MSG_BADCHANNELKEY "Cannot join channel (+k)"
+#define MSG_CHANNELISFULL "Cannot join channel (+l)"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"
@@ -154,6 +162,8 @@ class Server
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
         int FindClient(std::string nickname);
+        Channel *FindChanel(std::string name);
+        static void WelcomeChanel(Server server, int fd, Channel *channel, Client *client);
 
 };
 

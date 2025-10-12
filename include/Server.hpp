@@ -51,7 +51,9 @@
 #define ERR_INVITEONLYCHAN "473"
 #define ERR_BADCHANNELKEY "475"
 #define ERR_CHANNELISFULL "471"
-
+#define ERR_NOSUCHCHANNEL "403"
+#define ERR_NOTONCHANNEL "442"
+#define ERR_CHANOPRIVSNEEDED "482"
 
 
 // Error messages
@@ -70,6 +72,9 @@
 #define MSG_INVITEONLYCHAN "Cannot join channel (+i)"
 #define MSG_BADCHANNELKEY "Cannot join channel (+k)"
 #define MSG_CHANNELISFULL "Cannot join channel (+l)"
+#define MSG_NOSUCHCHANNEL "No such channel"
+#define MSG_NOTONCHANNEL "You're not on that channel"
+#define MSG_CHANOPRIVSNEEDED "You're not channel operator"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"
@@ -164,8 +169,8 @@ class Server
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
         int FindClient(std::string nickname);
-        Channel *FindChanel(std::string name);
-        static void WelcomeChanel(Server server, int fd, Channel *channel, Client *client);
+        Channel &FindChanel(std::string name);
+        static void WelcomeChanel(Server server, int fd, Channel &channel, Client *client);
 
 };
 

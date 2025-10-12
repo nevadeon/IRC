@@ -31,9 +31,6 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
 {
     std::vector<std::string> params;
 
-    if (!server.clients_.count(fd))
-        return (1); // Exception: no fd in clients
-
     if (args.size() < 2)
     {
         //431     ERR_NONICKNAMEGIVEN
@@ -52,7 +49,7 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         server.Reply(fd, server.info_.servername, ERR_NICKNAMEINUSE, params);
         return (0);
     }
-    if (!isValidNickname(nickname))
+    if (args.size() > 2 && !isValidNickname(nickname))
     {
         //432 ERR_ERRONEUSNICKNAME
         // "<nick> :Erroneus nickname"

@@ -19,6 +19,7 @@ class Util
         static uint16_t parsePort(const char *argv[]);
         static std::vector<std::string> split(std::string& s, const std::string& delimiter);
         static std::string parsePassword(const char *password);
+        static std::vector<std::string> parseCommand(std::string str);
 };
 
 #endif

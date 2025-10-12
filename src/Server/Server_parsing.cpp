@@ -15,29 +15,10 @@ void debugPrint(const std::string& s) {
     std::cout << std::endl;
 }
 
-static std::vector<std::string> parsCommand (std::string str)
-{
-    std::vector<std::string> listArg;
-    size_t pos = 0;
-    std::string token;
-    std::string delimiter = " ";
-    while ((pos = str.find(delimiter)) != std::string::npos) {
-        if (str[0] == ':') {
-            str.erase(0, 1);
-            break;
-        }
-        token = str.substr(0, pos);
-        if (token.length() != 0)
-            listArg.push_back(token);
-        str.erase(0, pos + delimiter.length());
-    }
-    if (str.length() != 0)
-        listArg.push_back(str);
-
-    return listArg;
-}
-
-bool Server::ValidCommand(int fd, const std::string cmd)
+/*
+    Checks if server command
+*/
+bool Server::CommandExists(int fd, const std::string& cmd)
 {
     std::vector<std::string> errorParams;
 
@@ -46,55 +27,44 @@ bool Server::ValidCommand(int fd, const std::string cmd)
         return ( false );
     }
 
-    std::map<int, Client>::iterator itClient = this->clients_.find(fd);
-    if (itClient == this->clients_.end()) {
-        std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
-        return ( false );
-    }
-    
-    Client& client = itClient->second;
-
     if (sv_commands_.commands.find(cmd) == sv_commands_.commands.end()) {
-        // commande inconnue : 421
-        // 421    ERR_UNKNOWNCOMMAND
-        // "<command> :Unknown command"
-        // ex : :irc.example.com 421 Alice FLY :Unknown command
-        // -> FLY n'existe pas
+        //ERR_UNKNOWNCOMMAND
         errorParams.push_back("MSG_UNKNOWNCOMMAND");
         errorParams.push_back(cmd);
         errorParams.push_back(MSG_UNKNOWNCOMMAND);
-        this->Reply(fd, this->info_.servername, std::string("421"), errorParams);
+        this->Reply(fd, this->info_.servername, ERR_UNKNOWNCOMMAND, errorParams);
         return ( false );
     }
-
-    if (!client.GetPasswordState()) {
-        if (cmd == "PASS" || cmd == "PING" || cmd == "CAP")
-            return ( true );
-        else {
-            // pas connecte : 451
-            // 451    ERR_NOTREGISTERED
-            // ":You have not registered"
-            // ex : :irc.example.com 451 JOIN :You have not registered
-            // -> pas encore connecte, tu ne peux pas utiliser JOIN
-            errorParams.push_back("MSG_NOTREGISTERED");
-            errorParams.push_back(MSG_NOTREGISTERED);
-            this->Reply(fd, this->info_.servername, std::string("451"), errorParams);
-            return ( false );
-        }
-        
-    }
-
-    if ((!client.GetIfNicknameValidated() || !client.GetUserInfoGiven()) && (cmd != "NICK" && cmd != "USER")) {
-        // pas enregistre : 451 
-        // 451 ERR_NOTREGISTERED 
-        // ":You have not registered"
-        errorParams.push_back("MSG_NOTREGISTERED");
-        errorParams.push_back(MSG_NOTREGISTERED);
-        this->Reply(fd, this->info_.servername, std::string("451"), errorParams);
-        return ( false );
-    }
-
     return ( true );
+}
+
+/*
+    -> If not registered, only allow certain commands
+    -> If registered, prevent resending authentification commands
+*/
+bool Server::RegistrationCheck(int fd, const std::string& cmd)
+{
+    Client client = clients_[fd];
+    std::vector<std::string> errorParams;
+
+    if (!client.GetPasswordState()
+        && !(cmd == "PASS" || cmd == "PING" || cmd == "CAP"))
+    {
+            //ERR_NOTREGISTERED
+            errorParams.push_back(MSG_NOTREGISTERED);
+            Reply(fd, info_.servername, ERR_NOTREGISTERED, errorParams);
+            return ( false );
+    }
+
+    if ((client.GetPasswordState() && cmd == "PASS")
+        || (client.GetUserInfoGiven() && cmd == "USER"))
+    {
+        //ERR_ALREADYREGISTERED
+        errorParams.push_back(MSG_ALREADYREGISTRED);
+        Reply(fd, info_.servername, ERR_ALREADYREGISTRED, errorParams);
+        return ( false );
+    }
+    return true;
 }
 
 
@@ -117,7 +87,7 @@ void Server::ParseInput(int fd, const char *buffer)
     {
         std::vector< std::vector<std::string> >listCommandsToken;
         for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
-            listCommandsToken.push_back(parsCommand(*it));
+            listCommandsToken.push_back(Util::parseCommand(*it));
             std::string cmd = listCommandsToken.back()[0];
             uc = cmd;
             for (size_t i = 0; i < uc.size(); ++i)
@@ -129,7 +99,7 @@ void Server::ParseInput(int fd, const char *buffer)
             //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
 
 
-            if (ValidCommand(fd, uc))
+            if (CommandExists(fd, uc) && RegistrationCheck(fd, uc))
             {
                 if (sv_commands_.commands[uc](*this, fd, listCommandsToken.back())) {
                     std::cerr << "<" << fd << ">Internal serveur error" << std::endl;

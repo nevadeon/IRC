@@ -19,8 +19,8 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         // 411     ERR_NORECIPIENT
         // ":No recipient given (<command>)"
         params.push_back(server.clients_[fd].GetNick());
-        params.push_back(MSG_NORECIPIENT("PRIVMSG"));
-        server.Reply(fd, server.info_.servername, std::string(ERR_NORECIPIENT), params);
+        params.push_back("PRIVMSG");
+        server.Reply(fd, server.info_.servername, ERR_NORECIPIENT, params);
         return (0);
     }
     if (argsSize < 3) {
@@ -28,11 +28,11 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         // ":No text to send"
         params.push_back(server.clients_[fd].GetNick());
         params.push_back(MSG_NOTEXTTOSEND);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NOTEXTTOSEND), params);
+        server.Reply(fd, server.info_.servername, ERR_NOTEXTTOSEND, params);
         return (0);
     }
 
-    if (args[1][0] == '#' || args[1][0] == '&') {
+    if (args[1][0] == '#') {
         // gestion du chanel
         // a gerer :
         // 404 ERR_CANNOTSENDTOCHAN : impossible d’envoyer sur ce canal (par exemple, mode +n)

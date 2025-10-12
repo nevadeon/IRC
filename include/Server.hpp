@@ -27,6 +27,8 @@
 #define YELLOW "\001\033[1;33m\002"
 #define RESET "\001\033[0m\002"
 
+#define DUMMY_HOSTNAME "42"
+
 // Numeric replies
 #define RPL_WELCOME "001"
 #define RPL_YOURHOST "002"

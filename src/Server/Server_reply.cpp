@@ -8,7 +8,6 @@
     -> Up to command to construct the correct code and params
 */
 void Server::Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params)
-// void Server::Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing)
 {
     std::string str = ":" + prefix + " " + code; //+ params + ":" +  trailing
     for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
@@ -19,9 +18,26 @@ void Server::Reply(int fd, std::string& prefix, const std::string& code, std::ve
         str += *it;
     }
     str += "\r\n";
-    // 0 : Aucun flag, comportement standard.
-    // MSG_NOSIGNAL : Empêche l’envoi du signal SIGPIPE si le socket est fermé côté client (évite que ton programme crash).
-    // MSG_DONTWAIT : Rend l’appel non bloquant (si le socket n’est pas prêt, la fonction retourne immédiatement).
-    // MSG_MORE : Indique qu’il y aura d’autres données à envoyer (optimisation TCP).
     send(fd, str.data(), str.length(), 0);
+}
+
+void Server::Welcome(int fd)
+{
+    std::vector<std::string> params;
+
+    params.push_back(std::string(clients_[fd].GetNick() + " Welcome to the " + info_.realname + " Relay Network " + clients_[fd].GetNick()));
+    Reply(fd, info_.servername, RPL_WELCOME, params);
+    params.clear();
+    params.push_back(std::string(clients_[fd].GetNick() + "Your host is" + info_.realname + ", running version " + info_.version));
+    Reply(fd, info_.servername, RPL_YOURHOST, params);
+}
+
+void Server::Notify(std::string& prefix, const std::string& code, std::vector<std::string>& params)
+{
+    std::map<int, Client>::iterator it = clients_.begin();
+    for (; it != clients_.end(); it++)
+    {
+        if (it->second.IsAuthenticated())
+            Reply(it->second.GetFD(), prefix, code, params);
+    }
 }

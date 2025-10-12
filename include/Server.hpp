@@ -132,8 +132,10 @@ class Server
         void AuthenticateClient(int fd);
         void Disconnect(int fd);
         void ParseInput(int fd, const char *buffer);
-        // void Reply(int sender_fd, int receiver_fd, const char *code, std::vector<std::string>& params, const char *trailing);
+
         void Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params);
+        void Notify(std::string& prefix, const std::string& code, std::vector<std::string>& params);
+        void Welcome(int fd);
 
         bool IsNicknameAlreadyUsed(std::string& nickname);
         

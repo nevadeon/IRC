@@ -6,31 +6,44 @@
 */
 Client::Client() : valid_password_(false), nick_(false, ""), is_authenticated_(false) { user_info_.first = false; }
 
-void Client::ValidatePassword()
+//returns 1 if server needs to welcome Client
+int Client::ValidatePassword()
 {
-    this->valid_password_ = true;
-    if (this->GetIfNicknameValidated() && this->GetUserInfoGiven())
+    valid_password_ = true;
+    if (!is_authenticated_ && GetIfNicknameValidated() && GetUserInfoGiven())
+    {
         Authenticate();
+        return (1);
+    }
+    return (0);
 }
 
-void Client::SetUserInfo(struct user_info& user_info)
+int Client::SetUserInfo(struct user_info& user_info)
 {
     user_info_.first = true;
     user_info_.second = user_info;
-    if (GetIfNicknameValidated() && GetPasswordState())
+    if (!is_authenticated_ && GetIfNicknameValidated() && GetPasswordState())
+    {
         Authenticate();
+        return (1);
+    }
+    return (0);
 }
 
-void Client::SetNick(std::string& nick)
+int Client::SetNick(std::string& nick)
 {
     std::cout << "validate" << std::endl;
     nick_.first = true;
     nick_.second = nick;
-    if (GetPasswordState() && GetUserInfoGiven())
+    if (!is_authenticated_ && GetPasswordState() && GetUserInfoGiven())
+    {
         Authenticate();
+        return (1);
+    }
+    return (0);
 }
 
 void Client::Authenticate()
 {
-    this->is_authenticated_ = true;
+    is_authenticated_ = true;
 }

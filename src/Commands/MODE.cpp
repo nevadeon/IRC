@@ -1,9 +1,10 @@
 #include "Server.hpp"
 #include <set>
 
-static const char allowed_modes_array[] = { 'i', 'o', 't', 'k', 'l'};
-static const int allowed_modes_count = sizeof(allowed_modes_array) / sizeof(allowed_modes_array[0]);
-std::set<char> allowed_modes(allowed_modes_array, allowed_modes_array + allowed_modes_count);
+static bool IsAChanOp(Channel* ch, Client *cl)
+{
+    return (ch->GetClients()[cl] == IS_OPERATOR);
+}
 
 /*
     (+ ou -).(i, o, t, k, l)

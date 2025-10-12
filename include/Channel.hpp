@@ -4,6 +4,8 @@
 #include <map>
 #include "Client.hpp"
 #include <string>
+#include <vector>
+
 
 const char symbols[] = {'i', 't', 'k', 'o', 'l'};
 
@@ -22,7 +24,7 @@ struct s_ch_info
     std::string ch_name;
     std::string ch_topic;
     std::string ch_key;
-    int ch_user_limit;
+    size_t ch_user_limit;
 };
 
 /*
@@ -46,6 +48,7 @@ class Channel
         struct s_ch_info info_;
         std::map<char, bool> modes_;
         std::map<Client*, operator_status> ch_clients_;
+        std::vector<Client*> inviteClient_;
 
     public:
         Channel(std::string& name, Client* founder);
@@ -55,6 +58,14 @@ class Channel
         void SetKey(std::string& str);
         void SetOperator(std::string& nickname);
         void SetLimit(int limit);
+        std::string GetName();
+        std::string GetKey();
+        std::string GetTopic();
+        size_t GetUserLimit();
+        std::map<Client *, operator_status> GetClients();
+        bool GetModeState(char mode);
+        bool IsInvitedClient(Client *client);
+        void AddClient(Client *client);
 };
 
 #endif

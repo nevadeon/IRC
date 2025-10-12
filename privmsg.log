@@ -1,0 +1,72 @@
+<< CAP LS
+<< PASS caca
+<< NICK Alice
+<< USER ematon ematon localhost :Emmanuel Maton
+>> :blackhole.boys.com 001 Alice Welcome to the Blackhole Boys Relay Network Alice
+<< MODE Alice +i
+>> :blackhole.boys.com 002 Alice Your host is blackhole.boys.com, running version dev
+>> :blackhole.boys.com 003 Alice This server was created a rong rong time ago
+>> :blackhole.boys.com 004 Alice blackhole.boys.com dev o itkl
+>> :blackhole.boys.com 005 Alice CHANTYPES=# are supported by this server
+>> :blackhole.boys.com 372 Alice get ready to be blackholed
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+>> : NICK Bob
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< PRIVMSG Bob :test
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< CAP LS
+<< PASS caca
+<< NICK Bob
+<< USER ematon ematon localhost :Emmanuel Maton
+>> :blackhole.boys.com 001 Bob Welcome to the Blackhole Boys Relay Network Bob
+<< MODE Bob +i
+>> :blackhole.boys.com 002 Bob Your host is blackhole.boys.com, running version dev
+>> :blackhole.boys.com 003 Bob This server was created a rong rong time ago
+>> :blackhole.boys.com 004 Bob blackhole.boys.com dev o itkl
+>> :blackhole.boys.com 005 Bob CHANTYPES=# are supported by this server
+>> :blackhole.boys.com 372 Bob get ready to be blackholed
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+>> :blackhole.boys.com PRIVMSG Bob :test
+>> 
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+<< CAP LS
+<< PASS caca
+<< NICK Alice
+<< USER ematon ematon localhost :Emmanuel Maton
+>> :blackhole.boys.com 001 Alice Welcome to the Blackhole Boys Relay Network Alice
+<< MODE Alice +i
+>> :blackhole.boys.com 002 Alice Your host is blackhole.boys.com, running version dev
+>> :blackhole.boys.com 003 Alice This server was created a rong rong time ago
+>> :blackhole.boys.com 004 Alice blackhole.boys.com dev o itkl
+>> :blackhole.boys.com 005 Alice CHANTYPES=# are supported by this server
+>> :blackhole.boys.com 372 Alice get ready to be blackholed
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong
+>> : NICK Bob
+>> :Bob!ematon@127.0.0.1 PRIVMSG Alice :test
+>> 
+>> :Bob!ematon@127.0.0.1 PRIVMSG Alice :test
+>> 
+<< PING blackhole.boys.com
+>> :blackhole.boys.com PONG blackhole.boys.com
+--> lag pong

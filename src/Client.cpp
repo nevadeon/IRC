@@ -32,7 +32,6 @@ int Client::SetUserInfo(struct user_info& user_info)
 
 int Client::SetNick(std::string& nick)
 {
-    std::cout << "validate" << std::endl;
     nick_.first = true;
     nick_.second = nick;
     if (!is_authenticated_ && GetPasswordState() && GetUserInfoGiven())

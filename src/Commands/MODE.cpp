@@ -2,12 +2,12 @@
 
 static bool IsAChanOp(Channel* ch, Client *cl)
 {
-    return (ch[cl] == IS_OPERATOR);
+    return (ch->GetClients()[cl] == IS_OPERATOR);
 }
 
 static bool IsKnownModeString(std::string& str)
 {
-
+    (void)str; return true;
 }
 
 /*
@@ -45,5 +45,5 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     {
 
     }
-
+    return (0);
 }

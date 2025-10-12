@@ -26,7 +26,6 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
         // ":You may not reregister"
         params.push_back(MSG_ALREADYREGISTRED);
         server.Reply(fd, server.info_.servername, std::string(ERR_ALREADYREGISTRED), params);
-        // ERR_ALREADYREGISTERED
         return (0);
     }
 
@@ -45,20 +44,8 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     info.hostname = args[2];
     info.servername = args[3];
     info.realname = args[4];
-    server.clients_[fd].SetUserInfo(info);
 
-    // if client.GetIfNicknameValidated()
-    // 001 Alice :Welcome to the Internet Relay Network Alice!alice@host
-    // 002 Alice :Your host is irc.example.com, running version 2.10
-    // 003 Alice :This server was created Thu Oct 09 2025
-    // 004 Alice irc.example.com 2.10 ao mtod
-    if (server.clients_[fd].GetIfNicknameValidated()) {
-        params.push_back(std::string(server.clients_[fd].GetNick() + " Welcome to the " + server.info_.realname + " Relay Network " + server.clients_[fd].GetNick()));
-        server.Reply(fd, server.info_.servername, RPL_WELCOME, params);
-        params.clear();
-        params.push_back(std::string(server.clients_[fd].GetNick() + "Your host is" + server.info_.realname + ", running version " + server.info_.version));
-        server.Reply(fd, server.info_.servername, RPL_YOURHOST, params);
-    }
-
+    if (server.clients_[fd].SetUserInfo(info))
+        server.Welcome(fd);
     return (0);
 }

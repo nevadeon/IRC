@@ -33,13 +33,13 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
 
     if (!server.clients_.count(fd))
         return (1); // Exception: no fd in clients
-    // Client c = server.clients_[fd];
+
     if (args.size() < 2)
     {
         //431     ERR_NONICKNAMEGIVEN
         // ":No nickname given"
         params.push_back(MSG_NONICKNAMEGIVEN);
-        server.Reply(fd, server.info_.servername, std::string("ERR_NONICKNAMEGIVEN"), params);
+        server.Reply(fd, server.info_.servername, ERR_NONICKNAMEGIVEN, params);
         return (0); 
     }
     std::string nickname = args[1];
@@ -49,30 +49,28 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         // "<nick> :Nickname is already in use"
         params.push_back(nickname);
         params.push_back(MSG_NICKNAMEINUSE);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NICKNAMEINUSE), params);
+        server.Reply(fd, server.info_.servername, ERR_NICKNAMEINUSE, params);
         return (0);
     }
-    if (!isValidNickname(nickname)) //Also check length, if begins with letter, no special characters, no whitespace
+    if (!isValidNickname(nickname))
     {
         //432 ERR_ERRONEUSNICKNAME
         // "<nick> :Erroneus nickname"
         params.push_back(nickname);
         params.push_back(MSG_ERRONEUSNICKNAME);
-        server.Reply(fd, server.info_.servername, std::string(ERR_ERRONEUSNICKNAME), params);
+        server.Reply(fd, server.info_.servername, ERR_ERRONEUSNICKNAME, params);
         return (0);
     }
-
-    server.clients_[fd].SetNick(nickname);
-    // 001 Alice :Welcome to the Internet Relay Network Alice!alice@host
-    // 002 Alice :Your host is irc.example.com, running version 2.10
-    // 003 Alice :This server was created Thu Oct 09 2025
-    // 004 Alice irc.example.com 2.10 ao mtov 
-    if (server.clients_[fd].GetUserInfoGiven()) {
-        params.push_back(std::string("Welcome to the Internet Relay Network" + nickname + "!" + server.clients_[fd].GetUserInfo().hostname));
-        server.Reply(fd, server.info_.servername, nickname, params);
-        params.push_back(std::string("Your host is" + server.info_.servername + ", running version " + server.info_.version));
-        server.Reply(fd, server.info_.servername, nickname, params);
+    
+    std::string old_nickname = server.clients_[fd].GetNick();
+    if (server.clients_[fd].SetNick(nickname))
+        server.Welcome(fd);
+    else //Notify all registered users of the nickname change
+    {
+        params.push_back(nickname);
+        server.Notify(old_nickname, "NICK", params);
     }
+
     
    return (0);
 }

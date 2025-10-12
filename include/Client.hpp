@@ -36,14 +36,14 @@ class Client
         void SetFD(int fd) { fd_ = fd; }
         void SetIpAddress(const std::string& ip) { ip_ = ip; }
         
-        void SetNick(std::string& nick);
+        int SetNick(std::string& nick);
         std::string& GetNick() { return nick_.second; }
         bool GetIfNicknameValidated() const { return nick_.first; }
         
-        void ValidatePassword();
+        int ValidatePassword();
         bool GetPasswordState() const { return valid_password_; }
         
-        void SetUserInfo(struct user_info& user_info);
+        int SetUserInfo(struct user_info& user_info);
         const user_info GetUserInfo() const { return user_info_.second; }
         bool GetUserInfoGiven() const { return user_info_.first; }
         

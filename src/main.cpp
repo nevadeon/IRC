@@ -13,13 +13,16 @@ int main(int argc, char const *argv[])
     }
 
     uint16_t port;
+    std::string pass;
     try {
         port = Util::parsePort(argv);
+        pass = Util::parsePassword(argv[2]);
     } catch (std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl; return 0;
+        std::cerr << "Error: " << e.what() << std::endl; 
+        return 0;
     }
 
-    Server server(port, argv[2]);
+    Server server(port, pass);
     try {
         server.Init();
         server.Run();

@@ -127,7 +127,7 @@ class Server
 
         Commands sv_commands_;
         std::map<int, Client> clients_;
-        std::vector<Channel> channels_;
+        std::map<std::string, Channel> channels_;
         uint16_t port_;
         int socket_fd_;
         int epoll_fd_;

@@ -3,13 +3,19 @@
 
 #define NUMBER_OF_SYMBOLS 5
 
-Channel::Channel(std::string& name, Client* founder)
+Channel::Channel(std::string& name, int fd_founder)
 {
     info_.ch_name = name;
     for (int i = 0; i < NUMBER_OF_SYMBOLS; i++)
         modes_[symbols[i]] = false;
-    ch_clients_[founder] = IS_OPERATOR;
+    ch_clients_[fd_founder] = IS_OPERATOR;
+    exist = true;
 }
+
+Channel::Channel() :exist(false) {}
+
+Channel::~Channel() {}
+
 
 void Channel::SetMode(char c, bool value) { modes_[c] = value; }
 
@@ -35,21 +41,39 @@ std::string Channel::GetTopic() {
 
 size_t Channel::GetUserLimit() { return (this->info_.ch_user_limit); }
 
-std::map<Client *, operator_status> &Channel::GetClients() { return (this->ch_clients_); }
+std::map<int, operator_status> &Channel::GetClients() { return (this->ch_clients_); }
 
 bool Channel::GetModeState(char mode) { return (this->modes_.find(mode)->second); }
 
 bool Channel::IsInvitedClient(Client *client) {
-    for(std::vector<Client *>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
-        if (*it == client) {
+    for(std::vector<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
+        if (*it == client->GetFD()) {
             return (true);
         }
     }
     return (false);
 }
 
-void Channel::AddClient(Client *client) {
-    ch_clients_[client] = IS_NOT_OPERATOR;
+void Channel::AddClient(int fd) {
+    ch_clients_[fd] = IS_NOT_OPERATOR;
 }
 
+int Channel::FindClient(std::string nickname, Server server) {
+    std::cout << "searsh" << std::endl;
+    for(std::map<int, operator_status>::iterator it = ch_clients_.begin(); it != ch_clients_.end(); it++) {
+        std::cout << server.GetClients()[it->first].GetNick() << std::endl;
+        if (server.GetClients()[it->first].GetNick() == nickname) {
+            return (it->first);
+        }
+    }
+    return (-1);
+}
 
+int Channel::IsOperator(int fd) {
+    for(std::map<int, operator_status>::iterator it = ch_clients_.begin(); it != ch_clients_.end(); it++) {
+        if (it->first == fd) {
+            return (it->second);
+        }
+    }
+    return (-1);
+}

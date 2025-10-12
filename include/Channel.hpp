@@ -47,11 +47,15 @@ class Channel
     private:
         struct s_ch_info info_;
         std::map<char, bool> modes_;
-        std::map<Client*, operator_status> ch_clients_;
-        std::vector<Client*> inviteClient_;
+        std::map<int, operator_status> ch_clients_;
+        std::vector<int> inviteClient_;
 
     public:
-        Channel(std::string& name, Client* founder);
+        Channel(std::string& name, int fd_founder);
+        Channel();
+        ~Channel();
+        
+        bool exist;
 
         void SetMode(char c, bool mode);
         void SetTopic(std::string& str);
@@ -62,10 +66,16 @@ class Channel
         std::string GetKey();
         std::string GetTopic();
         size_t GetUserLimit();
+<<<<<<< HEAD
         std::map<Client *, operator_status> &GetClients();
+=======
+        std::map<int, operator_status> GetClients();
+>>>>>>> a1b917b (replace map client * by fd)
         bool GetModeState(char mode);
         bool IsInvitedClient(Client *client);
-        void AddClient(Client *client);
+        void AddClient(int fd);
+        int FindClient(std::string nickname, Server server);
+        int IsOperator(int fd);
 };
 
 #endif

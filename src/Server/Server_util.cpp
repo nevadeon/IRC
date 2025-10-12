@@ -32,11 +32,19 @@ int Server::FindClient(std::string nickname) {
     return (-1);
 }
 
-Channel *Server::FindChanel(std::string name) {
-    for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
-        if (it->second.GetName() == name) {
-            return (&it->second);
-        }
+Channel &Server::FindChanel(std::string name) {
+    std::cout << "bame :" << name << std::endl;
+     for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
+    //     std::map<Client *, operator_status> clients = it->GetClients();
+        std::cout << "name :" << it->first << std::endl;
+        std::cout << "name2 :" << it->second.GetName() << "|" << it->second.exist << std::endl;
     }
-    return (NULL);
+    
+   return (channels_[name]);
+    // for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
+    //     if (it->second.GetName() == name) {
+    //         return (it->second);
+    //     }
+    // }
+    // return (NULL);
 }

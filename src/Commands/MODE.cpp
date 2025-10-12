@@ -22,12 +22,12 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    Channel *ch = server.FindChanel(args[1]);
-    if (!ch)
-    {
-        // 403: No such channel
-        return (0);
-    }
+    Channel ch = server.FindChanel(args[1]);
+    // if (!ch)
+    // {
+    //     // 403: No such channel
+    //     return (0);
+    // }
 
     if (args.size() < 3)
     {
@@ -35,7 +35,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    if (!IsAChanOp(ch, &server.clients_[fd]))
+    if (!IsAChanOp(&ch, &server.clients_[fd]))
     {
         // ERR_CHANOPRIVSNEEDED (482)
     }

@@ -37,20 +37,19 @@
 // JOIN &local
 // JOIN #canal1,#canal2 motdepasse1,motdepasse2
 
-void Server::WelcomeChanel(Server server, int fd, Channel &channel, Client *client) {
+void Server::WelcomeChanel(Server server, int fd, Channel &channel, Client client) {
     std::vector<std::string> params;
     std::map<int, operator_status> clientsMap = channel.GetClients();
     
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
-        // a change
-        std::string info = client->GetNick() + "!" + client->GetUserInfo().username + "@" + DUMMY_HOSTNAME;
         server.Reply(it->first, info, channel.GetName(), params);
     }
     params.clear();
     
     // :<servername> 332 <nick> <channel> :<topic>
-    std::cout << channel.GetName() << std::endl;
-    params.push_back(client->GetNick());
+    // std::cout << "WelcomeChanel > channel.GetName() : " << channel.GetName() << std::endl;
+    params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back(channel.GetTopic());
     server.Reply(fd, server.info_.servername, std::string("332"), params);
@@ -64,7 +63,7 @@ void Server::WelcomeChanel(Server server, int fd, Channel &channel, Client *clie
             clientsList = clientsList.append(" ");
         clientsList = clientsList.append((server.clients_[it->first]).GetNick());
     }
-    params.push_back(client->GetNick());
+    params.push_back(client.GetNick());
     params.push_back("=");
     params.push_back(channel.GetName());
     params.push_back(clientsList);
@@ -72,7 +71,7 @@ void Server::WelcomeChanel(Server server, int fd, Channel &channel, Client *clie
     params.clear();
     
     // :<servername> 366 <nick> <channel> :End of /NAMES list.
-    params.push_back(client->GetNick());
+    params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back("End of /NAMES list.");
     server.Reply(fd, server.info_.servername, std::string("366"), params);
@@ -95,7 +94,7 @@ static bool isValidChanelName(std::string chanName) {
 int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& args)
 {
     std::vector<std::string> params;
-    Client *client = &(server.clients_[fd]);
+    Client client = server.clients_[fd];
 
     if (args.size() < 2)
     {
@@ -110,7 +109,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
     if (!isValidChanelName(args[1])) {
         // ERR_BADCHANMASK 476
 
-        params.push_back(client->GetNick());
+        params.push_back(client.GetNick());
         params.push_back(args[1]);
         params.push_back(MSG_BADCHANMASK);
         server.Reply(fd, server.info_.servername, std::string(ERR_BADCHANMASK), params);
@@ -124,30 +123,37 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
     listChanel = Util::split(args[1], ",");
     if (args.size() > 2) {
         listMDP = Util::split(args[2], ",");
-        itMDP = listChanel.begin();
+        itMDP = listMDP.begin();
     }
 
     for(std::vector<std::string>::iterator it = listChanel.begin(); it != listChanel.end(); it++)
     {
-        Channel channel = server.FindChanel(*it);
-        if (channel.exist) {
-            if (channel.GetModeState('i') && !channel.IsInvitedClient(client)) {
+        std::cout << "first find (must return 0) :" << std::endl;
+        std::string chanName;
+        if ((*it)[0] != '#')
+            chanName = std::string("#").append(*it);
+        else
+            chanName = *it;
+
+        Channel *channel = server.FindChanel(chanName);
+        if (channel) {
+            if (channel->GetModeState('i') && !channel->IsInvitedClient(fd)) {
                 // 473     ERR_INVITEONLYCHAN
                 // "<channel> :Cannot join channel (+i)"
-                params.push_back(client->GetNick());
-                params.push_back(channel.GetName());
+                params.push_back(client.GetNick());
+                params.push_back(channel->GetName());
                 params.push_back(MSG_INVITEONLYCHAN);
                 server.Reply(fd, server.info_.servername, std::string(ERR_INVITEONLYCHAN), params);
                 continue;
             }
 
-            if (channel.GetModeState('k')) {
-                if ((args.size() > 2 && (itMDP != listMDP.end()) && (channel.GetKey() == *itMDP))
+            if (channel->GetModeState('k')) {
+                if ((args.size() > 2 && (itMDP != listMDP.end()) && (channel->GetKey() == *itMDP))
                         || (args.size() > 2 && (itMDP == listMDP.end()))) {
                     // 475     ERR_BADCHANNELKEY
                     // "<channel> :Cannot join channel (+k)"
-                    params.push_back(client->GetNick());
-                    params.push_back(channel.GetName());
+                    params.push_back(client.GetNick());
+                    params.push_back(channel->GetName());
                     params.push_back(MSG_BADCHANNELKEY);
                     server.Reply(fd, server.info_.servername, std::string(ERR_BADCHANNELKEY), params);
                     itMDP++;
@@ -157,24 +163,24 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
             }
             
 
-            if (channel.GetModeState('l') && (channel.GetUserLimit() < channel.GetClients().size())) {
+            if (channel->GetModeState('l') && (channel->GetUserLimit() < channel->GetClients().size())) {
                 // 471     ERR_CHANNELISFULL
                 // "<channel> :Cannot join channel (+l)"
-                params.push_back(client->GetNick());
-                params.push_back(channel.GetName());
+                params.push_back(client.GetNick());
+                params.push_back(channel->GetName());
                 params.push_back(MSG_CHANNELISFULL);
                 server.Reply(fd, server.info_.servername, std::string(ERR_CHANNELISFULL), params);
                 continue;
             }
 
-            channel.AddClient(fd);
-            WelcomeChanel(server, fd, channel, client);
+            channel->AddClient(fd);
+            WelcomeChanel(server, fd, *channel, client);
             continue;
         }
 
-        Channel newChan = Channel(*it, fd);
+        Channel newChan = Channel(chanName, fd);
         WelcomeChanel(server, fd, newChan, client);
-        std::cout << "gfdsgxvcbvcxb " << newChan.exist << " " << newChan.GetName() << std::endl;
+        std::cout << "newChan name : " << newChan.GetName() << std::endl;
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
         
         

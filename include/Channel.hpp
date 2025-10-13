@@ -3,6 +3,9 @@
 
 #include <map>
 #include "Client.hpp"
+// #include "Server.hpp"
+//  déclaration anticipée pour eviter les pb lors de la compilation
+class Server;
 #include <string>
 #include <vector>
 
@@ -55,8 +58,6 @@ class Channel
         Channel();
         ~Channel();
         
-        bool exist;
-
         void SetMode(char c, bool mode);
         void SetTopic(std::string& str);
         void SetKey(std::string& str);
@@ -66,13 +67,9 @@ class Channel
         std::string GetKey();
         std::string GetTopic();
         size_t GetUserLimit();
-<<<<<<< HEAD
-        std::map<Client *, operator_status> &GetClients();
-=======
-        std::map<int, operator_status> GetClients();
->>>>>>> a1b917b (replace map client * by fd)
+        std::map<int, operator_status> &GetClients();
         bool GetModeState(char mode);
-        bool IsInvitedClient(Client *client);
+        bool IsInvitedClient(int fd);
         void AddClient(int fd);
         int FindClient(std::string nickname, Server server);
         int IsOperator(int fd);

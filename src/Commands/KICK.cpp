@@ -26,7 +26,7 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
         reason = args[3];
     else
         reason = client.GetNick();
-    Channel* channel = server.FindChanel(chanName);
+    Channel* channel = server.FindChannel(chanName);
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL
         // "<channel name> :No such channel"
@@ -57,7 +57,6 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     }
 
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
-    // faire une fonction : SendToAll ?
     std::map<int, operator_status> clientsMap = channel->GetClients();
     params.push_back(channel->GetName());
     params.push_back(target_nick);

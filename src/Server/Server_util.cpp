@@ -23,7 +23,7 @@ bool Server::IsNicknameAlreadyUsed(std::string& nickname)
     return false;
 }
 
-int Server::FindClient(std::string nickname) {
+int Server::FindClient(std::string& nickname) {
     for(std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); it++) {
         if (it->second.GetNick() == nickname) {
             return (it->second.GetFD());
@@ -32,7 +32,7 @@ int Server::FindClient(std::string nickname) {
     return (-1);
 }
 
-Channel* Server::FindChanel(std::string name) {
+Channel* Server::FindChannel(std::string& name) {
     std::map<std::string, Channel>::iterator it = channels_.find(name);
     if (it != channels_.end())
         return &(it->second);

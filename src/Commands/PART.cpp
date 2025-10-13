@@ -6,7 +6,7 @@
 // ERR_NOTONCHANNEL (442) : l’utilisateur n’est pas membre du channel
 
 // PART <channel>{,<channel>} [<message>]
-// sert a quitter un chanel
+// sert a quitter un Channel
 int Server::Commands::PART(Server& server, int fd, std::vector<std::string>& args)
 {
     std::vector<std::string> params;
@@ -22,17 +22,17 @@ int Server::Commands::PART(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    std::vector<std::string> listChanel;
-    listChanel = Util::split(args[1], ",");
+    std::vector<std::string> listChannel;
+    listChannel = Util::split(args[1], ",");
 
-    for(std::vector<std::string>::iterator it = listChanel.begin(); it != listChanel.end(); it++) {
+    for(std::vector<std::string>::iterator it = listChannel.begin(); it != listChannel.end(); it++) {
         std::string chanName;
         if ((*it)[0] != '#')
             chanName = std::string("#").append(*it);
         else
             chanName = *it;
 
-        Channel *channel = server.FindChanel(chanName);
+        Channel *channel = server.FindChannel(chanName);
         if (!channel) {
             // 403     ERR_NOSUCHCHANNEL
             // "<channel name> :No such channel"

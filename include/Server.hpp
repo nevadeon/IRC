@@ -35,7 +35,9 @@
 #define RPL_CREATED "003"
 #define RPL_MYINFO "004"
 #define RPL_ISUPPORT "005"
+#define RPL_TOPIC "332"
 #define RPL_MOTD "372"
+#define ERR_CANNOTSENDTOCHAN "404"
 #define ERR_UNKNOWNCOMMAND "421"
 #define ERR_NONICKNAMEGIVEN "431"
 #define ERR_ERRONEUSNICKNAME "432"
@@ -56,7 +58,6 @@
 #define ERR_CHANOPRIVSNEEDED "482"
 #define ERR_USERNOTINCHANNEL "441"
 #define ERR_USERONCHANNEL "443"
-
 
 // Error messages
 #define MSG_UNKNOWNCOMMAND "Unknown command"
@@ -79,6 +80,7 @@
 #define MSG_CHANOPRIVSNEEDED "You're not channel operator"
 #define MSG_USERNOTINCHANNEL "They aren't on that channel"
 #define MSG_USERONCHANNEL "is already on channel"
+#define MSG_CANNOTSENDTOCHAN "Cannot send to channel (you have not joined)"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"
@@ -159,11 +161,11 @@ class Server
         bool RegistrationCheck(int fd, const std::string& cmd);
 
         void Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params);
-        void Notify(std::string& prefix, const std::string& code, std::vector<std::string>& params);
-        void Welcome(int fd);
-
+        void NotifyAll(std::string& prefix, const std::string& code, std::vector<std::string>& params);
+        void WelcomeServer(int fd);
+        
         bool IsNicknameAlreadyUsed(std::string& nickname);
-    public:
+        public:
         Server(uint16_t port, std::string& pass);
         
         void Init();
@@ -172,11 +174,9 @@ class Server
         
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
-        int FindClient(std::string nickname);
-        Channel *FindChanel(std::string name);
-        static void WelcomeChanel(Server server, int fd, Channel &channel, Client client);
-        int SendToAll(int fd, Channel* channel);
-
+        int FindClient(std::string& nickname);
+        Channel *FindChannel(std::string& name);
+        void WelcomeChannel(Server& server, int fd, Channel &channel, Client &client);
 };
 
 #endif

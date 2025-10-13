@@ -32,13 +32,30 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         return (0);
     }
 
-    if (args[1][0] == '#') {
-        // gestion du chanel
-        // a gerer :
-        // 404 ERR_CANNOTSENDTOCHAN : impossible d’envoyer sur ce canal (par exemple, mode +n)
-        // + 401 ERR_NOSUCHNICK
+    if (args[1][0] == '#')
+    {
+        std::string ch_name = args[1];
+        if (!server.channels_.count(ch_name))
+        {
+            params.push_back(server.clients_[fd].GetNick());
+            params.push_back(MSG_NOSUCHNICK);
+            server.Reply(fd, server.info_.servername, ERR_NOSUCHNICK, params);
+            return (0);
+        }
 
-    } else {
+        Channel ch = server.channels_[ch_name];
+        if (!ch.GetClients().count(fd))
+        {
+            params.push_back(server.clients_[fd].GetNick());
+            params.push_back(MSG_CANNOTSENDTOCHAN);
+            server.Reply(fd, server.info_.servername, ERR_CANNOTSENDTOCHAN, params);
+            return (0);
+        }
+
+        // ch
+    } 
+    else
+    {
         if ((clientFd = server.FindClient(args[1])) != -1) {
             Client sender = server.clients_[fd];
             std::string info = sender.GetNick() + "!" + sender.GetUserInfo().username + "@" + DUMMY_HOSTNAME;

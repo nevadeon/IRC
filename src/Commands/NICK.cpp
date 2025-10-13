@@ -62,11 +62,11 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
     }
     
     if (server.clients_[fd].SetNick(nickname))
-        server.Welcome(fd);
-    else //Notify all registered users of the nickname change
+        server.WelcomeServer(fd);
+    else //NotifyAll all registered users of the nickname change
     {
         params.push_back(nickname);
-        server.Notify(old_nickname, "NICK", params);
+        server.NotifyAll(old_nickname, "NICK", params);
     }
 
     

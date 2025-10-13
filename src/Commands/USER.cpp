@@ -46,6 +46,6 @@ int Server::Commands::USER(Server& server, int fd, std::vector<std::string>& arg
     info.realname = args[4];
 
     if (server.clients_[fd].SetUserInfo(info))
-        server.Welcome(fd);
+        server.WelcomeServer(fd);
     return (0);
 }

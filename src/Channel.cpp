@@ -58,9 +58,7 @@ void Channel::AddClient(int fd) {
 }
 
 int Channel::FindClient(std::string nickname, Server server) {
-    std::cout << "searsh" << std::endl;
     for(std::map<int, operator_status>::iterator it = ch_clients_.begin(); it != ch_clients_.end(); it++) {
-        std::cout << server.GetClients()[it->first].GetNick() << std::endl;
         if (server.GetClients()[it->first].GetNick() == nickname) {
             return (it->first);
         }

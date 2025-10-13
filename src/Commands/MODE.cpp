@@ -31,7 +31,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    Channel *ch = server.FindChanel(args[1]);
+    Channel *ch = server.FindChannel(args[1]);
     if (!ch)
     {
         // 403: No such channel

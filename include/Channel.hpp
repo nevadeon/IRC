@@ -3,12 +3,10 @@
 
 #include <map>
 #include "Client.hpp"
-// #include "Server.hpp"
-//  déclaration anticipée pour eviter les pb lors de la compilation
-class Server;
 #include <string>
 #include <vector>
 
+class Server;
 
 const char symbols[] = {'i', 't', 'k', 'o', 'l'};
 
@@ -71,7 +69,7 @@ class Channel
         bool GetModeState(char mode);
         bool IsInvitedClient(int fd);
         void AddClient(int fd);
-        int FindClient(std::string nickname, Server server);
+        int FindClient(std::string& nickname, Server& server);
         int IsOperator(int fd);
 };
 

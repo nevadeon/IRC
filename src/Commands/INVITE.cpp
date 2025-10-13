@@ -35,7 +35,7 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         chanName = std::string("#").append(args[1]);
     else
         chanName = args[1];
-    Channel *channel = server.FindChanel(chanName);
+    Channel *channel = server.FindChannel(chanName);
     if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
         // "<channel> :You're not on that channel"

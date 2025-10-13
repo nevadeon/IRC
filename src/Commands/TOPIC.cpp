@@ -41,7 +41,7 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
     else
         chanName = args[1];
 
-    Channel *channel = server.FindChanel(chanName);
+    Channel *channel = server.FindChannel(chanName);
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL
         // "<channel name> :No such channel"

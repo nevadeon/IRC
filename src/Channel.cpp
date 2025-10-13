@@ -57,7 +57,7 @@ void Channel::AddClient(int fd) {
     ch_clients_[fd] = IS_NOT_OPERATOR;
 }
 
-int Channel::FindClient(std::string nickname, Server server) {
+int Channel::FindClient(std::string &nickname, Server &server) {
     for(std::map<int, operator_status>::iterator it = ch_clients_.begin(); it != ch_clients_.end(); it++) {
         if (server.GetClients()[it->first].GetNick() == nickname) {
             return (it->first);

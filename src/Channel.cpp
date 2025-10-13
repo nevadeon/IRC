@@ -45,13 +45,18 @@ std::map<int, operator_status> &Channel::GetClients() { return (this->ch_clients
 bool Channel::GetModeState(char mode) { return (this->modes_.find(mode)->second); }
 
 bool Channel::IsInvitedClient(int fd) {
-    for(std::vector<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
+    for(std::set<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
         if (*it == fd) {
             return (true);
         }
     }
     return (false);
 }
+
+void Channel::Invite(int fd) {
+    inviteClient_.insert(fd);
+}
+
 
 void Channel::AddClient(int fd) {
     ch_clients_[fd] = IS_NOT_OPERATOR;

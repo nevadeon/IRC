@@ -5,6 +5,7 @@
 #include "Client.hpp"
 #include <string>
 #include <vector>
+#include <set>
 
 class Server;
 
@@ -49,7 +50,9 @@ class Channel
         struct s_ch_info info_;
         std::map<char, bool> modes_;
         std::map<int, operator_status> ch_clients_;
-        std::vector<int> inviteClient_;
+        // std::vector<int> inviteClient_;
+        std::set<int> inviteClient_;
+        // set<int
 
     public:
         Channel(std::string& name, int fd_founder);
@@ -68,6 +71,7 @@ class Channel
         std::map<int, operator_status> &GetClients();
         bool GetModeState(char mode);
         bool IsInvitedClient(int fd);
+        void Invite(int fd);
         void AddClient(int fd);
         int FindClient(std::string& nickname, Server& server);
         int IsOperator(int fd);

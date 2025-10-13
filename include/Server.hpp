@@ -55,6 +55,7 @@
 #define ERR_NOTONCHANNEL "442"
 #define ERR_CHANOPRIVSNEEDED "482"
 #define ERR_USERNOTINCHANNEL "441"
+#define ERR_USERONCHANNEL "443"
 
 
 // Error messages
@@ -77,6 +78,7 @@
 #define MSG_NOTONCHANNEL "You're not on that channel"
 #define MSG_CHANOPRIVSNEEDED "You're not channel operator"
 #define MSG_USERNOTINCHANNEL "They aren't on that channel"
+#define MSG_USERONCHANNEL "is already on channel"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"

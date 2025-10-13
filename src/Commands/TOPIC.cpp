@@ -37,45 +37,56 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
         return (0);
     }
+    std::string chanName;
+    if (args[1][0] != '#')
+        chanName = std::string("#").append(args[1]);
+    else
+        chanName = args[1];
 
-    Channel channel = server.FindChanel(args[1]);
-    if (!channel.exist) {
+    Channel *channel = server.FindChanel(chanName);
+    if (!channel) {
         // 403     ERR_NOSUCHCHANNEL
         // "<channel name> :No such channel"
-        params.push_back(args[1]);
+        params.push_back(chanName);
         params.push_back(MSG_NOSUCHCHANNEL);
         server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHCHANNEL), params);
         return (0);
     }
 
-    // std::map<Client *, operator_status> clients = channel.GetClients();
+    // std::map<Client *, operator_status> clients = channel->GetClients();
     // if (clients.find(client) == clients.end()) {
-    if (channel.FindClient(client.GetNick()) == -1) {
+    if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
         // "<channel> :You're not on that channel"
-        std::cout << "test " << channel.exist << std::endl;
-        params.push_back(args[1]);
+        params.push_back(chanName);
         params.push_back(MSG_NOTONCHANNEL);
         server.Reply(fd, server.info_.servername, std::string(ERR_NOTONCHANNEL), params);
         return (0);
     }
 
     if (argsSize > 2) {
-        if (!channel.IsOperator(client.GetNick())) {
+        if (!channel->IsOperator(fd)) {
             // 482     ERR_CHANOPRIVSNEEDED
             // "<channel> :You're not channel operator"
-            params.push_back(args[1]);
+            params.push_back(chanName);
             params.push_back(MSG_CHANOPRIVSNEEDED);
             server.Reply(fd, server.info_.servername, std::string(ERR_CHANOPRIVSNEEDED), params);
             return (0);
         }
-        channel.SetTopic(args[1]);
+        channel->SetTopic(args[2]);
         // :<nick>!<user>@<host> TOPIC test :truc
+        std::map<int, operator_status> clientsMap = channel->GetClients();
+        std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+        params.push_back(channel->GetName());
+        params.push_back(channel->GetTopic());
+        for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+            server.Reply(it->first, info, "TOPIC", params);
+        }
         return (0);
     }
     params.push_back(client.GetNick());
-    params.push_back(args[1]);
-    params.push_back(channel.GetTopic());
+    params.push_back(chanName);
+    params.push_back(channel->GetTopic());
     server.Reply(fd, server.info_.servername, std::string("331"), params);
 
     return (0);

@@ -169,8 +169,8 @@ class Server
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
         int FindClient(std::string nickname);
-        Channel &FindChanel(std::string name);
-        static void WelcomeChanel(Server server, int fd, Channel &channel, Client *client);
+        Channel *FindChanel(std::string name);
+        static void WelcomeChanel(Server server, int fd, Channel &channel, Client client);
 
 };
 

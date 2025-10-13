@@ -9,10 +9,9 @@ Channel::Channel(std::string& name, int fd_founder)
     for (int i = 0; i < NUMBER_OF_SYMBOLS; i++)
         modes_[symbols[i]] = false;
     ch_clients_[fd_founder] = IS_OPERATOR;
-    exist = true;
 }
 
-Channel::Channel() :exist(false) {}
+Channel::Channel() {}
 
 Channel::~Channel() {}
 
@@ -33,7 +32,7 @@ std::string Channel::GetKey() { return (this->info_.ch_key); }
 
 std::string Channel::GetTopic() {
     std::string topic = this->info_.ch_topic;
-    if (topic.empty())
+    if (!topic.empty())
         return (this->info_.ch_topic);
     return (":");
 }
@@ -45,9 +44,9 @@ std::map<int, operator_status> &Channel::GetClients() { return (this->ch_clients
 
 bool Channel::GetModeState(char mode) { return (this->modes_.find(mode)->second); }
 
-bool Channel::IsInvitedClient(Client *client) {
+bool Channel::IsInvitedClient(int fd) {
     for(std::vector<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
-        if (*it == client->GetFD()) {
+        if (*it == fd) {
             return (true);
         }
     }

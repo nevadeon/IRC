@@ -95,13 +95,13 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
             }
 
             channel->AddClient(fd);
-            server.WelcomeChannel(server, fd, *channel, client);
+            // server.WelcomeChannel(fd, *channel);
             continue;
         }
 
         Channel newChan = Channel(chanName, fd);
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
-        server.WelcomeChannel(server, fd, newChan, client);
+        // server.WelcomeChannel(fd, *channel);
         
     }
     return (0);

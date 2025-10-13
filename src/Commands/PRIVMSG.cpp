@@ -52,7 +52,7 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
             return (0);
         }
 
-        // ch
+        server.SendToChannel(fd, ch, args[2]);
     } 
     else
     {

@@ -163,6 +163,7 @@ class Server
         void Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params);
         void NotifyAll(std::string& prefix, const std::string& code, std::vector<std::string>& params);
         void WelcomeServer(int fd);
+        void SendToChannel(int fd, Channel &ch, std::string &msg);
         
         bool IsNicknameAlreadyUsed(std::string& nickname);
         public:
@@ -176,7 +177,7 @@ class Server
         std::map<int, Client>& GetClients() { return clients_; }
         int FindClient(std::string& nickname);
         Channel *FindChannel(std::string& name);
-        void WelcomeChannel(Server& server, int fd, Channel &channel, Client &client);
+        void WelcomeChannel(int fd, Channel &channel);
 };
 
 #endif

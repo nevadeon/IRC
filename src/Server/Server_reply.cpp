@@ -102,15 +102,16 @@ void Server::WelcomeServer(int fd)
 // JOIN &local
 // JOIN #canal1,#canal2 motdepasse1,motdepasse2
 
-void Server::WelcomeChannel(Server &server, int fd, Channel &channel, Client &client) {
+void Server::WelcomeChannel(int fd, Channel &channel) {
     std::vector<std::string> params;
     std::map<int, operator_status> clientsMap = channel.GetClients();
+    Client client = clients_[fd];
     
     // :<nick>!<user>@<host> JOIN <channel>
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
-        server.Reply(it->first, info, "JOIN", params);
+        Reply(it->first, info, "JOIN", params);
     }
     params.clear();
     
@@ -118,7 +119,7 @@ void Server::WelcomeChannel(Server &server, int fd, Channel &channel, Client &cl
     params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back(channel.GetTopic());
-    server.Reply(fd, server.info_.servername, RPL_TOPIC, params);
+    Reply(fd, info_.servername, RPL_TOPIC, params);
     params.clear();
     
 
@@ -127,20 +128,20 @@ void Server::WelcomeChannel(Server &server, int fd, Channel &channel, Client &cl
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         if (it != clientsMap.begin())
             clientsList = clientsList.append(" ");
-        clientsList = clientsList.append((server.clients_[it->first]).GetNick());
+        clientsList = clientsList.append((clients_[it->first]).GetNick());
     }
     params.push_back(client.GetNick());
     params.push_back("=");
     params.push_back(channel.GetName());
     params.push_back(clientsList);
-    server.Reply(fd, server.info_.servername, std::string("353"), params);
+    Reply(fd, info_.servername, std::string("353"), params);
     params.clear();
     
     // :<servername> 366 <nick> <channel> :End of /NAMES list.
     params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back("End of /NAMES list.");
-    server.Reply(fd, server.info_.servername, std::string("366"), params);
+    Reply(fd, info_.servername, std::string("366"), params);
     params.clear();
     
 }
@@ -152,5 +153,22 @@ void Server::NotifyAll(std::string& prefix, const std::string& code, std::vector
     {
         if (it->second.IsAuthenticated())
             Reply(it->second.GetFD(), prefix, code, params);
+    }
+}
+
+void Server::SendToChannel(int fd, Channel& channel, std::string& msg)
+{
+    std::vector<std::string> params;
+
+    Client sender = clients_[fd];
+    std::string info = sender.GetNick() + "!" + sender.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(msg);
+    
+    std::map<int, operator_status>::iterator it = channel.GetClients().begin();
+    for (; it != channel.GetClients().end(); it++)
+    {
+        if (fd != it->first)
+            Reply(it->first, info, "PRIVMSG", params);
     }
 }

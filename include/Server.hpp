@@ -173,6 +173,7 @@ class Server
         int FindClient(std::string nickname);
         Channel *FindChanel(std::string name);
         static void WelcomeChanel(Server server, int fd, Channel &channel, Client client);
+        int SendToAll(int fd, Channel* channel);
 
 };
 

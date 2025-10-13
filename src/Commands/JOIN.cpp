@@ -41,14 +41,15 @@ void Server::WelcomeChanel(Server server, int fd, Channel &channel, Client clien
     std::vector<std::string> params;
     std::map<int, operator_status> clientsMap = channel.GetClients();
     
+    // :<nick>!<user>@<host> JOIN <channel>
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
-        server.Reply(it->first, info, channel.GetName(), params);
+        server.Reply(it->first, info, "JOIN", params);
     }
     params.clear();
     
     // :<servername> 332 <nick> <channel> :<topic>
-    // std::cout << "WelcomeChanel > channel.GetName() : " << channel.GetName() << std::endl;
     params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back(channel.GetTopic());
@@ -128,7 +129,6 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
     for(std::vector<std::string>::iterator it = listChanel.begin(); it != listChanel.end(); it++)
     {
-        std::cout << "first find (must return 0) :" << std::endl;
         std::string chanName;
         if ((*it)[0] != '#')
             chanName = std::string("#").append(*it);
@@ -179,15 +179,9 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
         }
 
         Channel newChan = Channel(chanName, fd);
-        WelcomeChanel(server, fd, newChan, client);
-        std::cout << "newChan name : " << newChan.GetName() << std::endl;
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
-        
+        WelcomeChanel(server, fd, newChan, client);
         
     }
     return (0);
-    
-
-
-    
 }

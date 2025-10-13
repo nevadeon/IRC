@@ -81,7 +81,6 @@ void Server::ParseInput(int fd, const char *buffer)
     listCommands = Util::split(bufferStr, delimiter);
     // commande en majuscule :
     std::string uc;
-    // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
 
     try
     {
@@ -92,12 +91,6 @@ void Server::ParseInput(int fd, const char *buffer)
             uc = cmd;
             for (size_t i = 0; i < uc.size(); ++i)
                 uc[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(uc[i])));
-            // std::cout << listCommandsToken.back()[0] << std::endl;
-            // std::cout << (sv_commands_.commands.find(cmd) != sv_commands_.commands.end()) << std::endl;
-
-            // for(std::vector<std::string>::iterator it2 = listCommandsToken.back().begin(); it2 != listCommandsToken.back().end(); it2++)
-            //     std::cout << listCommandsToken.back()[0] << " : " << *it2 << std::endl;
-
 
             if (CommandExists(fd, uc) && RegistrationCheck(fd, uc))
             {

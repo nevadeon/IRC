@@ -26,8 +26,6 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
     std::vector<std::string> params;
     Client client = server.clients_[fd];
 
-    // std::cout << "ptr : " << client << std::endl;
-
     if (args.size() < 2)
     {
         // ERR_NEEDMOREPARAMS (461)

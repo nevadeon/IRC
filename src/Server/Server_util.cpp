@@ -33,14 +33,9 @@ int Server::FindClient(std::string nickname) {
 }
 
 Channel* Server::FindChanel(std::string name) {
-    std::cout << "searsh chan" << std::endl;
     std::map<std::string, Channel>::iterator it = channels_.find(name);
-    if (it != channels_.end()) {
-        std::cout << "res chan, first :" << it->first << " name : " << it->second.GetName() << std::endl;
-        std::cout << "topic :" << it->second.GetTopic() << std::endl;
-
+    if (it != channels_.end())
         return &(it->second);
-    }
     else
-        return NULL;
+        return (NULL);
 }

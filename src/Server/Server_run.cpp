@@ -80,9 +80,6 @@ void Server::AcceptNewConnections() {
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
         clients_[client_fd] = new_client;
         
-        // std::cout << "pt <" << &new_client << "> " << std::endl;
-        
-
         std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
 }

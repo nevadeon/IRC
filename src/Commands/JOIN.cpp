@@ -101,6 +101,10 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
         Channel newChan = Channel(chanName, fd);
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
+        params.push_back(chanName);
+        params.push_back("+o");
+        params.push_back(server.clients_[fd].GetNick());
+        server.NotifyAll(server.info_.servername, "MODE", params);
         // server.WelcomeChannel(fd, *channel);
         
     }

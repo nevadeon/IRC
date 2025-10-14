@@ -8,7 +8,7 @@
 
 class Server;
 
-const char symbols[] = {'i', 't', 'k', 'o', 'l'};
+const char symbols[] = {'i', 't', 'k', 'l'};
 
 typedef enum e_operator_status
 {

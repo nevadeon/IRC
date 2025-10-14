@@ -1,7 +1,7 @@
 #include "Server.hpp"
 #include <set>
 
-static const char disallowedCharsArray[] = { ' ', ',', '*', '?', '!', '@' };
+static const char disallowedCharsArray[] = { ' ', ',', '*', '?', '!', '@', '.' };
 static const int disallowedCharsCount = sizeof(disallowedCharsArray) / sizeof(disallowedCharsArray[0]);
 std::set<char> disallowedChars(disallowedCharsArray, disallowedCharsArray + disallowedCharsCount);
 
@@ -31,16 +31,17 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
 {
     std::vector<std::string> params;
 
+    std::string old_nickname = server.clients_[fd].GetNick();
     if (args.size() < 2)
     {
         //431     ERR_NONICKNAMEGIVEN
         // ":No nickname given"
+        params.push_back(old_nickname);
         params.push_back(MSG_NONICKNAMEGIVEN);
         server.Reply(fd, server.info_.servername, ERR_NONICKNAMEGIVEN, params);
         return (0); 
     }
     std::string nickname = args[1];
-    std::string old_nickname = server.clients_[fd].GetNick();
     if (server.IsNicknameAlreadyUsed(nickname)) // Check if valid nickname (case-insensitive)
     {
         // 433     ERR_NICKNAMEINUSE
@@ -51,10 +52,12 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         server.Reply(fd, server.info_.servername, ERR_NICKNAMEINUSE, params);
         return (0);
     }
-    if (args.size() > 2 && !isValidNickname(nickname))
+
+    if (!isValidNickname(nickname))
     {
         //432 ERR_ERRONEUSNICKNAME
         // "<nick> :Erroneus nickname"
+        params.push_back(old_nickname);
         params.push_back(nickname);
         params.push_back(MSG_ERRONEUSNICKNAME);
         server.Reply(fd, server.info_.servername, ERR_ERRONEUSNICKNAME, params);

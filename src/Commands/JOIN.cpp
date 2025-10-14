@@ -2,7 +2,6 @@
 #include "ParseUtil.hpp"
 
 static bool isValidChannelName(std::string chanName) {
-    size_t lenChanName = chanName.size();
     if (chanName[0] != '#')
         chanName = std::string("#").append(chanName);
 

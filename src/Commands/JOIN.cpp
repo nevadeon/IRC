@@ -5,11 +5,16 @@ static bool isValidChannelName(std::string chanName) {
     size_t lenChanName = chanName.size();
     if (chanName[0] != '#')
         chanName = std::string("#").append(chanName);
+
+    size_t lenChanName = chanName.size();
+    unsigned char c;
     if (lenChanName < 2)
         return (false);
-    for (size_t i = 0; i < lenChanName; i++)
-        if (chanName[i] > 127 || chanName[i] < 32)
-            return (false);
+    for (size_t i = 0; i < lenChanName; i++) {
+        c = static_cast<unsigned char>(chanName[i]);
+        if (c > 127 || c < 32)
+        return (false);
+    }
     return (true);
 }
 

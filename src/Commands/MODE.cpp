@@ -74,7 +74,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     {
         // 324     RPL_CHANNELMODEIS
         // "<channel> <mode> <mode params>"
-        size_t nbMode = 4;
+        const size_t nbMode = 4;
         const char modeChars[nbMode] = { 'i', 't', 'k', 'l' };
         std::string info = "+";
         for (size_t i = 0; i < nbMode; ++i) {

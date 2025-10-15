@@ -180,6 +180,14 @@ class Server
         int FindClient(std::string& nickname);
         Channel *FindChannel(std::string& name);
         void WelcomeChannel(int fd, Channel &channel);
+
+
+        void IMode(int fd, Channel& channel, char sign);
+        void TMode(int fd, Channel& channel, char sign);
+        void OMode(int fd, Channel& channel, char sign, std::vector<std::string>& args);
+        void KMode(int fd, Channel& channel, char sign, std::vector<std::string>& args);
+        void LMode(int fd, Channel& channel, char sign, std::vector<std::string>& args);
+
 };
 
 #endif

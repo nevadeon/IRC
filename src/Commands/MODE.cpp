@@ -17,6 +17,148 @@
 // }
 
 
+std::map<char, bool> sign_value;
+
+
+// :<nick>!<user>@<host> MODE #channel +i
+void Server::IMode(int fd, Channel& channel, char sign) {
+    channel.SetMode('i', sign_value[sign]);
+
+    std::vector<std::string> params;
+    Client client = this->GetClients()[fd];
+
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(std::string(&sign) + "i");
+    std::map<int, operator_status> clientsMap = channel.GetClients();
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+         this->Reply(it->first, info, "MODE", params);
+    }
+}
+
+void Server::TMode(int fd, Channel& channel, char sign) {
+    channel.SetMode('t', sign_value[sign]);
+
+    std::vector<std::string> params;
+    Client client = this->GetClients()[fd];
+
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(std::string(&sign) + "t");
+    std::map<int, operator_status> clientsMap = channel.GetClients();
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+         this->Reply(it->first, info, "MODE", params);
+    }
+}
+
+void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>& args) {
+    std::vector<std::string> params;
+    if (args.size() < 4)
+    {
+        // 461     ERR_NEEDMOREPARAMS
+        // "<command> :Not enough parameters"
+        params.push_back("USER");
+        params.push_back(MSG_NEEDMOREPARAMS);
+        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        return ;
+    }
+
+    int targetFd = this->FindClient(args[3]);
+    if (targetFd == -1) {
+        // 401     ERR_NOSUCHNICK
+        // "<nickname> :No such nick/channel"
+        params.push_back(args[3]);
+        params.push_back(MSG_NOSUCHNICK);
+        this->Reply(fd, this->info_.servername, std::string(ERR_NOSUCHNICK), params);
+        return ;
+    }
+    std::map<int, operator_status> clientsMap = channel.GetClients();
+    if ( clientsMap.find(targetFd) == clientsMap.end()) {
+        // 441     ERR_USERNOTINCHANNEL
+        // "<nick> <channel> :They aren't on that channel"
+        params.push_back(this->GetClients()[targetFd].GetNick());
+        params.push_back(channel.GetName());
+        params.push_back(MSG_USERNOTINCHANNEL);
+        this->Reply(fd, this->info_.servername, std::string(ERR_USERNOTINCHANNEL), params);
+        return ;
+    }
+    //     typedef enum e_operator_status
+    // {
+    //     IS_NOT_OPERATOR = 0,
+    //     IS_OPERATOR = 1
+    // } operator_status ;
+    // channel.SetMode('', sign_value[sign]);
+    clientsMap[targetFd] = (operator_status)sign_value[sign];
+
+    Client client = this->GetClients()[fd];
+    // std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(std::string(&sign) + "o");
+    params.push_back(this->GetClients()[targetFd].GetNick());
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+        this->Reply(it->first, info, "MODE", params);
+    }
+}
+
+void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>& args) {
+    std::vector<std::string> params;
+    if (sign && args.size() < 4)
+    {
+        // 461     ERR_NEEDMOREPARAMS
+        // "<command> :Not enough parameters"
+        params.push_back("USER");
+        params.push_back(MSG_NEEDMOREPARAMS);
+        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        return ;
+    }
+
+    channel.SetMode('k', sign_value[sign]);
+    channel.SetKey(args[3]);
+
+    Client client = this->GetClients()[fd];
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(std::string(&sign) + "k");
+    if (sign)
+        params.push_back(args[3]);
+    std::map<int, operator_status> clientsMap = channel.GetClients();
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+         this->Reply(it->first, info, "MODE", params);
+    }
+}
+
+void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>& args) {
+    std::vector<std::string> params;
+    if (sign && args.size() < 4)
+    {
+        // 461     ERR_NEEDMOREPARAMS
+        // "<command> :Not enough parameters"
+        params.push_back("USER");
+        params.push_back(MSG_NEEDMOREPARAMS);
+        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        return ;
+    }
+
+    channel.SetMode('l', sign_value[sign]);
+    std::istringstream ss(args[3]);
+    int ret;
+    ss >> ret;
+    channel.SetLimit(ret);
+
+    Client client = this->GetClients()[fd];
+    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
+    params.push_back(channel.GetName());
+    params.push_back(std::string(&sign) + "k");
+    if (sign)
+        params.push_back(args[3]);
+    std::map<int, operator_status> clientsMap = channel.GetClients();
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
+         this->Reply(it->first, info, "MODE", params);
+    }
+}
+
+
 
 
 
@@ -56,7 +198,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
 
     
 
-    std::cout << "truc 1" << std::endl;
     // ERREUR A CETTE ENDROIT ???
     if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
@@ -66,7 +207,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         server.Reply(fd, server.info_.servername, std::string(ERR_NOTONCHANNEL), params);
         return (0);
     }
-    std::cout << "truc 2" << std::endl;
 
     // :blackhole.boys.com 324 Alice #test +kt truc\r\n
 
@@ -92,12 +232,10 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
             ss << channel->GetUserLimit();
             params.push_back(ss.str());
         }
-        std::cout << "truc 2.5" << std::endl;
         server.Reply(fd, server.info_.servername, std::string("324"), params);
         return (0);
     }
 
-    std::cout << "truc 3" << std::endl;
 
 
     if (channel->IsOperator(fd) != IS_OPERATOR)
@@ -111,27 +249,17 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     }
 
 
-    std::string modes = args[2];
-    // if (!IsKnownModeString(modes))
-    // {
-    //      ERR_UNKNOWNMODES
-        // 472 — ERR_UNKNOWNMODE
-
-        // Quand : le ou les flags passés ne sont pas des modes de channel connus par le serveur.
-        // Exemple : MODE #chan +z (si z n’est pas supporté).
-        // Action : renvoyer 472 <mode> "is unknown mode char to me".
-    // }
-
-
-
     // :<nick> MODE <channel> <modestring> [params]
-
+    
     // CHANGER TOPIC EN FONCTION DU MODE !!!!!!!!!!!!
     char sign = '|';
-    for (size_t i = 0; i < args[2].size(); i++)
+    sign_value['-'] = false;
+    sign_value['+'] = true;
+    std::string modes = args[2];
+    for (size_t i = 0; i < modes.size(); i++)
     {
         size_t isValide = 0;
-        char mode = args[2][i];
+        char mode = modes[i];
         switch (mode)
         {
             case '+':
@@ -141,39 +269,45 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 sign = '-';
                 break;
             case 'i':
-                // IMode();
+                
                 if (sign != '+' && sign != '-')
                     isValide = 2;
-                else
+                else {
                     std::cout << "mode i" << std::endl;
+                    server.IMode(fd, *channel, sign);
+                }
                 break;
             case 't':
-                // TMode();
                 if (sign != '+' && sign != '-')
                     isValide = 2;
-                else
+                else {
                     std::cout << "mode t" << std::endl;
+                    server.TMode(fd, *channel, sign);
+                }
                 break;
             case 'o':
-                // OMode();
                 if (sign != '+' && sign != '-')
                     isValide = 2;
-                else
+                else {
                     std::cout << "mode o" << std::endl;
+                    server.OMode(fd, *channel, sign, args);
+                }
                 break;
             case 'k':
-                // KMode();
                 if (sign != '+' && sign != '-')
                     isValide = 2;
-                else
+                else {
                     std::cout << "mode k" << std::endl;
+                    server.KMode(fd, *channel, sign, args);
+                }
                 break;
             case 'l':
-                // LMode();
                 if (sign != '+' && sign != '-')
                     isValide = 2;
-                else
+                else {
                     std::cout << "mode l" << std::endl;
+                    server.LMode(fd, *channel, sign, args);
+                }
                 break;
             default:
                 isValide = 1;
@@ -191,51 +325,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     }
     
 
-    // char sign = modes[0];
-    // (void)sign;
-    // char mode = modes[1];
-    // // For all modes, check if parameter is given
-    // // Then set appropriate field
-    // // ex: modes['i'] = true/false
-    // switch (mode)
-    // {
-    //     case 'i':
-    //         // IMode();
-    //         break;
-    //     case 't':
-    //         // TMode();
-    //         break;
-    //     case 'o':
-    //         // OMode();
-    //         break;
-    //     case 'k':
-    //         // KMode();
-    //         break;
-    //     case 'l':
-    //         // LMode();
-    //         goto default_label;
-    //         break;
-    //     default:
-    //         default_label:
-    //         // 472     ERR_UNKNOWNMODE
-    //         // "<char> :is unknown mode char to me"
-    //         params.push_back(&mode);
-    //         params.push_back(MSG_UNKNOWNMODE);
-    //         server.Reply(fd, server.info_.servername, std::string(ERR_UNKNOWNMODE), params);
-    //         return (0);
-    //         // break;
-    // }
+
     return (0);
 }
 
-// 401 — ERR_NOSUCHNICK
-
-// Quand : on tente d’appliquer un mode qui requiert un nick (ex +o nick) et le nick n’existe pas sur le réseau / serveur local.
-// Exemple : MODE #chan +o utilisateur_inexistant
-// Action : renvoyer 401 <nick> "No such nick/channel".
-
-// 441 — ERR_USERNOTINCHANNEL
-
-// Quand : on tente de modifier l’état (ex +o/-o, +v/-v) d’un utilisateur qui n’est pas présent dans le channel.
-// Exemple : MODE #chan +o nick (nick n’est pas membre du channel).
-// Action : renvoyer 441 <nick> <channel> "They aren't on that channel".

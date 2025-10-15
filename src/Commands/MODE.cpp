@@ -82,7 +82,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 info = info.append(&modeChars[i]);
         }
         params.push_back(client.GetNick());
-        params.push_back(MSG_NOTONCHANNEL);
+        params.push_back(MSG_NOTONCHANNEL)
         if (info.size() > 1)
             params.push_back(info);
         if (channel->GetModeState('k'))

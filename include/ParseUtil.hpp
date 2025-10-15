@@ -20,6 +20,8 @@ class Util
         static std::vector<std::string> split(std::string& s, const std::string& delimiter);
         static std::string parsePassword(const char *password);
         static std::vector<std::string> parseCommand(std::string str);
+        static bool isValidChannelName(std::string &channel_name);
+        static bool isValidNickname(const std::string& nickname);
 };
 
 #endif

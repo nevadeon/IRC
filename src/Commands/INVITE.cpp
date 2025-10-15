@@ -21,24 +21,21 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
         return (0);
     }
-
-    std::string chanName;
-    if (args[2][0] != '#')
-        chanName = std::string("#").append(args[2]);
-    else
-        chanName = args[2];
-    Channel *channel = server.FindChannel(chanName);
     int clientFd = server.FindClient(args[1]);
-    std::cout << clientFd << " " << channel << std::endl;
-    if (clientFd != -1 || !channel) {
+    if (clientFd != -1) {
         // 401     ERR_NOSUCHNICK
         // "<nickname> :No such nick/channel"
         params.push_back(server.clients_[fd].GetNick());
         params.push_back(MSG_NOSUCHNICK);
         server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHNICK), params);
-        return (0);
     }
 
+    std::string chanName;
+    if (args[1][0] != '#')
+        chanName = std::string("#").append(args[1]);
+    else
+        chanName = args[1];
+    Channel *channel = server.FindChannel(chanName);
     if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
         // "<channel> :You're not on that channel"
@@ -67,12 +64,6 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    channel->Invite(clientFd);
-
     // :<inviteur>!<user>@<host> INVITE <nick> <channel>
-    std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
-    params.push_back(client.GetNick());
-    params.push_back(chanName);
-    server.Reply(fd, info, "INVITE", params);
     return (0);
 }

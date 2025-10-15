@@ -58,7 +58,6 @@
 #define ERR_CHANOPRIVSNEEDED "482"
 #define ERR_USERNOTINCHANNEL "441"
 #define ERR_USERONCHANNEL "443"
-#define ERR_UNKNOWNMODE "472"
 
 // Error messages
 #define MSG_UNKNOWNCOMMAND "Unknown command"
@@ -82,7 +81,6 @@
 #define MSG_USERNOTINCHANNEL "They aren't on that channel"
 #define MSG_USERONCHANNEL "is already on channel"
 #define MSG_CANNOTSENDTOCHAN "Cannot send to channel (you have not joined)"
-#define MSG_UNKNOWNMODE "is unknown mode char to me"
 
 #define SERVERNAME "blackhole.boys.com"
 #define REALNAME "Blackhole Boys"

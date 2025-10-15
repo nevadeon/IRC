@@ -106,7 +106,7 @@ void Server::WelcomeChannel(int fd, Channel &channel) {
     std::vector<std::string> params;
     std::map<int, operator_status> clientsMap = channel.GetClients();
     Client client = clients_[fd];
-
+    
     // :<nick>!<user>@<host> JOIN <channel>
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
@@ -114,7 +114,7 @@ void Server::WelcomeChannel(int fd, Channel &channel) {
         Reply(it->first, info, "JOIN", params);
     }
     params.clear();
-
+    
     // :<servername> 332 <nick> <channel> :<topic>
     params.push_back(client.GetNick());
     params.push_back(channel.GetName());
@@ -122,14 +122,12 @@ void Server::WelcomeChannel(int fd, Channel &channel) {
     Reply(fd, info_.servername, RPL_TOPIC, params);
     params.clear();
     
+
     // :<servername> 353 <nick> = <channel> :@membre1 membre2 ...
-    // changer ca pour mettre les gents op avec @
-    std::string clientsList;
+    std::string clientsList = "@";
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         if (it != clientsMap.begin())
             clientsList = clientsList.append(" ");
-        if (channel.GetClients()[it->first])
-            clientsList = clientsList.append("@");
         clientsList = clientsList.append((clients_[it->first]).GetNick());
     }
     params.push_back(client.GetNick());
@@ -138,13 +136,14 @@ void Server::WelcomeChannel(int fd, Channel &channel) {
     params.push_back(clientsList);
     Reply(fd, info_.servername, std::string("353"), params);
     params.clear();
-
+    
     // :<servername> 366 <nick> <channel> :End of /NAMES list.
     params.push_back(client.GetNick());
     params.push_back(channel.GetName());
     params.push_back("End of /NAMES list.");
     Reply(fd, info_.servername, std::string("366"), params);
     params.clear();
+    
 }
 
 void Server::NotifyAll(std::string& prefix, const std::string& code, std::vector<std::string>& params)

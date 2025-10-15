@@ -105,8 +105,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
         Channel newChan = Channel(chanName, fd);
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
-        // server.WelcomeChannel(fd, *channel);
-        
+        server.WelcomeChannel(fd, newChan);
     }
     return (0);
 }

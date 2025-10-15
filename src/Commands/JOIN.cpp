@@ -1,22 +1,6 @@
 #include "Server.hpp"
 #include "ParseUtil.hpp"
 
-static bool isValidChannelName(std::string chanName) {
-    if (chanName[0] != '#')
-        chanName = std::string("#").append(chanName);
-
-    size_t lenChanName = chanName.size();
-    unsigned char c;
-    if (lenChanName < 2)
-        return (false);
-    for (size_t i = 0; i < lenChanName; i++) {
-        c = static_cast<unsigned char>(chanName[i]);
-        if (c > 127 || c < 32)
-        return (false);
-    }
-    return (true);
-}
-
 int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& args)
 {
     std::vector<std::string> params;
@@ -28,25 +12,25 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
         // : paramètres manquants
         params.push_back("JOIN");
         params.push_back(MSG_NEEDMOREPARAMS);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        server.Reply(fd, server.info_.servername, ERR_NEEDMOREPARAMS, params);
         return (0);
     }
 
-    if (!isValidChannelName(args[1])) {
+    std::cout << args[1] << std::endl;
+    if (!Util::isValidChannelName(args[1])) {
         // ERR_BADCHANMASK 476
 
         params.push_back(client.GetNick());
         params.push_back(args[1]);
         params.push_back(MSG_BADCHANMASK);
-        server.Reply(fd, server.info_.servername, std::string(ERR_BADCHANMASK), params);
+        server.Reply(fd, server.info_.servername, ERR_BADCHANMASK, params);
         return (0);
     }
 
-    std::vector<std::string> listChannel;
+    std::vector<std::string> listChannel = Util::split(args[1], ",");
     std::vector<std::string> listMDP;
     std::vector<std::string>::iterator itMDP;
 
-    listChannel = Util::split(args[1], ",");
     if (args.size() > 2) {
         listMDP = Util::split(args[2], ",");
         itMDP = listMDP.begin();
@@ -68,7 +52,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
                 params.push_back(client.GetNick());
                 params.push_back(channel->GetName());
                 params.push_back(MSG_INVITEONLYCHAN);
-                server.Reply(fd, server.info_.servername, std::string(ERR_INVITEONLYCHAN), params);
+                server.Reply(fd, server.info_.servername, ERR_INVITEONLYCHAN, params);
                 continue;
             }
 
@@ -80,7 +64,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
                     params.push_back(client.GetNick());
                     params.push_back(channel->GetName());
                     params.push_back(MSG_BADCHANNELKEY);
-                    server.Reply(fd, server.info_.servername, std::string(ERR_BADCHANNELKEY), params);
+                    server.Reply(fd, server.info_.servername, ERR_BADCHANNELKEY, params);
                     itMDP++;
                     continue;
                 }
@@ -94,7 +78,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
                 params.push_back(client.GetNick());
                 params.push_back(channel->GetName());
                 params.push_back(MSG_CHANNELISFULL);
-                server.Reply(fd, server.info_.servername, std::string(ERR_CHANNELISFULL), params);
+                server.Reply(fd, server.info_.servername, ERR_CHANNELISFULL, params);
                 continue;
             }
 

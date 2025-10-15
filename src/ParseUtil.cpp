@@ -1,4 +1,13 @@
 #include "ParseUtil.hpp"
+#include <set>
+
+static const char disallowedCharsArray[] = { ' ', ',', '*', '?', '!', '@', '.' };
+static const int disallowedCharsCount = sizeof(disallowedCharsArray) / sizeof(disallowedCharsArray[0]);
+std::set<char> disallowedChars(disallowedCharsArray, disallowedCharsArray + disallowedCharsCount);
+
+static const char disallowedStartCharsArray[] = { '$', ':', '#', '&', '+', '%', '~', '@', '!' };
+static const int disallowedStartCharsCount = sizeof(disallowedStartCharsArray) / sizeof(disallowedStartCharsArray[0]);
+std::set<char> disallowedStartChars(disallowedStartCharsArray, disallowedStartCharsArray + disallowedStartCharsCount);
 
 bool Util::isNumber(const char *str)
 {
@@ -72,4 +81,35 @@ std::vector<std::string> Util::parseCommand(std::string str)
         listArg.push_back(str);
 
     return listArg;
+}
+
+bool Util::isValidChannelName(std::string &chanName) {
+    if (chanName[0] != '#')
+    {
+        std::cout << "caca\n";
+        return false;
+    }
+
+    size_t lenChanName = chanName.size();
+    unsigned char c;
+    if (lenChanName < 2)
+        return (false);
+    for (size_t i = 0; i < lenChanName; i++) {
+        c = static_cast<unsigned char>(chanName[i]);
+        if (c > 127 || c < 32)
+        return (false);
+    }
+    return (true);
+}
+
+bool Util::isValidNickname(const std::string& nickname) {
+    if (nickname.empty()) return false;
+
+    for (std::string::size_type i = 0; i < nickname.length(); ++i) {
+        if (disallowedChars.find(nickname[i]) != disallowedChars.end()) return false;
+    }
+
+    if (disallowedStartChars.find(nickname[0]) != disallowedStartChars.end()) return false;
+
+    return true;
 }

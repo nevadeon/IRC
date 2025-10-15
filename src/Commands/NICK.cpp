@@ -1,25 +1,5 @@
 #include "Server.hpp"
-#include <set>
 
-static const char disallowedCharsArray[] = { ' ', ',', '*', '?', '!', '@', '.' };
-static const int disallowedCharsCount = sizeof(disallowedCharsArray) / sizeof(disallowedCharsArray[0]);
-std::set<char> disallowedChars(disallowedCharsArray, disallowedCharsArray + disallowedCharsCount);
-
-static const char disallowedStartCharsArray[] = { '$', ':', '#', '&', '+', '%', '~', '@', '!' };
-static const int disallowedStartCharsCount = sizeof(disallowedStartCharsArray) / sizeof(disallowedStartCharsArray[0]);
-std::set<char> disallowedStartChars(disallowedStartCharsArray, disallowedStartCharsArray + disallowedStartCharsCount);
-
-bool isValidNickname(const std::string& nickname) {
-    if (nickname.empty()) return false;
-
-    for (std::string::size_type i = 0; i < nickname.length(); ++i) {
-        if (disallowedChars.find(nickname[i]) != disallowedChars.end()) return false;
-    }
-
-    if (disallowedStartChars.find(nickname[0]) != disallowedStartChars.end()) return false;
-
-    return true;
-}
 
 /*
     ARGS: [COMMAND = NICK] <nick>
@@ -53,7 +33,7 @@ int Server::Commands::NICK(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    if (!isValidNickname(nickname))
+    if (!Util::isValidNickname(nickname))
     {
         //432 ERR_ERRONEUSNICKNAME
         // "<nick> :Erroneus nickname"

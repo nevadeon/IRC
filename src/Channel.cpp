@@ -45,7 +45,7 @@ std::map<int, operator_status> &Channel::GetClients() { return (this->ch_clients
 bool Channel::GetModeState(char mode) { return (this->modes_.find(mode)->second); }
 
 bool Channel::IsInvitedClient(int fd) {
-    for(std::vector<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
+    for(std::set<int>::iterator it = inviteClient_.begin(); it != inviteClient_.end(); it++) {
         if (*it == fd) {
             return (true);
         }
@@ -53,12 +53,19 @@ bool Channel::IsInvitedClient(int fd) {
     return (false);
 }
 
+void Channel::Invite(int fd) {
+    inviteClient_.insert(fd);
+}
+
+
 void Channel::AddClient(int fd) {
     ch_clients_[fd] = IS_NOT_OPERATOR;
 }
 
 int Channel::FindClient(std::string &nickname, Server &server) {
+    std::cout << "test : " << nickname << std::endl;
     for(std::map<int, operator_status>::iterator it = ch_clients_.begin(); it != ch_clients_.end(); it++) {
+        std::cout << "name : " << server.GetClients()[it->first].GetNick() << std::endl;
         if (server.GetClients()[it->first].GetNick() == nickname) {
             return (it->first);
         }

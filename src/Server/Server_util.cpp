@@ -33,9 +33,10 @@ int Server::FindClient(std::string& nickname) {
 }
 
 Channel* Server::FindChannel(std::string& name) {
-    std::map<std::string, Channel>::iterator it = channels_.find(name);
-    if (it != channels_.end())
-        return &(it->second);
+    // std::map<std::string, Channel>::iterator it = channels_.find(name);
+    // if (it != channels_.end())
+    if (channels_.count(name) > 0)
+        return &(channels_[name]);
     else
         return (NULL);
 }

@@ -38,6 +38,7 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         if (!server.channels_.count(ch_name))
         {
             params.push_back(server.clients_[fd].GetNick());
+            params.push_back(ch_name.substr(1));
             params.push_back(MSG_NOSUCHNICK);
             server.Reply(fd, server.info_.servername, ERR_NOSUCHNICK, params);
             return (0);
@@ -66,8 +67,9 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
             // 401     ERR_NOSUCHNICK
             // "<nickname> :No such nick/channel"
             params.push_back(server.clients_[fd].GetNick());
+            params.push_back(args[1]);
             params.push_back(MSG_NOSUCHNICK);
-            server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHNICK), params);
+            server.Reply(fd, server.info_.servername, ERR_NOSUCHNICK, params);
         }
     }
     return (0);

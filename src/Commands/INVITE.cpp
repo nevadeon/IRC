@@ -22,11 +22,7 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    std::string chanName;
-    if (args[2][0] != '#')
-        chanName = std::string("#").append(args[2]);
-    else
-        chanName = args[2];
+    std::string chanName = args[2];
     Channel *channel = server.FindChannel(chanName);
     int clientFd = server.FindClient(args[1]);
     std::cout << clientFd << " " << channel << std::endl;

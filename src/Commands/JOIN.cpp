@@ -38,11 +38,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
     for(std::vector<std::string>::iterator it = listChannel.begin(); it != listChannel.end(); it++)
     {
-        std::string chanName;
-        if ((*it)[0] != '#')
-            chanName = std::string("#").append(*it);
-        else
-            chanName = *it;
+        std::string chanName = *it;
 
         Channel *channel = server.FindChannel(chanName);
         if (channel) {

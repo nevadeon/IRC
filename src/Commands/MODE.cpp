@@ -128,7 +128,7 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
         // "<command> :Not enough parameters"
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
-        this->Reply(fd, this->info_.servername, std::sthring(ERR_NEEDMOREPARAMS), params);
+        this->Reply(fd, this->info_.servername, (ERR_NEEDMOREPARAMS), params);
         return ;
     }
 
@@ -178,15 +178,13 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL
         // "<channel name> :No such channel"
+        params.push_back(server.clients_[fd].GetNick());
         params.push_back(chanName);
         params.push_back(MSG_NOSUCHCHANNEL);
         server.Reply(fd, server.info_.servername, (ERR_NOSUCHCHANNEL), params);
         return (0);
     }
 
-    
-
-    // ERREUR A CETTE ENDROIT ???
     if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
         // "<channel> :You're not on that channel"
@@ -197,7 +195,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     }
 
     // :blackhole.boys.com 324 Alice #test +kt truc\r\n
-
     if (args.size() < 3)
     {
         // 324     RPL_CHANNELMODEIS

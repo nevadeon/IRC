@@ -13,8 +13,6 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
     std::vector<std::string> params;
     Client client = server.clients_[fd];
 
-    std::cout << "test1" << std::endl;
-
     if (args.size() < 3) {
         // 461     ERR_NEEDMOREPARAMS
         // "<command> :Not enough parameters"
@@ -24,13 +22,9 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    std::cout << "test2" << std::endl;
-
-
     std::string chanName = args[2];
     Channel *channel = server.FindChannel(chanName);
     int clientFd = server.FindClient(args[1]);
-    std::cout << clientFd << " " << channel << std::endl;
     if (clientFd == -1 || !channel) {
         // 401     ERR_NOSUCHNICK
         // "<nickname> :No such nick/channel"
@@ -39,8 +33,6 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHNICK), params);
         return (0);
     }
-
-    std::cout << "test3" << std::endl;
 
     if (channel->FindClient(client.GetNick(), server) == -1) {
         // 442     ERR_NOTONCHANNEL
@@ -51,9 +43,6 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    std::cout << "test4" << std::endl;
-
-
     if (!channel->IsOperator(fd)) {
         // 482     ERR_CHANOPRIVSNEEDED
         // "<channel> :You're not channel operator"
@@ -63,8 +52,6 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
     
-    std::cout << "test5" << std::endl;
-
     if (channel->FindClient(server.clients_[clientFd].GetNick(), server) != -1) {
         // 443     ERR_USERONCHANNEL
         // "<user> <channel> :is already on channel"
@@ -75,9 +62,7 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    std::cout << "test6" << std::endl;
     channel->Invite(clientFd);
-    std::cout << "test7" << std::endl;
 
     // :<inviteur>!<user>@<host> INVITE <nick> <channel>
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;

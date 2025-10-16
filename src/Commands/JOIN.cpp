@@ -99,7 +99,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
             }
 
             channel->AddClient(fd);
-            // server.WelcomeChannel(fd, *channel);
+            server.WelcomeChannel(fd, *channel);
             continue;
         }
 

@@ -29,10 +29,10 @@ bool Server::CommandExists(int fd, const std::string& cmd)
 
     if (sv_commands_.commands.find(cmd) == sv_commands_.commands.end()) {
         //ERR_UNKNOWNCOMMAND
-        errorParams.push_back("MSG_UNKNOWNCOMMAND");
+        errorParams.push_back(clients_[fd].GetNick());
         errorParams.push_back(cmd);
         errorParams.push_back(MSG_UNKNOWNCOMMAND);
-        this->Reply(fd, this->info_.servername, ERR_UNKNOWNCOMMAND, errorParams);
+        Reply(fd, info_.servername, ERR_UNKNOWNCOMMAND, errorParams);
         return ( false );
     }
     return ( true );
@@ -51,6 +51,7 @@ bool Server::RegistrationCheck(int fd, const std::string& cmd)
         && !(cmd == "PASS" || cmd == "PING" || cmd == "CAP"))
     {
             //ERR_NOTREGISTERED
+            errorParams.push_back(client.GetNick());
             errorParams.push_back(MSG_NOTREGISTERED);
             Reply(fd, info_.servername, ERR_NOTREGISTERED, errorParams);
             return ( false );

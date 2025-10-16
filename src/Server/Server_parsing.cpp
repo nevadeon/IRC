@@ -3,7 +3,8 @@
 
 // a supprimer
 // fonction de debug
-void debugPrint(const std::string& s) {
+void debugPrint(const std::string& s)
+{
     for (size_t i = 0; s[i]; i++)
     {
         switch (s[i]) {
@@ -110,7 +111,6 @@ void Server::ParseInput(int fd, const char *buffer)
         std::cerr << e.what() << std::endl;
         throw e;
     }
-    
 
     debugPrint(buffer);
 }

@@ -89,6 +89,8 @@
 #define REALNAME "Blackhole Boys"
 #define VERSION "dev"
 
+#define BOT_FD 4242
+
 struct s_sv_info
 {
     std::string servername;
@@ -134,9 +136,9 @@ class Server
                 static int QUIT(Server& serv, int fd, std::vector<std::string>& args);
                 static int TOPIC(Server& serv, int fd, std::vector<std::string>& args);
                 static int MODE(Server& server, int fd, std::vector<std::string>& args);
-                
+
             public:
-                std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;     
+                std::map<std::string, int(*)(Server&, int, std::vector<std::string>&)> commands;
         };
 
         Commands sv_commands_;
@@ -149,6 +151,7 @@ class Server
 
         volatile static std::sig_atomic_t running;
 
+        void InitBot();
         void InitListeningSocket();
         void InitEpollInstance();
         static void HandleSignals();
@@ -167,15 +170,15 @@ class Server
         void NotifyAll(std::string& prefix, const std::string& code, std::vector<std::string>& params);
         void WelcomeServer(int fd);
         void SendToChannel(int fd, Channel &ch, std::string &msg);
-        
+
         bool IsNicknameAlreadyUsed(std::string& nickname);
         public:
         Server(uint16_t port, std::string& pass);
-        
+
         void Init();
         void Run();
         void CloseFds();
-        
+
         std::string& GetPassword();
         std::map<int, Client>& GetClients() { return clients_; }
         int FindClient(std::string& nickname);
@@ -189,6 +192,7 @@ class Server
         void KMode(int fd, Channel& channel, char sign, std::vector<std::string>& args);
         void LMode(int fd, Channel& channel, char sign, std::vector<std::string>& args);
 
+        void botReply(Channel& channel);
 };
 
 #endif

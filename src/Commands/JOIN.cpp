@@ -66,7 +66,6 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
                 }
                 itMDP++;
             }
-            
 
             if (channel->GetModeState('l') && (channel->GetUserLimit() < channel->GetClients().size())) {
                 // 471     ERR_CHANNELISFULL
@@ -84,6 +83,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
         }
 
         Channel newChan = Channel(chanName, fd);
+        newChan.AddClient(BOT_FD);
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
         server.WelcomeChannel(fd, newChan);
     }

@@ -79,7 +79,7 @@ void Server::AcceptNewConnections() {
         new_client.SetFD(client_fd);
         new_client.SetIpAddress(inet_ntoa(client_addr.sin_addr));
         clients_[client_fd] = new_client;
-        
+
         std::cout << "Client <" << client_fd << "> " << GREEN << "Connected" << RESET << std::endl;
     }
 }
@@ -114,10 +114,6 @@ void Server::ReceiveNewData(int fd) {
             return ;
         } else {
             buffer[fd][nread] = '\0';
-            // TODO :
-            // append data to per client buffer and extract complete lines (CRLF\r\n)
-            // handle case when data is not complete (wait)
-            // handle case when multiple commands are received in one read
             // parseInput(fd, buffer);
             str[fd] = str[fd].append(buffer[fd]);
             buffer_len[fd] = strlen(buffer[fd]);

@@ -84,9 +84,7 @@ std::vector<std::string> Util::parseCommand(std::string str)
 }
 
 bool Util::isValidChannelName(std::string &chanName) {
-    if (chanName[0] != '#')
-    {
-        std::cout << "caca\n";
+    if (chanName[0] != '#') {
         return false;
     }
 

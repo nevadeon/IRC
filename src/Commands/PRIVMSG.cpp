@@ -54,7 +54,13 @@ int Server::Commands::PRIVMSG(Server& server, int fd, std::vector<std::string>& 
         }
 
         server.SendToChannel(fd, ch, args[2]);
-    } 
+
+        std::string msg(args[2]);
+        // std::cout << msg << std::endl;
+        if (msg.substr(0, 5) == ":!bot" || msg.substr(0, 4) == "!bot") {
+            server.botReply(ch);
+        }
+    }
     else
     {
         if ((clientFd = server.FindClient(args[1])) != -1) {

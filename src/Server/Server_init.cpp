@@ -5,14 +5,17 @@ Server::Server(uint16_t port, std::string& pass) : port_(port), socket_fd_(-1), 
     info_.password = pass;
 }
 
-void Server::Init() {
+void Server::Init()
+{
     HandleSignals();
     InitListeningSocket();
     InitEpollInstance();
+    InitBot();
     std::cout << "Server <" << socket_fd_ << "> " << GREEN << "Connected" << RESET << std::endl;
 }
 
-void Server::HandleSignals() {
+void Server::HandleSignals()
+{
     struct sigaction sa;
     memset(&sa, 0 , sizeof(sa));
     sigemptyset(&sa.sa_mask);
@@ -27,12 +30,14 @@ void Server::HandleSignals() {
         throw std::runtime_error("failed to set sigaction for SIGINT");
 }
 
-void Server::SignalHandler(int signum) {
+void Server::SignalHandler(int signum)
+{
     (void)signum;
     Server::running = false;
 }
 
-void Server::InitListeningSocket() {
+void Server::InitListeningSocket()
+{
     // === socket initialization ===
     // a socket is a form of IPC (inter process communication) just like
     // pipes(pipex), threads(philosopher) and signals(minitalk)
@@ -87,7 +92,8 @@ void Server::InitListeningSocket() {
         throw std::runtime_error("failed to set socket on listening mode");
 }
 
-void Server::InitEpollInstance() {
+void Server::InitEpollInstance()
+{
     // Epoll is a way to tell linux kernel to survey a list of file descriptors.
     // We create an epoll instance and add our socket fd so everytime a client
     // tries to connect the epoll event loop will wake our server up
@@ -104,4 +110,18 @@ void Server::InitEpollInstance() {
     ev.data.fd = socket_fd_;
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, socket_fd_, &ev) == -1)
         throw std::runtime_error("failed to add socket fd to epoll");
+}
+
+void Server::InitBot()
+{
+    Client botClient;
+    user_info bot_info;
+    bot_info.hostname = "hostname";
+    bot_info.realname = "realname";
+    bot_info.servername = "servername";
+    bot_info.username = "username";
+    botClient.SetUserInfo(bot_info);
+    std::string bot_nick("league-experience");
+    botClient.SetNick(bot_nick);
+    clients_[BOT_FD] = botClient;
 }

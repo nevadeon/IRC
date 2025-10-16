@@ -13,6 +13,7 @@
 */
 void Server::Reply(int fd, std::string& prefix, const std::string& code, std::vector<std::string>& params)
 {
+    if (fd == BOT_FD) return;
     std::string str = ":" + prefix + " " + code; //+ params + ":" +  trailing
     for(std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
     {
@@ -80,7 +81,7 @@ void Server::WelcomeServer(int fd)
     -> If not
         -> Create a channel with the corresponding client as founder
     -> If exists,
-        -> If +k, 
+        -> If +k,
 */
 
 // JOIN <channel>{,<channel>} [<key>{,<key>}]
@@ -121,7 +122,7 @@ void Server::WelcomeChannel(int fd, Channel &channel) {
     params.push_back(channel.GetTopic());
     Reply(fd, info_.servername, RPL_TOPIC, params);
     params.clear();
-    
+
     // :<servername> 353 <nick> = <channel> :@membre1 membre2 ...
     // changer ca pour mettre les gents op avec @
     std::string clientsList;
@@ -165,7 +166,7 @@ void Server::SendToChannel(int fd, Channel& channel, std::string& msg)
     std::string info = sender.GetNick() + "!" + sender.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     params.push_back(msg);
-    
+
     std::map<int, operator_status>::iterator it = channel.GetClients().begin();
     for (; it != channel.GetClients().end(); it++)
     {

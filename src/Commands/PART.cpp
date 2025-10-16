@@ -51,7 +51,7 @@ int Server::Commands::PART(Server& server, int fd, std::vector<std::string>& arg
             return (0);
         }
 
-        std::map<int, operator_status> clientsMap = channel->GetClients();
+        std::map<int, operator_status> &clientsMap = channel->GetClients();
         
         std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
         params.push_back(channel->GetName());

@@ -104,7 +104,7 @@ void Server::WelcomeServer(int fd)
 
 void Server::WelcomeChannel(int fd, Channel &channel) {
     std::vector<std::string> params;
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     Client client = clients_[fd];
 
     // :<nick>!<user>@<host> JOIN <channel>

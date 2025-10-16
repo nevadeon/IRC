@@ -29,7 +29,7 @@ void Server::IMode(int fd, Channel& channel, char sign) {
 
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(&sign) + "i");
+    params.push_back(std::string(1, sign) + "i");
     std::map<int, operator_status> clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
@@ -44,7 +44,7 @@ void Server::TMode(int fd, Channel& channel, char sign) {
 
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(&sign) + "t");
+    params.push_back(std::string(1, sign) + "t");
     std::map<int, operator_status> clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
@@ -89,7 +89,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
     // std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(&sign) + "o");
+    params.push_back(std::string(1, sign) + "o");
     params.push_back(this->GetClients()[targetFd].GetNick());
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         this->Reply(it->first, info, "MODE", params);
@@ -114,7 +114,7 @@ void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>
     Client client = this->GetClients()[fd];
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(&sign) + "k");
+    params.push_back(std::string(1, sign) + "k");
     if (sign)
         params.push_back(args[3]);
     std::map<int, operator_status> clientsMap = channel.GetClients();
@@ -144,7 +144,7 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     Client client = this->GetClients()[fd];
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(&sign) + "k");
+    params.push_back(std::string(1, sign) + "k");
     if (sign)
         params.push_back(args[3]);
     std::map<int, operator_status> clientsMap = channel.GetClients();

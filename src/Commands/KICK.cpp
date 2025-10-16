@@ -44,9 +44,12 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
         server.Reply(fd, server.info_.servername, std::string(ERR_CHANOPRIVSNEEDED), params);
         return (0);
     }
+    
 
     int targetFd = server.FindClient(target_nick);
-    if (targetFd != -1 || channel->GetClients().find(targetFd) == channel->GetClients().end()) {
+    std::cout << targetFd << std::endl;
+    std::cout << channel->GetClients().count(targetFd) << std::endl;
+    if (targetFd == -1 || channel->GetClients().count(targetFd) == 0) {
         // 441     ERR_USERNOTINCHANNEL
         // "<nick> <channel> :They aren't on that channel"
         params.push_back(client.GetNick());
@@ -57,17 +60,30 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     }
 
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
-    std::map<int, operator_status> clientsMap = channel->GetClients();
+    std::map<int, operator_status> &clientsMap = channel->GetClients();
     params.push_back(channel->GetName());
     params.push_back(target_nick);
     params.push_back(reason);
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         server.Reply(it->first, info, "KICK", params);
     }
-    clientsMap.erase(fd);
+    clientsMap.erase(targetFd);
 
+
+    std::cout << "----------------------------" << std::endl;
+    for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++)
+        std::cout << server.GetClients()[it->first].GetNick() << std::endl;
     // for(std::map<std::string, Channel>::iterator it = server.channels_.begin(); it != server.channels_.end(); it++)
     //     it->second.GetClients().erase(fd);
 
-    return 0;
+    std::cout << "----------------------------" << std::endl;
+
+    std::map<int, operator_status> clientsMapTest = channel->GetClients();
+
+    for(std::map<int, operator_status>::iterator it = clientsMapTest.begin(); it != clientsMapTest.end(); it++)
+        std::cout << server.GetClients()[it->first].GetNick() << std::endl;
+    std::cout << "----------------------------" << std::endl;
+
+
+    return (0);
 }

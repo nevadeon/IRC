@@ -15,10 +15,7 @@
 //         && (str[0] == '+' || str[0] == '-')
 //         && (allowed_modes.count(str[1])));
 // }
-
-
 std::map<char, bool> sign_value;
-
 
 // :<nick>!<user>@<host> MODE #channel +i
 void Server::IMode(int fd, Channel& channel, char sign) {
@@ -59,7 +56,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
         // "<command> :Not enough parameters"
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
-        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        this->Reply(fd, this->info_.servername, (ERR_NEEDMOREPARAMS), params);
         return ;
     }
 
@@ -69,7 +66,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
         // "<nickname> :No such nick/channel"
         params.push_back(args[3]);
         params.push_back(MSG_NOSUCHNICK);
-        this->Reply(fd, this->info_.servername, std::string(ERR_NOSUCHNICK), params);
+        this->Reply(fd, this->info_.servername, (ERR_NOSUCHNICK), params);
         return ;
     }
     std::map<int, operator_status> clientsMap = channel.GetClients();
@@ -79,7 +76,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
         params.push_back(this->GetClients()[targetFd].GetNick());
         params.push_back(channel.GetName());
         params.push_back(MSG_USERNOTINCHANNEL);
-        this->Reply(fd, this->info_.servername, std::string(ERR_USERNOTINCHANNEL), params);
+        this->Reply(fd, this->info_.servername, (ERR_USERNOTINCHANNEL), params);
         return ;
     }
     
@@ -104,7 +101,7 @@ void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>
         // "<command> :Not enough parameters"
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
-        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        this->Reply(fd, this->info_.servername, (ERR_NEEDMOREPARAMS), params);
         return ;
     }
 
@@ -131,7 +128,7 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
         // "<command> :Not enough parameters"
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
-        this->Reply(fd, this->info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        this->Reply(fd, this->info_.servername, std::sthring(ERR_NEEDMOREPARAMS), params);
         return ;
     }
 
@@ -153,10 +150,6 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     }
 }
 
-
-
-
-
 /*
     ONLY ACCEPT ONE MODESTIRNG
     Args: MODE <target> []
@@ -172,7 +165,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         // "<command> :Not enough parameters"
         params.push_back("USER");
         params.push_back(MSG_NEEDMOREPARAMS);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
+        server.Reply(fd, server.info_.servername, (ERR_NEEDMOREPARAMS), params);
         return (0);
     }
 
@@ -187,7 +180,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         // "<channel name> :No such channel"
         params.push_back(chanName);
         params.push_back(MSG_NOSUCHCHANNEL);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHCHANNEL), params);
+        server.Reply(fd, server.info_.servername, (ERR_NOSUCHCHANNEL), params);
         return (0);
     }
 
@@ -199,7 +192,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         // "<channel> :You're not on that channel"
         params.push_back(chanName);
         params.push_back(MSG_NOTONCHANNEL);
-        server.Reply(fd, server.info_.servername, std::string(ERR_NOTONCHANNEL), params);
+        server.Reply(fd, server.info_.servername, (ERR_NOTONCHANNEL), params);
         return (0);
     }
 
@@ -239,7 +232,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         // "<channel> :You're not channel operator"
         params.push_back(chanName);
         params.push_back(MSG_CHANOPRIVSNEEDED);
-        server.Reply(fd, server.info_.servername, std::string(ERR_CHANOPRIVSNEEDED), params);
+        server.Reply(fd, server.info_.servername, (ERR_CHANOPRIVSNEEDED), params);
         return (0);
     }
 
@@ -253,7 +246,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
     std::string modes = args[2];
     for (size_t i = 0; i < modes.size(); i++)
     {
-        size_t isValide = 0;
+        size_t is_valid = 0;
         char mode = modes[i];
         switch (mode)
         {
@@ -266,7 +259,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
             case 'i':
                 
                 if (sign != '+' && sign != '-')
-                    isValide = 2;
+                    is_valid = 2;
                 else {
                     std::cout << "mode i" << std::endl;
                     server.IMode(fd, *channel, sign);
@@ -274,7 +267,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 break;
             case 't':
                 if (sign != '+' && sign != '-')
-                    isValide = 2;
+                    is_valid = 2;
                 else {
                     std::cout << "mode t" << std::endl;
                     server.TMode(fd, *channel, sign);
@@ -282,7 +275,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 break;
             case 'o':
                 if (sign != '+' && sign != '-')
-                    isValide = 2;
+                    is_valid = 2;
                 else {
                     std::cout << "mode o" << std::endl;
                     server.OMode(fd, *channel, sign, args);
@@ -290,7 +283,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 break;
             case 'k':
                 if (sign != '+' && sign != '-')
-                    isValide = 2;
+                    is_valid = 2;
                 else {
                     std::cout << "mode k" << std::endl;
                     server.KMode(fd, *channel, sign, args);
@@ -298,29 +291,26 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 break;
             case 'l':
                 if (sign != '+' && sign != '-')
-                    isValide = 2;
+                    is_valid = 2;
                 else {
                     std::cout << "mode l" << std::endl;
                     server.LMode(fd, *channel, sign, args);
                 }
                 break;
             default:
-                isValide = 1;
+                is_valid = 1;
                 break;
         }
-        if (isValide > 0) {
+        if (is_valid > 0) {
                 // 472     ERR_UNKNOWNMODE
                 // "<char> :is unknown mode char to me"
                 params.push_back(&mode);
                 params.push_back(MSG_UNKNOWNMODE);
-                server.Reply(fd, server.info_.servername, std::string(ERR_UNKNOWNMODE), params);
-                if (isValide == 2)
+                server.Reply(fd, server.info_.servername, (ERR_UNKNOWNMODE), params);
+                if (is_valid == 2)
                     return (0);
         }
     }
-    
-
-
     return (0);
 }
 

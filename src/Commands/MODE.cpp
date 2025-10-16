@@ -27,7 +27,7 @@ void Server::IMode(int fd, Channel& channel, char sign) {
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     params.push_back(std::string(1, sign) + "i");
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
     }
@@ -42,7 +42,7 @@ void Server::TMode(int fd, Channel& channel, char sign) {
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     params.push_back(std::string(1, sign) + "t");
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
     }
@@ -69,7 +69,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
         this->Reply(fd, this->info_.servername, (ERR_NOSUCHNICK), params);
         return ;
     }
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     if ( clientsMap.find(targetFd) == clientsMap.end()) {
         // 441     ERR_USERNOTINCHANNEL
         // "<nick> <channel> :They aren't on that channel"
@@ -114,7 +114,7 @@ void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>
     params.push_back(std::string(1, sign) + "k");
     if (sign)
         params.push_back(args[3]);
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
     }
@@ -144,7 +144,7 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     params.push_back(std::string(1, sign) + "k");
     if (sign)
         params.push_back(args[3]);
-    std::map<int, operator_status> clientsMap = channel.GetClients();
+    std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
     }

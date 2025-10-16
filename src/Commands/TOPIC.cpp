@@ -73,7 +73,7 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
         }
         channel->SetTopic(args[2]);
         // :<nick>!<user>@<host> TOPIC test :truc
-        std::map<int, operator_status> clientsMap = channel->GetClients();
+        std::map<int, operator_status> &clientsMap = channel->GetClients();
         std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
         params.push_back(channel->GetName());
         params.push_back(channel->GetTopic());

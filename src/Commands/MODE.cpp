@@ -82,12 +82,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
         this->Reply(fd, this->info_.servername, std::string(ERR_USERNOTINCHANNEL), params);
         return ;
     }
-    //     typedef enum e_operator_status
-    // {
-    //     IS_NOT_OPERATOR = 0,
-    //     IS_OPERATOR = 1
-    // } operator_status ;
-    // channel.SetMode('', sign_value[sign]);
+    
     clientsMap[targetFd] = (operator_status)sign_value[sign];
 
     Client client = this->GetClients()[fd];

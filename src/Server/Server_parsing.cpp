@@ -77,12 +77,14 @@ bool Server::RegistrationCheck(int fd, const std::string& cmd)
 */
 void Server::ParseInput(int fd, const char *buffer)
 {
+    debugPrint(buffer);
+
     const std::string& delimiter = "\r\n";
     std::vector<std::string> listCommands;
     std::string bufferStr(buffer);
     listCommands = Util::split(bufferStr, delimiter);
     // commande en majuscule :
-    std::string uc;
+    std::string cmdUpperCase;
 
     try
     {
@@ -90,13 +92,13 @@ void Server::ParseInput(int fd, const char *buffer)
         for(std::vector<std::string>::iterator it = listCommands.begin(); it != listCommands.end(); it++){
             listCommandsToken.push_back(Util::parseCommand(*it));
             std::string cmd = listCommandsToken.back()[0];
-            uc = cmd;
-            for (size_t i = 0; i < uc.size(); ++i)
-                uc[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(uc[i])));
+            cmdUpperCase = cmd;
+            for (size_t i = 0; i < cmdUpperCase.size(); ++i)
+                cmdUpperCase[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(cmdUpperCase[i])));
 
-            if (CommandExists(fd, uc) && RegistrationCheck(fd, uc))
+            if (CommandExists(fd, cmdUpperCase) && RegistrationCheck(fd, cmdUpperCase))
             {
-                if (sv_commands_.commands[uc](*this, fd, listCommandsToken.back())) {
+                if (sv_commands_.commands[cmdUpperCase](*this, fd, listCommandsToken.back())) {
                     std::cerr << "<" << fd << ">Internal serveur error" << std::endl;
                 }
             } else {
@@ -112,5 +114,4 @@ void Server::ParseInput(int fd, const char *buffer)
         throw e;
     }
 
-    debugPrint(buffer);
 }

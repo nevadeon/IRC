@@ -16,7 +16,6 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    std::cout << args[1] << std::endl;
     if (!Util::isValidChannelName(args[1])) {
         // ERR_BADCHANMASK 476
 
@@ -53,7 +52,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
             }
 
             if (channel->GetModeState('k')) {
-                if ((args.size() > 2 && (itMDP != listMDP.end()) && (channel->GetKey() == *itMDP))
+                if (args.size() < 3 || (args.size() > 2 && (itMDP != listMDP.end()) && (channel->GetKey() != *itMDP))
                         || (args.size() > 2 && (itMDP == listMDP.end()))) {
                     // 475     ERR_BADCHANNELKEY
                     // "<channel> :Cannot join channel (+k)"

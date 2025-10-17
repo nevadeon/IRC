@@ -93,6 +93,7 @@ void Server::ReceiveNewData(int fd) {
     // this->Reply(fd, this->info_.name, std::string("987"), test);
 
 
+
     // we use a loop in case data is bigger than buffer size
     // while (true) {
         ssize_t nread = recv(fd, buffer[fd], sizeof(buffer[fd]) - 1, 0);
@@ -109,6 +110,7 @@ void Server::ReceiveNewData(int fd) {
             // messages shall not exceed 512 characters in length
             // normal deconnexion from client
             Disconnect(fd);
+            str[fd].clear();
             buffer[fd][0] = '\0';
             buffer_len[fd] = 0;
             return ;

@@ -47,8 +47,6 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     
 
     int targetFd = server.FindClient(target_nick);
-    std::cout << targetFd << std::endl;
-    std::cout << channel->GetClients().count(targetFd) << std::endl;
     if (targetFd == -1 || channel->GetClients().count(targetFd) == 0) {
         // 441     ERR_USERNOTINCHANNEL
         // "<nick> <channel> :They aren't on that channel"

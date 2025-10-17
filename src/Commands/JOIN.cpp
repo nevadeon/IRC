@@ -18,7 +18,6 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
 
     if (!Util::isValidChannelName(args[1])) {
         // ERR_BADCHANMASK 476
-
         params.push_back(client.GetNick());
         params.push_back(args[1]);
         params.push_back(MSG_BADCHANMASK);
@@ -66,7 +65,9 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
                 itMDP++;
             }
 
-            if (channel->GetModeState('l') && (channel->GetUserLimit() < channel->GetClients().size())) {
+            std::cout << "mode l :" << channel->GetModeState('l') << " " << channel->GetUserLimit() << " " << channel->GetClients().size() << std::endl;
+
+            if (channel->GetModeState('l') && (channel->GetUserLimit() <= channel->GetClients().size())) {
                 // 471     ERR_CHANNELISFULL
                 // "<channel> :Cannot join channel (+l)"
                 params.push_back(client.GetNick());

@@ -95,7 +95,7 @@ void Server::OMode(int fd, Channel& channel, char sign, std::vector<std::string>
 
 void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>& args) {
     std::vector<std::string> params;
-    if (sign && args.size() < 4)
+    if (sign == '+' && args.size() < 4)
     {
         // 461     ERR_NEEDMOREPARAMS
         // "<command> :Not enough parameters"
@@ -106,13 +106,14 @@ void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>
     }
 
     channel.SetMode('k', sign_value[sign]);
-    channel.SetKey(args[3]);
+    if (sign == '+')
+        channel.SetKey(args[3]);
 
     Client client = this->GetClients()[fd];
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     params.push_back(std::string(1, sign) + "k");
-    if (sign)
+    if (sign == '+')
         params.push_back(args[3]);
     std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
@@ -122,7 +123,7 @@ void Server::KMode(int fd, Channel& channel, char sign, std::vector<std::string>
 
 void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>& args) {
     std::vector<std::string> params;
-    if (sign && args.size() < 4)
+    if (sign == '+' && args.size() < 4)
     {
         // 461     ERR_NEEDMOREPARAMS
         // "<command> :Not enough parameters"
@@ -133,16 +134,18 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     }
 
     channel.SetMode('l', sign_value[sign]);
-    std::istringstream ss(args[3]);
-    int ret;
-    ss >> ret;
-    channel.SetLimit(ret);
+    if (sign == '+') {
+        std::istringstream ss(args[3]);
+        int ret;
+        ss >> ret;
+        channel.SetLimit(ret);
+    }
 
     Client client = this->GetClients()[fd];
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
-    params.push_back(std::string(1, sign) + "k");
-    if (sign)
+    params.push_back(std::string(1, sign) + "l");
+    if (sign == '+')
         params.push_back(args[3]);
     std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){

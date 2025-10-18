@@ -25,8 +25,16 @@ void Server::Disconnect(int fd)
     }
     if (close(fd) < 0)
         std::cerr << "Error close: " << strerror(errno) << std::endl;
-    for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end(); it++)
-        it->second.GetClients().erase(fd);
+    for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end();) {
+        std::map<int, operator_status> &clients = it->second.GetClients();
+        clients.erase(fd);
+        if (clients.empty()) {
+            std::map<std::string, Channel>::iterator toErase = it++;
+            channels_.erase(toErase);
+        } else {
+            ++it;
+        }
+    }
     clients_.erase(fd);
     std::cout << "Client <" << fd << "> " << RED << "Disconnected" << RESET << std::endl;
 }

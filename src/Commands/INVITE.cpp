@@ -43,7 +43,7 @@ int Server::Commands::INVITE(Server& server, int fd, std::vector<std::string>& a
         return (0);
     }
 
-    if (!channel->IsOperator(fd)) {
+    if (channel->GetModeState('i') && !channel->IsOperator(fd)) {
         // 482     ERR_CHANOPRIVSNEEDED
         // "<channel> :You're not channel operator"
         params.push_back(chanName);

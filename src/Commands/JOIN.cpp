@@ -85,6 +85,7 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
         Channel newChan = Channel(chanName, fd);
         newChan.AddClient(BOT_FD);
         server.channels_.insert(std::make_pair(newChan.GetName(), newChan));
+        channel->EraseInvitation(fd);
         server.WelcomeChannel(fd, newChan);
     }
     return (0);

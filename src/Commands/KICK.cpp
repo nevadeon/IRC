@@ -65,7 +65,10 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
         server.Reply(it->first, info, "KICK", params);
     }
-    clientsMap.erase(targetFd);
+    clientsMap.erase(fd);
+    if (clientsMap.empty()) {
+        server.channels_.erase(channel->GetName());
+    } 
 
     return (0);
 }

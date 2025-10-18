@@ -75,6 +75,7 @@ class Channel
         void AddClient(int fd);
         int FindClient(std::string& nickname, Server& server);
         int IsOperator(int fd);
+        void EraseInvitation(int fd);
 };
 
 #endif

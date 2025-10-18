@@ -63,6 +63,10 @@ int Server::Commands::PART(Server& server, int fd, std::vector<std::string>& arg
 
         clientsMap.erase(fd);
 
+        if (clientsMap.empty()) {
+            server.channels_.erase(channel->GetName());
+        } 
+
     }
 
     return (0);

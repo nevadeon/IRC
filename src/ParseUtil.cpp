@@ -68,25 +68,25 @@ std::vector<std::string> Util::parseCommand(std::string str)
     std::string token;
     std::string delimiter = " ";
     while ((pos = str.find(delimiter)) != std::string::npos) {
-        if (str[0] == ':') {
-            str.erase(0, 1);
+        if (str[0] == ':')
             break;
-        }
         token = str.substr(0, pos);
         if (token.length() != 0)
             listArg.push_back(token);
         str.erase(0, pos + delimiter.length());
     }
-    if (str.length() != 0)
+    if (str.length() != 0) {
+        if (str[0] == ':')
+            str.erase(0, 1);
         listArg.push_back(str);
+    }
 
     return listArg;
 }
 
 bool Util::isValidChannelName(std::string &chanName) {
-    if (chanName[0] != '#') {
+    if (chanName[0] != '#')
         return false;
-    }
 
     size_t lenChanName = chanName.size();
     unsigned char c;
@@ -94,8 +94,8 @@ bool Util::isValidChannelName(std::string &chanName) {
         return (false);
     for (size_t i = 0; i < lenChanName; i++) {
         c = static_cast<unsigned char>(chanName[i]);
-        if (c > 127 || c < 32)
-        return (false);
+        if (c > 127 || c < 32 || c == ',')
+            return (false);
     }
     return (true);
 }

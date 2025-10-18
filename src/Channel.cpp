@@ -79,3 +79,8 @@ int Channel::IsOperator(int fd) {
     }
     return (-1);
 }
+
+
+void Channel::EraseInvitation(int fd) {
+    inviteClient_.erase(fd);
+}

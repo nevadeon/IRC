@@ -172,11 +172,7 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    std::string chanName;
-    if (args[1][0] != '#')
-        chanName = std::string("#").append(args[1]);
-    else
-        chanName = args[1];
+    std::string chanName = args[1];
     Channel *channel = server.FindChannel(chanName);
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL

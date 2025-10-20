@@ -35,11 +35,7 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
         server.Reply(fd, server.info_.servername, std::string(ERR_NEEDMOREPARAMS), params);
         return (0);
     }
-    std::string chanName;
-    if (args[1][0] != '#')
-        chanName = std::string("#").append(args[1]);
-    else
-        chanName = args[1];
+    std::string chanName = args[1];
 
     Channel *channel = server.FindChannel(chanName);
     if (!channel) {

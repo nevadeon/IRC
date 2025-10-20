@@ -63,7 +63,7 @@ int Server::Commands::TOPIC(Server &server, int fd, std::vector<std::string> &ar
     }
 
     if (argsSize > 2) {
-        if (!channel->GetModeState('t') && !channel->IsOperator(fd)) {
+        if (channel->GetModeState('t') && !channel->IsOperator(fd)) {
             // 482     ERR_CHANOPRIVSNEEDED
             // "<channel> :You're not channel operator"
             params.push_back(chanName);

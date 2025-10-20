@@ -3,6 +3,7 @@
 void Server::CloseFds() {
     for (std::map<int, Client>::iterator it = clients_.begin(); it != clients_.end(); it++) {
         int fd = it->first;
+        if (fd == BOT_FD) continue;
         close(fd);
     }
 
@@ -20,6 +21,7 @@ void Server::CloseFds() {
 
 void Server::Disconnect(int fd)
 {
+    if (fd == BOT_FD) return;
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, NULL) == -1) {
         std::cerr << "Error epoll_ctl: " << strerror(errno) << std::endl;
     }

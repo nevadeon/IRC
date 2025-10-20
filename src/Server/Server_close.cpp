@@ -30,7 +30,7 @@ void Server::Disconnect(int fd)
     for(std::map<std::string, Channel>::iterator it = channels_.begin(); it != channels_.end();) {
         std::map<int, operator_status> &clients = it->second.GetClients();
         clients.erase(fd);
-        if (clients.empty()) {
+        if (clients.size() == 1) {
             std::map<std::string, Channel>::iterator toErase = it++;
             channels_.erase(toErase);
         } else {

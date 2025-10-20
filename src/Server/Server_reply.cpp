@@ -23,6 +23,7 @@ void Server::Reply(int fd, std::string& prefix, const std::string& code, std::ve
         str += *it;
     }
     str += "\r\n";
+    std::cout << str << std::endl;
     send(fd, str.data(), str.length(), 0);
 }
 

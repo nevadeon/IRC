@@ -28,6 +28,7 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL
         // "<channel name> :No such channel"
+        params.push_back(server.clients_[fd].GetNick());
         params.push_back(chanName);
         params.push_back(MSG_NOSUCHCHANNEL);
         server.Reply(fd, server.info_.servername, std::string(ERR_NOSUCHCHANNEL), params);
@@ -37,6 +38,7 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     if (!channel->IsOperator(fd)) {
         // 482     ERR_CHANOPRIVSNEEDED
         // "<channel> :You're not channel operator"
+        params.push_back(server.clients_[fd].GetNick());
         params.push_back(chanName);
         params.push_back(MSG_CHANOPRIVSNEEDED);
         server.Reply(fd, server.info_.servername, std::string(ERR_CHANOPRIVSNEEDED), params);

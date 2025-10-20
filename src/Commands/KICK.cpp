@@ -17,6 +17,8 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     // std::string chanName = args[1];
     std::string chanName = args[1];
     std::string target_nick = args[2];
+    if (target_nick == "league-experience")
+        return (0);
     std::string reason;
     if (args.size() > 3)
         reason = args[3];
@@ -41,7 +43,6 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
     
-
     int targetFd = server.FindClient(target_nick);
     if (targetFd == -1 || channel->GetClients().count(targetFd) == 0) {
         // 441     ERR_USERNOTINCHANNEL
@@ -62,7 +63,7 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
         server.Reply(it->first, info, "KICK", params);
     }
     clientsMap.erase(targetFd);
-    if (clientsMap.empty()) {
+    if (clientsMap.size() == 1) {
         server.channels_.erase(channel->GetName());
     } 
 

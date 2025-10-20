@@ -134,9 +134,9 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     }
 
     channel.SetMode('l', sign_value[sign]);
+    int ret;
     if (sign == '+') {
         std::istringstream ss(args[3]);
-        int ret;
         ss >> ret;
         channel.SetLimit(ret);
     }
@@ -145,8 +145,11 @@ void Server::LMode(int fd, Channel& channel, char sign, std::vector<std::string>
     std::string info = client.GetNick() + "!" + client.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
     params.push_back(channel.GetName());
     params.push_back(std::string(1, sign) + "l");
-    if (sign == '+')
-        params.push_back(args[3]);
+    if (sign == '+') {
+        std::stringstream ss2;
+        ss2 << ret;
+        params.push_back(ss2.str());
+    }
     std::map<int, operator_status> &clientsMap = channel.GetClients();
     for(std::map<int, operator_status>::iterator it = clientsMap.begin(); it != clientsMap.end(); it++){
          this->Reply(it->first, info, "MODE", params);
@@ -172,7 +175,11 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    std::string chanName = args[1];
+    std::string chanName;
+    if (args[1][0] != '#')
+        chanName = std::string("#").append(args[1]);
+    else
+        chanName = args[1];
     Channel *channel = server.FindChannel(chanName);
     if (!channel) {
         // 403     ERR_NOSUCHCHANNEL

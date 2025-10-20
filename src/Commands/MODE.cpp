@@ -188,15 +188,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         return (0);
     }
 
-    if (channel->FindClient(client.GetNick(), server) == -1) {
-        // 442     ERR_NOTONCHANNEL
-        // "<channel> :You're not on that channel"
-        params.push_back(chanName);
-        params.push_back(MSG_NOTONCHANNEL);
-        server.Reply(fd, server.info_.servername, (ERR_NOTONCHANNEL), params);
-        return (0);
-    }
-
     // :blackhole.boys.com 324 Alice #test +kt truc\r\n
     if (args.size() < 3)
     {
@@ -207,10 +198,9 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
         std::string info = "+";
         for (size_t i = 0; i < nbMode; ++i) {
             if (channel->GetModeState(modeChars[i]))
-                info = info.append(&modeChars[i]);
+                info += modeChars[i];
         }
         params.push_back(client.GetNick());
-        params.push_back(MSG_NOTONCHANNEL);
         if (info.size() > 1)
             params.push_back(info);
         if (channel->GetModeState('k'))
@@ -220,11 +210,18 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
             ss << channel->GetUserLimit();
             params.push_back(ss.str());
         }
-        server.Reply(fd, server.info_.servername, std::string("324"), params);
+        server.Reply(fd, server.info_.servername, "324", params);
         return (0);
     }
 
-
+    if (channel->FindClient(client.GetNick(), server) == -1) {
+        // 442     ERR_NOTONCHANNEL
+        // "<channel> :You're not on that channel"
+        params.push_back(chanName);
+        params.push_back(MSG_NOTONCHANNEL);
+        server.Reply(fd, server.info_.servername, (ERR_NOTONCHANNEL), params);
+        return (0);
+    }
 
     if (channel->IsOperator(fd) != IS_OPERATOR)
     {

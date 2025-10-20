@@ -261,7 +261,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 if (sign != '+' && sign != '-')
                     is_valid = 2;
                 else {
-                    std::cout << "mode i" << std::endl;
                     server.IMode(fd, *channel, sign);
                 }
                 break;
@@ -269,7 +268,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 if (sign != '+' && sign != '-')
                     is_valid = 2;
                 else {
-                    std::cout << "mode t" << std::endl;
                     server.TMode(fd, *channel, sign);
                 }
                 break;
@@ -277,7 +275,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 if (sign != '+' && sign != '-')
                     is_valid = 2;
                 else {
-                    std::cout << "mode o" << std::endl;
                     server.OMode(fd, *channel, sign, args);
                 }
                 break;
@@ -285,7 +282,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 if (sign != '+' && sign != '-')
                     is_valid = 2;
                 else {
-                    std::cout << "mode k" << std::endl;
                     server.KMode(fd, *channel, sign, args);
                 }
                 break;
@@ -293,7 +289,6 @@ int Server::Commands::MODE(Server& server, int fd, std::vector<std::string>& arg
                 if (sign != '+' && sign != '-')
                     is_valid = 2;
                 else {
-                    std::cout << "mode l" << std::endl;
                     server.LMode(fd, *channel, sign, args);
                 }
                 break;

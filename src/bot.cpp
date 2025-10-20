@@ -30,8 +30,6 @@ void Server::botReply(Channel& channel)
     Client bot = this->GetClients()[BOT_FD];
     std::string info = bot.GetNick() + "!" + bot.GetUserInfo().username + "@" + DUMMY_HOSTNAME;
 
-    // std::cout << "bot info: "<< info << std::endl;
-
     std::vector<std::string> params;
     params.push_back(channel.GetName());
     params.push_back(generateBotMsg());

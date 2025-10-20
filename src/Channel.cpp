@@ -10,14 +10,13 @@ Channel::Channel(std::string& name, int fd_founder)
     info_.ch_key = std::string();
     info_.ch_user_limit = 0;
     for (int i = 0; i < NUMBER_OF_SYMBOLS; i++)
-        modes_[symbols[i]] = false;
+        modes_[symbols[i]] = (symbols[i] == 't');
     ch_clients_[fd_founder] = IS_OPERATOR;
 }
 
 Channel::Channel() {}
 
 Channel::~Channel() {}
-
 
 void Channel::SetMode(char c, bool value) { modes_[c] = value; }
 

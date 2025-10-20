@@ -1,7 +1,7 @@
 #include "Server.hpp"
 
 #define AVAILABLE_USER_MODES "o"
-#define AVAILABLE_CHANNEL_MODES "itkln"
+#define AVAILABLE_CHANNEL_MODES "itkl"
 #define ISUPPORT_TOKEN "CHANTYPES=#"
 
 /*

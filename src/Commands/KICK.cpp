@@ -15,11 +15,7 @@ int Server::Commands::KICK(Server& server, int fd, std::vector<std::string>& arg
     }
 
     // std::string chanName = args[1];
-    std::string chanName;
-    if (args[1][0] != '#')
-        chanName = std::string("#").append(args[1]);
-    else
-        chanName = args[1];
+    std::string chanName = args[1];
     std::string target_nick = args[2];
     std::string reason;
     if (args.size() > 3)

@@ -29,9 +29,6 @@ int Server::Commands::JOIN(Server& server, int fd, std::vector<std::string>& arg
     {
         std::string chanName = *it;
 
-        std::cout << chanName << std::endl;
-
-        
         if (!Util::isValidChannelName(chanName)) {
             // ERR_BADCHANMASK 476
             params.push_back(client.GetNick());
